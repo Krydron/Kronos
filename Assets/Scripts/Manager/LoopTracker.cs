@@ -13,11 +13,13 @@
 
 using System.Collections;
 using UnityEngine;
+using FMODUnity;
+using FMOD.Studio;
 
 public class LoopTracker : MonoBehaviour
 {
     [SerializeField] uint maxLoops;
-    AudioSource grandfatherClock;
+    StudioEventEmitter grandfatherClock;
     private ushort loop;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -28,7 +30,8 @@ public class LoopTracker : MonoBehaviour
     private void OnLevelWasLoaded(int level)
     {
         if (GameObject.Find("GrandFatherClock") == null) { return; }
-        grandfatherClock = GameObject.Find("GrandFatherClock").GetComponent<AudioSource>();
+        //grandfatherClock = GameObject.Find("GrandFatherClock").GetComponent<AudioSource>();
+        grandfatherClock = GameObject.Find("GrandFatherClock").GetComponent<StudioEventEmitter>();
         StartCoroutine(playChimes());
     }
 
@@ -37,7 +40,9 @@ public class LoopTracker : MonoBehaviour
         //grandfatherClock = GameObject.Find("GrandFatherClock").GetComponent<AudioSource>();
         for (int i = 0; i < loop; i++)
         {
+            if (grandfatherClock == null) { Debug.Log("No chime"); continue; }
             grandfatherClock.Play();
+            //grandfatherClock.EventInstance.start();
             Debug.Log("Play Audio: " + loop);
             yield return new WaitForSeconds(3.5f);
         }

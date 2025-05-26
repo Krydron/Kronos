@@ -22,7 +22,7 @@ public class JudgeFlashback : MonoBehaviour
 
     IEnumerator NextLevel()
     {
-        yield return new WaitForSeconds(65);
+        yield return new WaitForSeconds(55);
         eyes.GetComponent<Eyes>().ShutEyes();
         yield return new WaitForSeconds(2);
         gameManager.GetComponent<SceneLoader>().EndFlashback(0);

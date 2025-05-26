@@ -1,4 +1,5 @@
-using Unity.VisualScripting;
+using FMOD.Studio;
+using FMODUnity;
 using UnityEngine;
 
 public class Pause : MonoBehaviour
@@ -8,6 +9,7 @@ public class Pause : MonoBehaviour
     GameObject blur;
     GameObject[] audioSources;
     UIInteractions uIInteractions;
+    FMODUnity.RuntimeManager runtimeManager; 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -18,6 +20,7 @@ public class Pause : MonoBehaviour
         blur = GameObject.Find("Blur");
         blur.SetActive(false);
         uIInteractions = GetComponent<UIInteractions>();
+        //runtimeManager = 
     }
 
     public void ToggleCursor()
@@ -39,17 +42,12 @@ public class Pause : MonoBehaviour
         paused = !paused;
         Debug.Log("Paused: " + paused);
         ToggleCursor();
-        if (paused) { Time.timeScale = 0f; return; }
-        Time.timeScale = 1f;
         foreach (GameObject source in audioSources)
         {
-            if (paused)
-            {
-                source.GetComponent<AudioSource>().Pause();
-                continue;
-            }
-            source.GetComponent<AudioSource>().UnPause();
+            source.GetComponent<StudioEventEmitter>().EventInstance.setPaused(paused);
         }
+        if (paused) { Time.timeScale = 0f; return; }
+        Time.timeScale = 1f;
     }
 
     public bool isPaused()
