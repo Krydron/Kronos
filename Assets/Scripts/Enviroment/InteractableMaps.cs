@@ -32,9 +32,9 @@ public class InteractableMaps : MonoBehaviour
         map = GameObject.Find("Map").GetComponent<Map>();
     }
 
-    public void Interect()
+    public bool Interect()
     {
-        if (map == null) return;
+        if (map == null) return false;
         if (Vector3.Distance(transform.position, player.transform.position) <= interactDistance)
         {
             Debug.Log("Saving Map");
@@ -50,6 +50,8 @@ public class InteractableMaps : MonoBehaviour
                     map.Button3(); 
                     break;
             }
+            return true;
         }
+        return false;
     }
 }

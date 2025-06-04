@@ -11,6 +11,7 @@
 *
 ***************************************************************************************************************/
 
+using System.Collections;
 using UnityEngine;
 
 public class UIInteractions : MonoBehaviour
@@ -20,6 +21,15 @@ public class UIInteractions : MonoBehaviour
     bool menuOpen;
     Pause pause;
 
+    bool canInteract;
+    [SerializeField] float interactCooldown;
+
+    IEnumerator interactTimer()
+    {
+            yield return new WaitForSeconds(interactCooldown);
+            canInteract = true;
+    }
+
     private void Start()
     {
         interactables = GameObject.FindGameObjectsWithTag("Interactable");
@@ -27,6 +37,8 @@ public class UIInteractions : MonoBehaviour
         if (map != null) { map.SetActive(false); }
         menuOpen = false;
         pause = GetComponent<Pause>();
+        canInteract = true;
+        StartCoroutine(interactTimer());
     }
 
     public void OnMap()
@@ -63,20 +75,29 @@ public class UIInteractions : MonoBehaviour
 
     public void OnInteract()
     {
+        //if (!canInteract) { return; }
+        //canInteract = false;
+        //StartCoroutine(interactTimer());
+        //interactables = GameObject.FindGameObjectsWithTag("Interactable");  //Code for testing
         Debug.Log("interact");
-        foreach (GameObject interactable in  interactables)
+        foreach (GameObject interactable in interactables)
         {
+            Debug.Log(interactable.name);
             if (interactable.GetComponent<InteractableMaps>() != null)
             {
-                interactable.GetComponent<InteractableMaps>().Interect();
+                if (interactable.GetComponent<InteractableMaps>().Interect()) { break; }
             }
             if (interactable.GetComponent<FlashbackQuit>() != null)
             {
-                interactable.GetComponent<FlashbackQuit>().Exit();
+                if (interactable.GetComponent<FlashbackQuit>().Exit()) { break; }
             }
             if (interactable.GetComponent<Win>() != null)
             {
-                interactable.GetComponent<Win>().Interact();
+                if (interactable.GetComponent<Win>().Interact()) { break; }
+            }
+            if (interactable.GetComponent<Vents>() != null)
+            {
+                if (interactable.GetComponent<Vents>().Interact()) { break;}
             }
         }
     }
