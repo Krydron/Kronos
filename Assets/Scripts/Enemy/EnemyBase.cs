@@ -1,39 +1,56 @@
 using UnityEngine;
 using UnityEngine.AI;
 using System.Collections;
+using System.Collections.Generic;
 
 public class EnemyBase : MonoBehaviour
 {
     public enum EnemyState { Patrolling, Chasing, Attacking, Searching }
     public EnemyState currentState;
+
     public Transform head;
 
     [Header("Patrolling")]
-    public Transform[] patrolPoints; // Unique patrol points per enemy
-    private int waypointIndex;
-    private NavMeshAgent agent;
-    public float patrolWaitTime; // Time to wait at each waypoint Default 2f
-    private bool isWaiting;
+    public Transform[] patrolPoints;                   // Array of patrol waypoints
+    private int waypointIndex;                         // Current index in the waypoint array
+    private bool isWaiting;                            // Whether the enemy is waiting at a waypoint
+    public float patrolWaitTime = 3f;                  // Wait time at each patrol point
+    public float patrolSpeed = 3.5f;                   // Speed while patrolling
 
     [Header("Detection")]
-    public GameObject player;
-    public float sightRange; //default 15f
-    public float fieldOfView; //default 90f
-    public float detectionTime; //default 2f
-    public float lostTime; //default 3f
+    public GameObject player;                          // Reference to player
+    public float sightRange = 15f;                     // Maximum detection range
+    public float fieldOfView = 90f;                    // Field of view in degrees
+    public float detectionTime = 2f;                   // Time required to fully detect the player
+    public float lostTime = 3f;                        // Time before giving up chasing
+    [SerializeField] float minDistance = 2f;           // Minimum distance to attack
+    public AnimationCurve angleDetectionCurve;         // Curve for modifying detection speed based on angle
 
-    [SerializeField] float minDistance;
-
-    private float detectionTimer;
-    private float lostTimer;
+    private float detectionTimer;                      // Timer for accumulating detection
+    private float lostTimer;                           // Timer after losing sight
+    private bool playerInSight;                        // Whether the player is currently visible
 
     [Header("Health")]
-    public int maxHealth; //default 100
+    public int maxHealth = 100;
     private int currentHealth;
 
     [Header("Keycard Drop")]
     public GameObject keycardPrefab;
     public bool hasKeycard = false;
+
+    [Header("Search Behavior")]
+    public float searchWaitTime = 3f;                  // Wait time at each search point
+    public float searchRadius = 6f;                    // Radius of search circle
+    public int searchPointsCount = 5;                  // Number of points to search
+    private List<Vector3> searchPoints = new List<Vector3>(); // Generated search points
+    private int searchPointIndex;
+    private bool isSearching;
+    private Vector3 lastSeenPosition;
+
+    private NavMeshAgent agent;
+    private float chaseSpeed;
+
+    private bool isWaitingAtSearchPoint = false;       // Added: Flag to control waiting during search points to avoid multiple wait coroutines
 
     public GameObject GetKeycard()
     {
@@ -46,78 +63,54 @@ public class EnemyBase : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
         agent.enabled = true;
 
+        chaseSpeed = agent.speed;
         currentHealth = maxHealth;
 
         if (patrolPoints.Length > 0)
         {
             GoToNextWaypoint();
         }
+
         isWaiting = false;
         detectionTimer = 0f;
         lostTimer = 0f;
-
         waypointIndex = 0;
     }
 
     private void Update()
     {
-        //HandlePlayerDetection(); // Make sure to check player detection at all times
-
         switch (currentState)
         {
             case EnemyState.Patrolling:
-                //Debug.Log("Patroling");
                 Patrol();
                 break;
-
             case EnemyState.Chasing:
-                //Debug.Log("Chasing");
                 Chase();
                 break;
-
             case EnemyState.Attacking:
-                //Debug.Log("Attack");
                 Attack();
                 break;
-
             case EnemyState.Searching:
-                //Debug.Log("Searching");
                 Search();
                 break;
-            default:
-                break;
         }
     }
 
-    private void HandlePlayerDetection()
-    {
-        if (CanSeePlayer())
-        {
-            PlayerMovement playerMovement = player.GetComponent<PlayerMovement>();
-            if (playerMovement == null) { Debug.Log("playerMovement is null"); return; }
-            detectionTimer += Time.deltaTime / playerMovement.DetectionTimeModifier; // Adjusted for sneaking
-
-            if (detectionTimer >= detectionTime)
-            {
-                currentState = EnemyState.Chasing;
-                detectionTimer = 0;
-            }
-        }
-        detectionTimer = 0;
-    }
     private void Patrol()
     {
-        if (isWaiting) return; //  Prevent movement while waiting
+        agent.speed = patrolSpeed;
 
-        // Continuous detection check for the player
+        // Check for player visibility
         if (CanSeePlayer())
         {
-            detectionTimer += Time.deltaTime;
+            float angle = Vector3.Angle(head.forward, (player.transform.position - head.position).normalized);
+            float curveMultiplier = angleDetectionCurve.Evaluate(angle / (fieldOfView / 2));
+            detectionTimer += Time.deltaTime * curveMultiplier;
+
             if (detectionTimer >= detectionTime)
             {
                 currentState = EnemyState.Chasing;
-                agent.destination = player.transform.position;
-                detectionTimer = 0;
+                detectionTimer = 0f;
                 return;
             }
         }
@@ -126,20 +119,20 @@ public class EnemyBase : MonoBehaviour
             detectionTimer = Mathf.Clamp(detectionTimer - Time.deltaTime, 0, detectionTime);
         }
 
-        //  Wait before starting new path when arriving at waypoint
+        // If reached destination and not waiting, wait
         if (!agent.pathPending && agent.remainingDistance <= 0.5f && !isWaiting)
         {
-            StartCoroutine(PauseBeforeNextWaypoint()); //  Now won't call multiple times
+            StartCoroutine(PauseBeforeNextWaypoint());
         }
     }
 
     private IEnumerator PauseBeforeNextWaypoint()
     {
-        isWaiting = true; //  Set flag to prevent re-entry
-        agent.isStopped = true; //  Stop NavMeshAgent while waiting
+        isWaiting = true;
+        agent.isStopped = true;
         yield return new WaitForSeconds(patrolWaitTime);
         GoToNextWaypoint();
-        agent.isStopped = false; //  Resume movement after wait
+        agent.isStopped = false;
         isWaiting = false;
     }
 
@@ -150,79 +143,157 @@ public class EnemyBase : MonoBehaviour
         waypointIndex = (waypointIndex + 1) % patrolPoints.Length;
     }
 
-
     private void Chase()
     {
         if (player == null) return;
 
         if (CanSeePlayer())
         {
+            playerInSight = true;
+            lastSeenPosition = player.transform.position;
             float distance = Vector3.Distance(player.transform.position, transform.position);
 
             if (distance >= minDistance)
             {
+                agent.speed = chaseSpeed;
                 agent.destination = player.transform.position;
-                currentState = EnemyState.Chasing; // Keep chasing
             }
             else
             {
-                currentState = EnemyState.Attacking; // Switch to attack
+                currentState = EnemyState.Attacking;
             }
+
+            detectionTimer = 0f;
+            lostTimer = 0f;
         }
         else
         {
-            currentState = EnemyState.Searching; // Lost the player, start searching
-                                                 
+            playerInSight = false;
+            lostTimer += Time.deltaTime;
+
+            if (lostTimer >= 1f)
+            {
+                currentState = EnemyState.Searching;
+                PrepareSearch(lastSeenPosition);
+            }
         }
     }
 
-
-    protected virtual void Attack() { }
-
+    // Updated Search method with waiting logic and proper state transitions
     private void Search()
     {
-        lostTimer += Time.deltaTime;
-        if (CanSeePlayer())
+        if (!isSearching)
         {
-            lostTimer = 0;
-            currentState = EnemyState.Chasing;
+            isSearching = true;
+            searchPointIndex = 0;
+            agent.speed = patrolSpeed;
+
+            if (searchPoints.Count > 0)
+                agent.SetDestination(searchPoints[searchPointIndex]);
         }
-        if (lostTimer >= lostTime)
+
+        // If all search points visited, return to patrol
+        if (searchPointIndex >= searchPoints.Count)
         {
-            lostTimer = 0;
+            isSearching = false;
+            isWaitingAtSearchPoint = false;   // Reset waiting flag
             currentState = EnemyState.Patrolling;
             GoToNextWaypoint();
+            return;
         }
+
+        // If reached current search point and not already waiting, start waiting
+        if (!agent.pathPending && agent.remainingDistance <= 0.5f && !isWaitingAtSearchPoint)
+        {
+            StartCoroutine(WaitAtSearchPoint());
+        }
+
+        // Check for player during searching — switch to chasing if player spotted
+        if (CanSeePlayer())
+        {
+            currentState = EnemyState.Chasing;
+            searchPoints.Clear();
+            lostTimer = 0f;
+            isWaitingAtSearchPoint = false;  // Stop waiting if chasing now
+            isSearching = false;
+        }
+    }
+
+    // Updated coroutine for waiting at search points
+    private IEnumerator WaitAtSearchPoint()
+    {
+        isWaitingAtSearchPoint = true;    // Prevent multiple waits
+        agent.isStopped = true;           // Stop movement while waiting
+        yield return new WaitForSeconds(searchWaitTime);
+        agent.isStopped = false;          // Resume movement after wait
+        searchPointIndex++;               // Advance to next search point
+
+        if (searchPointIndex < searchPoints.Count)
+        {
+            agent.SetDestination(searchPoints[searchPointIndex]);
+        }
+
+        isWaitingAtSearchPoint = false;   // Clear waiting flag for next iteration
+    }
+
+    private void PrepareSearch(Vector3 origin)
+    {
+        searchPoints.Clear();
+
+        // Generate evenly spaced points in a circle around last seen player position
+        for (int i = 0; i < searchPointsCount; i++)
+        {
+            float angle = i * (360f / searchPointsCount);
+            Vector3 dir = Quaternion.Euler(0, angle, 0) * Vector3.forward;
+            Vector3 point = origin + dir * searchRadius;
+            NavMeshHit hit;
+            if (NavMesh.SamplePosition(point, out hit, 2f, NavMesh.AllAreas))
+            {
+                searchPoints.Add(hit.position);
+            }
+        }
+
+        // Set first search point destination if available
+        if (searchPoints.Count > 0)
+        {
+            agent.SetDestination(searchPoints[0]);
+        }
+
+        isSearching = false;
+        lostTimer = 0f;
+    }
+
+    protected virtual void Attack()
+    {
+        // Implement specific attack logic in derived classes
     }
 
     private bool CanSeePlayer()
     {
-        if (player == null) { Debug.Log("Play Pos is null"); return false; }
-
-        //PlayerMovement playerMovement = player.GetComponent<PlayerMovement>();
-        //if (playerMovement == null) { Debug.Log("Player Movement is null"); return false; }
-
-        float detectionRange = 15f; // Adjust detection range based on sneaking
+        if (player == null) return false;
 
         Vector3 rayOrigin = head.position + Vector3.up * 0.5f;
         Vector3 directionToPlayer = (player.transform.position - rayOrigin).normalized;
         float angle = Vector3.Angle(head.forward, directionToPlayer);
 
-        if (angle < fieldOfView / 2)
+        if (angle < fieldOfView / 2f)
         {
             RaycastHit hit;
-            LayerMask layerMask = ~LayerMask.GetMask("Ground", "NavMesh");
+            LayerMask mask = ~LayerMask.GetMask("Ground", "NavMesh");
 
-            if (Physics.Raycast(rayOrigin, directionToPlayer, out hit, detectionRange, layerMask))
+            if (Physics.Raycast(rayOrigin, directionToPlayer, out hit, sightRange, mask))
             {
-                Debug.DrawRay(rayOrigin, directionToPlayer * detectionRange, Color.red);
-                //This would probably be a good place to update player position
-                return hit.transform.CompareTag("Player");
+                Debug.DrawRay(rayOrigin, directionToPlayer * sightRange, Color.red);
+                if (hit.transform.CompareTag("Player"))
+                {
+                    lastSeenPosition = player.transform.position;
+                    return true;
+                }
             }
         }
+
         return false;
     }
-
 
     public void Alert(Vector3 alertPosition)
     {
@@ -263,20 +334,7 @@ public class EnemyBase : MonoBehaviour
         Vector3 fovLine2 = Quaternion.Euler(0, -fieldOfView / 2, 0) * transform.forward;
 
         Gizmos.color = Color.red;
-
-        int thickness = 3;
-        float offset = 0.05f;
-
-        for (int i = -thickness; i <= thickness; i++)
-        {
-            Vector3 offsetVector = Vector3.right * i * offset;
-            for (int j = 0; j < 3; j++) // Draw the same line multiple times
-            {
-                Gizmos.DrawLine(head.position + offsetVector, head.position + fovLine1 * sightRange + offsetVector);
-                Gizmos.DrawLine(head.position + offsetVector, head.position + fovLine2 * sightRange + offsetVector);
-            }
-        }
+        Gizmos.DrawLine(head.position, head.position + fovLine1 * sightRange);
+        Gizmos.DrawLine(head.position, head.position + fovLine2 * sightRange);
     }
-
-
 }

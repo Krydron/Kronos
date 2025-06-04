@@ -218,15 +218,43 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   patrolWaitTime: 2
+  patrolSpeed: 3.5
   player: {fileID: 0}
   sightRange: 15
   fieldOfView: 90
-  detectionTime: 2
+  detectionTime: 1
   lostTime: 3
   minDistance: 3
+  angleDetectionCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   maxHealth: 100
   keycardPrefab: {fileID: 0}
   hasKeycard: 0
+  searchWaitTime: 3
+  searchRadius: 6
+  searchPointsCount: 5
   damage: 20
   attackCooldown: 1.5
   attackDistance: 2
