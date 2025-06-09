@@ -1,44 +1,39 @@
 using JetBrains.Annotations;
+using NUnit.Framework;
 using System.Collections;
 using UnityEngine;
+using System.Collections.Generic;
 
 public class Lockdown : MonoBehaviour
 {
     // doors lock
-    private Animator animator;
-
+    //private Animator animator;
+    public GameObject alarmLight;
+    public Light lockdownLight;
+    public float flickerSpeed = 1f;
+    public float timer;
+    float flickerDelay = 0.1f;
+    [SerializeField] private List<Doors> doorsToLock = new List<Doors>();
     private void Start()
     {
         
-        animator = GetComponent<Animator>();
-        animator.SetBool("OpenDoor", true);
+        //animator = GetComponent<Animator>();
+        //animator.SetBool("OpenDoor", true);
         lockdownLight.enabled = false;
     }
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
         {
-            LockDoor();
-            StartCoroutine(Flicker());
+            //LockDoor();
+            //StartCoroutine(Flicker());
         }
 
         
     }
 
-    public void LockDoor()
-    {
-        if (animator == null)
-            animator.SetBool("ClosedDoor", false);
-            
-
-    }
-
-    //alarm
-    public GameObject alarmLight;
-    public Light lockdownLight;
-    public float flickerSpeed = 1f;
-    public float timer;
-    float flickerDelay = 0.1f;
+    
+    
     private void Awake()
     {
         if(alarmLight)
@@ -48,7 +43,21 @@ public class Lockdown : MonoBehaviour
 
                 
     }
+    public void BeginLockdown()
+    {
+        var doorsToLock = new List<Doors>();
+        doorsToLock.Add("Door1");
+        doorsToLock.Add("Door2");
+        doorsToLock.Add("Door3");
+        doorsToLock.Add("Door4");
+        
+        foreach (Doors Door in doorsToLock)
+        {
+            doors.SetLock(true);
+            StartCoroutine(Flicker());
+        }
 
+    }
   
     private void OnTriggerExit(Collider other)
     {
@@ -65,5 +74,13 @@ public class Lockdown : MonoBehaviour
             yield return delayTime;
         }
     }
+
+    //public void LockDoor()
+    //{
+    //    //if (animator == null)
+            //animator.SetBool("ClosedDoor", false);
+            
+
+    //}
     //enemies spawn in
 }

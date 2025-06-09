@@ -18,6 +18,8 @@ public class SecurityCamera : MonoBehaviour
 
     [Header("Lockdown Settings")]
     public bool canTriggerLockdown = false; // Whether this camera can trigger a lockdown
+    [SerializeField] private Lockdown lockdownManager; //reference to lockdown script
+
 
     private Mesh visionMesh;
     private float detectionTimer = 0f;
@@ -134,6 +136,7 @@ public class SecurityCamera : MonoBehaviour
     private void TriggerLockdown()
     {
         Debug.Log("Lockdown triggered by camera!");
+        //lockdownManager.BeginLockdown(); 
         // Here, trigger the lockdown across all cameras or related systems
         //DoorManager.lockdownTriggered = true; // Trigger lockdown globally
     }
