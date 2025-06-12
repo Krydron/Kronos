@@ -1,29 +1,25 @@
 using System.Collections;
+using System.Runtime.CompilerServices;
+using Unity.VisualScripting;
+using UnityEditor;
 using UnityEngine;
 
 public class explosives : MonoBehaviour
 
 {
-    //public float delay = 3f;
-    //float timer;
-    //bool hasExploded = false;
 
-
-    public Transform explosion;
-    public float pauseTime;
-  
+    [SerializeField] public Transform explosion;
+    [SerializeField] public float pauseTime;
+    //[SerializeField] public float delay = 3f;
+    //[SerializeField]float timer;
+    //[SerializeField]bool hasExploded = false;
     void Start()
     {
         StartCoroutine(Pause(pauseTime));
-        
-        
+
+
     }
 
-    
-    void Update()
-    {
-       
-    }
 
     public void Explode()
     {
@@ -31,11 +27,48 @@ public class explosives : MonoBehaviour
         Destroy(gameObject);
     }
 
-   IEnumerator Pause(float time)
+    IEnumerator Pause(float time)
     {
         yield return new WaitForSeconds(time);
         Explode();
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+} 
+   
+
+
+ 
+
+    
+   // void Update()
+   // {
+       
+   // }
+
+  
 
     //    timer += Time.deltaTime;
     //    if(timer <=0f)
@@ -48,4 +81,4 @@ public class explosives : MonoBehaviour
     //    Debug.Log("exploded");
     //}
     //timer = delay;
-}
+

@@ -46,14 +46,14 @@ public class Lockdown : MonoBehaviour
     public void BeginLockdown()
     {
         var doorsToLock = new List<Doors>();
-        doorsToLock.Add("Door1");
-        doorsToLock.Add("Door2");
-        doorsToLock.Add("Door3");
-        doorsToLock.Add("Door4");
+        //doorsToLock.Add("Door1");
+        //doorsToLock.Add("Door2");
+       // doorsToLock.Add("Door3");
+        //doorsToLock.Add("Door4");
         
         foreach (Doors Door in doorsToLock)
         {
-            doors.SetLock(true);
+            //doors.SetLock(true);
             StartCoroutine(Flicker());
         }
 
