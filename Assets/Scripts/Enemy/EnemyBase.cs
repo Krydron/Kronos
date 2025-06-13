@@ -240,12 +240,18 @@ public class EnemyBase : MonoBehaviour
     {
         searchPoints.Clear();
 
-        // Generate evenly spaced points in a circle around last seen player position
+        // Use a per-enemy random seed to vary results (optional but good for consistency)
+        int seed = gameObject.GetInstanceID() + (int)Time.time;
+        System.Random rng = new System.Random(seed);
+
         for (int i = 0; i < searchPointsCount; i++)
         {
-            float angle = i * (360f / searchPointsCount);
+            float angle = rng.Next(0, 360);
+            float distance = Random.Range(searchRadius * 0.5f, searchRadius);
+
             Vector3 dir = Quaternion.Euler(0, angle, 0) * Vector3.forward;
-            Vector3 point = origin + dir * searchRadius;
+            Vector3 point = origin + dir * distance;
+
             NavMeshHit hit;
             if (NavMesh.SamplePosition(point, out hit, 2f, NavMesh.AllAreas))
             {
@@ -253,7 +259,6 @@ public class EnemyBase : MonoBehaviour
             }
         }
 
-        // Set first search point destination if available
         if (searchPoints.Count > 0)
         {
             agent.SetDestination(searchPoints[0]);
@@ -262,6 +267,18 @@ public class EnemyBase : MonoBehaviour
         isSearching = false;
         lostTimer = 0f;
     }
+
+
+    public void ReceiveCameraAlert(Vector3 alertPosition)
+    {
+        if (currentState == EnemyState.Patrolling || currentState == EnemyState.Searching)
+        {
+            lastSeenPosition = alertPosition;
+            currentState = EnemyState.Searching;
+            PrepareSearch(alertPosition);
+        }
+    }
+
 
     protected virtual void Attack()
     {
