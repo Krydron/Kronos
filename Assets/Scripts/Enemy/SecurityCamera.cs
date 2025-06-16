@@ -31,6 +31,8 @@ public class SecurityCamera : MonoBehaviour
     private Color defaultVisionColor = new Color(1f, 1f, 0f, 0.2f); // Yellow (transparent)
     private Color alertVisionColor = new Color(1f, 0f, 0f, 0.2f); // Red (transparent)
 
+    public RestrictedZone restrictedZone;
+
     private void Start()
     {
         visionMesh = new Mesh();
@@ -111,6 +113,12 @@ public class SecurityCamera : MonoBehaviour
     {
         if (player == null) return false;
 
+        // Check if player is inside the restricted zone via trigger event flag
+        if (restrictedZone != null && !restrictedZone.IsPlayerInside())
+        {
+            return false; // Player not inside restricted zone, so camera ignores
+        }
+
         Vector3 directionToPlayer = (player.position - transform.position).normalized;
         float angle = Vector3.Angle(transform.forward, directionToPlayer);
 
@@ -119,9 +127,6 @@ public class SecurityCamera : MonoBehaviour
             RaycastHit hit;
             if (Physics.Raycast(transform.position, directionToPlayer, out hit, viewDistance))
             {
-                Debug.DrawRay(transform.position, directionToPlayer * viewDistance, Color.red);
-
-                // Ensure the hit object is the player & not a wall
                 if (hit.transform.CompareTag("Player"))
                 {
                     return true;
@@ -131,12 +136,27 @@ public class SecurityCamera : MonoBehaviour
         return false;
     }
 
+
     private void TriggerLockdown()
     {
-        Debug.Log("Lockdown triggered by camera!");
-        // Here, trigger the lockdown across all cameras or related systems
-        //DoorManager.lockdownTriggered = true; // Trigger lockdown globally
+        if (player == null) return;
+
+        foreach (RestrictedZone zone in RestrictedZone.AllZones)
+        {
+            if (zone.IsPlayerInside())
+            {
+                Debug.Log("Lockdown triggered! Player is in a restricted zone.");
+                LockdownManager.Instance.TriggerLockdown(player.position);
+                return; // Trigger only once
+            }
+        }
+
+        Debug.Log("Player detected, but not in a restricted zone — no lockdown.");
     }
+
+
+
+
 
     private void AlertEnemies()
     {

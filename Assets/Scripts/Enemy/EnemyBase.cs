@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 public class EnemyBase : MonoBehaviour
 {
-    public enum EnemyState { Patrolling, Chasing, Attacking, Searching }
+    public enum EnemyState { Patrolling, Chasing, Attacking, Searching, Lockdown }
     public EnemyState currentState;
 
     public Transform head;
@@ -93,8 +93,12 @@ public class EnemyBase : MonoBehaviour
             case EnemyState.Searching:
                 Search();
                 break;
+            case EnemyState.Lockdown:
+                Lockdown();
+                break;
         }
     }
+
 
     private void Patrol()
     {
@@ -318,6 +322,51 @@ public class EnemyBase : MonoBehaviour
         agent.SetDestination(alertPosition);
         Debug.Log(gameObject.name + " is responding to the alert!");
     }
+
+    public void EnterLockdown(Vector3 lockdownPos)
+    {
+        currentState = EnemyState.Lockdown;
+        agent.speed = chaseSpeed;
+        agent.SetDestination(lockdownPos);
+        Debug.Log(gameObject.name + " entering lockdown mode!");
+    }
+
+    private void Lockdown()
+    {
+        if (CanSeePlayer())
+        {
+            currentState = EnemyState.Chasing;
+            return;
+        }
+
+        // Choose nearest active lockdown zone
+        var lockdowns = LockdownManager.Instance.GetActiveLockdowns();
+        if (lockdowns.Count == 0)
+        {
+            currentState = EnemyState.Patrolling;
+            return;
+        }
+
+        Vector3 nearest = lockdowns[0].position;
+        float minDist = Vector3.Distance(transform.position, nearest);
+
+        foreach (var zone in lockdowns)
+        {
+            float dist = Vector3.Distance(transform.position, zone.position);
+            if (dist < minDist)
+            {
+                nearest = zone.position;
+                minDist = dist;
+            }
+        }
+
+        if (!agent.pathPending && agent.remainingDistance <= 1f)
+        {
+            agent.SetDestination(nearest);
+        }
+    }
+
+
 
     public void TakeDamage(int damage)
     {
