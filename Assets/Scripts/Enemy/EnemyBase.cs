@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 public class EnemyBase : MonoBehaviour
 {
-    public enum EnemyState { Patrolling, Chasing, Attacking, Searching }
+    public enum EnemyState { Patrolling, Chasing, Attacking, Searching, Lockdown }
     public EnemyState currentState;
 
     public Transform head;
@@ -79,6 +79,10 @@ public class EnemyBase : MonoBehaviour
 
     private void Update()
     {
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            TriggerLockdown();
+        }
         switch (currentState)
         {
             case EnemyState.Patrolling:
@@ -93,6 +97,39 @@ public class EnemyBase : MonoBehaviour
             case EnemyState.Searching:
                 Search();
                 break;
+            case EnemyState.Lockdown:
+                Lockdown();
+                break;
+        }
+    }
+
+    public bool lockdownActive = false; // Toggle lockdown mode
+
+    public void TriggerLockdown()
+    {
+        Debug.Log($"{gameObject.name} entered lockdown mode!");
+        currentState = EnemyState.Lockdown;
+    }
+    public void StartLockdown()
+    {
+        lockdownActive = true;
+        currentState = EnemyState.Lockdown;
+    }
+
+    private void Lockdown()
+    {
+        if (player == null) return;
+
+        float distance = Vector3.Distance(transform.position, player.transform.position);
+
+        if (distance > minDistance)
+        {
+            agent.speed = chaseSpeed;
+            agent.SetDestination(player.transform.position);
+        }
+        else
+        {
+            currentState = EnemyState.Attacking;
         }
     }
 
