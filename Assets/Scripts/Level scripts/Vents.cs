@@ -1,19 +1,44 @@
-using Unity.VisualScripting;
+/**************************************************************************************************************
+* <Vents> Class
+*
+* The header file for the <Vents> class.
+* 
+* This class manages the teleporting of the player for the venting system
+* 
+*
+* Created by: < Chrissie> 
+* Date: <need to add>
+* 
+* Edited by: <Owen Clifton>
+* Date: <02/06/25>
+* Changed trigger to interact function
+* Removed enabling and disabling player
+* Removed player Transform variable 
+* Changed playerg GameObject variable to player, set it to private and found player in code
+* Changing public desitnation variable to SerializedField
+* added a distance check
+***************************************************************************************************************/
+
 using UnityEngine;
 
 public class Vents : MonoBehaviour
 {
-    public Transform player, destination;
-    public GameObject playerg;
+    [SerializeField] Transform destination;
+    [SerializeField] float interactionDistance;
+    private GameObject player;
 
-
-    void OnTriggerEnter(Collider other)
+    private void Start()
     {
-     if(other.CompareTag("Player"))
+        player = GameObject.Find("Player");
+    }
+
+    public bool Interact()
+    {
+        if (Vector3.Distance(transform.position, player.transform.position) <= interactionDistance)
         {
-            playerg.SetActive(false);
-            player.position = destination.position;
-            playerg.SetActive(true);
+            player.transform.position = destination.position;
+            return true;
         }
+        return false;
     }
 }

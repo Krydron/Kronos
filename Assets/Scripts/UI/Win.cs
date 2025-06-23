@@ -11,12 +11,14 @@ public class Win : MonoBehaviour
         player = GameObject.FindGameObjectWithTag("Player");
     }
 
-    public void Interact()
+    public bool Interact()
     {
         if (Vector3.Distance(player.transform.position, transform.position) <= distance)
         {
             gameManager.GetComponent<SceneLoader>().Win();
+            return true;
         }
+        return false;
     }
 }
 
