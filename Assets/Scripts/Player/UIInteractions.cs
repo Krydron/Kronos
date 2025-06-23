@@ -16,29 +16,61 @@ using UnityEngine;
 
 public class UIInteractions : MonoBehaviour
 {
-    GameObject[] interactables;
+    private GameObject[] interactables;
+
+    private GameObject player;
+    [SerializeField, Range(0,10)] float interactDistance;
+
     GameObject map;
     bool menuOpen;
     Pause pause;
 
-    bool canInteract;
-    [SerializeField] float interactCooldown;
+    GameObject canInteractUI;
 
-    IEnumerator interactTimer()
+    //bool canInteract;
+    //[SerializeField] float interactCooldown;
+
+    /*IEnumerator interactTimer()
     {
             yield return new WaitForSeconds(interactCooldown);
             canInteract = true;
+    }*/
+
+    IEnumerator CheckDistance()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(1);
+            foreach (GameObject interactable in interactables)
+            {
+                if (Vector3.Distance(player.transform.position, interactable.transform.position) > interactDistance)
+                {
+                    //hide ui
+                    canInteractUI.SetActive(false);
+
+                    continue;
+                }
+                //show ui
+                canInteractUI.SetActive(true);
+                break;
+            }
+        }
     }
 
     private void Start()
     {
+        player = GameObject.FindGameObjectWithTag("Player");
         interactables = GameObject.FindGameObjectsWithTag("Interactable");
-        map = GameObject.Find("Map");
+        map = GameObject.Find("Tablet");
         if (map != null) { map.SetActive(false); }
         menuOpen = false;
         pause = GetComponent<Pause>();
-        canInteract = true;
-        StartCoroutine(interactTimer());
+        /*canInteract = true;
+        StartCoroutine(interactTimer());*/
+
+        canInteractUI = GameObject.Find("CanInteractUI");
+        canInteractUI.SetActive(false);
+        StartCoroutine(CheckDistance());
     }
 
     public void OnMap()
@@ -82,6 +114,8 @@ public class UIInteractions : MonoBehaviour
         Debug.Log("interact");
         foreach (GameObject interactable in interactables)
         {
+            if (Vector3.Distance(player.transform.position, interactable.transform.position) > interactDistance) { continue; }
+
             Debug.Log(interactable.name);
             if (interactable.GetComponent<InteractableMaps>() != null)
             {
@@ -97,8 +131,17 @@ public class UIInteractions : MonoBehaviour
             }
             if (interactable.GetComponent<Vents>() != null)
             {
-                if (interactable.GetComponent<Vents>().Interact()) { break;}
+                if (interactable.GetComponent<Vents>().Interact()) { break; }
             }
+            if (interactable.GetComponent<KeypadInteract>() != null)
+            {
+                if (interactable.GetComponent<KeypadInteract>().Interact()) { break; }
+            }
+            if (interactable.GetComponent<VaultDoorInteract>() != null)
+            {
+                if (interactable.GetComponent<VaultDoorInteract>().Interact()) { break; }
+            }
+            if (interactable.GetComponent<NoteInteract>().Interact()) { break; }
         }
     }
 }

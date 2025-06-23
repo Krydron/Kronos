@@ -15,9 +15,7 @@ using UnityEngine;
 
 public class InteractableMaps : MonoBehaviour
 {
-    GameObject player;
     Map map;
-    [SerializeField] private float interactDistance;
     [SerializeField] private int mapType;
 
     private void Start()
@@ -28,30 +26,25 @@ public class InteractableMaps : MonoBehaviour
 
     private void OnLevelWasLoaded(int level)
     {
-        player = GameObject.FindGameObjectWithTag("Player");
         map = GameObject.Find("Map").GetComponent<Map>();
     }
 
     public bool Interect()
     {
-        if (map == null) return false;
-        if (Vector3.Distance(transform.position, player.transform.position) <= interactDistance)
+        if (map == null) { return false; }
+        Debug.Log("Saving Map");
+        switch (mapType)
         {
-            Debug.Log("Saving Map");
-            switch (mapType)
-            {
-                case 0:
-                    map.Button1();
-                    break;
-                case 1:
-                    map.Button2();
-                    break;
-                case 2: 
-                    map.Button3(); 
-                    break;
-            }
-            return true;
+            case 0:
+                map.Button1();
+                break;
+            case 1:
+                map.Button2();
+                break;
+            case 2:
+                map.Button3();
+                break;
         }
-        return false;
+        return true;
     }
 }
