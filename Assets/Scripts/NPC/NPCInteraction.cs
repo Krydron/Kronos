@@ -1,50 +1,71 @@
-using System.Collections;
 using UnityEngine;
+using FMODUnity;
 
 public class NPCInteraction : MonoBehaviour
 {
-    public NPCInteractionData npcData;
+    public bool isMainNPC;
+
+    [Header("Required Item")]
+    public Item requiredItem;
+
+    [Header("FMOD Voice Events")]
+    public EventReference beforeItemEvent;
+    public EventReference afterItemEvent;
 
     private bool itemGiven = false;
 
     public void Interact(Inventory playerInventory)
     {
-        Debug.Log($"[NPCInteraction] Interact called on {npcData.npcName}. ItemGiven: {itemGiven}");
-
-        if (!itemGiven && npcData.requiredItem != null && playerInventory.HasItem(npcData.requiredItem))
+        if (itemGiven)
         {
-            Debug.Log($"[NPCInteraction] Player has required item '{npcData.requiredItem.name}'. Removing item and playing after item dialogue.");
-            playerInventory.RemoveItem(npcData.requiredItem);
-            itemGiven = true;
-            StartCoroutine(PlayDialogue(npcData.afterItemDialogue));
+            PlayVoice(afterItemEvent, "after");
+            return;
         }
-        else if (!itemGiven)
+
+        if (isMainNPC)
         {
-            Debug.Log("[NPCInteraction] Player does NOT have required item or no required item set. Playing before item dialogue.");
-            StartCoroutine(PlayDialogue(npcData.beforeItemDialogue));
+            if (playerInventory.HasItem(requiredItem))
+            {
+                itemGiven = true;
+                playerInventory.RemoveItem(requiredItem);
+                PlayVoice(afterItemEvent, "after");
+            }
+            else
+            {
+                PlayVoice(beforeItemEvent, "before");
+            }
         }
         else
         {
-            Debug.Log("[NPCInteraction] Item already given. Playing after item dialogue.");
-            StartCoroutine(PlayDialogue(npcData.afterItemDialogue));
+            if (itemGiven)
+            {
+                PlayVoice(afterItemEvent, "after");
+            }
+            else
+            {
+                PlayVoice(beforeItemEvent, "before");
+            }
         }
     }
 
-    private IEnumerator PlayDialogue(string[] lines)
+    private void PlayVoice(EventReference eventRef, string context)
     {
-        if (lines == null || lines.Length == 0)
+        if (eventRef.IsNull)
         {
-            Debug.LogWarning("[NPCInteraction] No dialogue lines to play.");
-            yield break;
+            if (context == "before")
+            {
+                Debug.LogWarning($"[NPCInteraction] BEFORE voice event is missing for NPC '{gameObject.name}'.");
+            }
+            else if (context == "after")
+            {
+                Debug.LogWarning($"[NPCInteraction] AFTER voice event is missing for NPC '{gameObject.name}'.");
+            }
+            return;
         }
 
-        foreach (var line in lines)
-        {
-            Debug.Log($"[NPCInteraction] Showing dialogue: {line}");
-            DialogueUI.Instance.Show(line);  // Make sure you have DialogueUI set up properly
-            yield return new WaitUntil(() => DialogueUI.Instance.FinishedLine);
-        }
-
-        Debug.Log("[NPCInteraction] Dialogue finished.");
+        RuntimeManager.PlayOneShot(eventRef, transform.position);
+        Debug.Log($"[NPCInteraction] Played {context.ToUpper()} FMOD event on '{gameObject.name}': {eventRef.Path}");
     }
+
+    public bool HasReceivedItem() => itemGiven;
 }

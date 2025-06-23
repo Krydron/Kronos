@@ -9,10 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f5419ce9491fb9945804f3378d907bb0, type: 3}
-  m_Name: NPCInteractionData
+  m_Script: {fileID: 11500000, guid: a398dc1d1ccb1ab4a84a6dfa2072a1ac, type: 3}
+  m_Name: Teddy Bear
   m_EditorClassIdentifier: 
-  npcName: 
-  requiredItem: {fileID: 0}
-  beforeItemDialogue: []
-  afterItemDialogue: []
+  itemName: Teddy Bear

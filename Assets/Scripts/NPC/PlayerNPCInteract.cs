@@ -4,7 +4,7 @@ using UnityEngine.InputSystem;
 public class PlayerNPCInteract : MonoBehaviour
 {
     [SerializeField] private float interactRange = 3f;
-    //[SerializeField] private LayerMask npcLayerMask;  // Commented out since we'll use tags here
+    
 
     private Inventory playerInventory;
     private PlayerInput playerInput;
