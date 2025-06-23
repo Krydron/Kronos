@@ -12,7 +12,7 @@ public class FlashbackQuit : MonoBehaviour
         gameManager = GameObject.Find("GameManager");
     }
 
-    public void Exit()
+    public bool Exit()
     {
         //if in range
         player = GameObject.FindGameObjectWithTag("Player");
@@ -20,8 +20,8 @@ public class FlashbackQuit : MonoBehaviour
         {
             //End flashback
             gameManager.GetComponent<SceneLoader>().EndFlashback(0);
+            return true;
         }
-
-
+        return false;
     }
 }
