@@ -3528,7 +3528,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 908641045916651545, guid: a3f46eddec26da64faabc44973d551fe, type: 3}
       propertyPath: assignedTask
-      value: 0
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 908641045916651545, guid: a3f46eddec26da64faabc44973d551fe, type: 3}
       propertyPath: conversationPartner
@@ -3550,6 +3550,10 @@ PrefabInstance:
       propertyPath: player
       value: 
       objectReference: {fileID: 1834306514}
+    - target: {fileID: 6498011935943515955, guid: a3f46eddec26da64faabc44973d551fe, type: 3}
+      propertyPath: spotlightIntensity
+      value: 100
+      objectReference: {fileID: 0}
     - target: {fileID: 6498011935943515955, guid: a3f46eddec26da64faabc44973d551fe, type: 3}
       propertyPath: patrolPoints.Array.size
       value: 2
@@ -3840,7 +3844,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 908641045916651545, guid: a3f46eddec26da64faabc44973d551fe, type: 3}
       propertyPath: assignedTask
-      value: 0
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 908641045916651545, guid: a3f46eddec26da64faabc44973d551fe, type: 3}
       propertyPath: taskDuration
@@ -3869,7 +3873,7 @@ PrefabInstance:
     - target: {fileID: 6498011935943515955, guid: a3f46eddec26da64faabc44973d551fe, type: 3}
       propertyPath: player
       value: 
-      objectReference: {fileID: 1834306514}
+      objectReference: {fileID: 1821561743}
     - target: {fileID: 6498011935943515955, guid: a3f46eddec26da64faabc44973d551fe, type: 3}
       propertyPath: detectionTime
       value: 1
@@ -3894,6 +3898,30 @@ PrefabInstance:
       propertyPath: 'patrolPoints.Array.data[3]'
       value: 
       objectReference: {fileID: 1235921224}
+    - target: {fileID: 6498011935943515955, guid: a3f46eddec26da64faabc44973d551fe, type: 3}
+      propertyPath: angleDetectionCurve.m_Curve.Array.data[0].time
+      value: 0.0041656494
+      objectReference: {fileID: 0}
+    - target: {fileID: 6498011935943515955, guid: a3f46eddec26da64faabc44973d551fe, type: 3}
+      propertyPath: angleDetectionCurve.m_Curve.Array.data[1].time
+      value: 0.9958191
+      objectReference: {fileID: 0}
+    - target: {fileID: 6498011935943515955, guid: a3f46eddec26da64faabc44973d551fe, type: 3}
+      propertyPath: angleDetectionCurve.m_Curve.Array.data[0].value
+      value: 0.9952698
+      objectReference: {fileID: 0}
+    - target: {fileID: 6498011935943515955, guid: a3f46eddec26da64faabc44973d551fe, type: 3}
+      propertyPath: angleDetectionCurve.m_Curve.Array.data[1].value
+      value: -0.0000038146973
+      objectReference: {fileID: 0}
+    - target: {fileID: 6498011935943515955, guid: a3f46eddec26da64faabc44973d551fe, type: 3}
+      propertyPath: angleDetectionCurve.m_Curve.Array.data[0].inSlope
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6498011935943515955, guid: a3f46eddec26da64faabc44973d551fe, type: 3}
+      propertyPath: angleDetectionCurve.m_Curve.Array.data[0].outSlope
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

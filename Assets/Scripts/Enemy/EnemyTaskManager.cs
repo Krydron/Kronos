@@ -10,11 +10,12 @@
 * Date: <need to add>
 *
 ***************************************************************************************************************/
-
 using UnityEngine;
 using UnityEngine.AI;
 using System.Collections;
 using System.Collections.Generic;
+using FMODUnity;
+using FMOD.Studio;
 
 public class EnemyTaskManager : MonoBehaviour
 {
@@ -33,6 +34,11 @@ public class EnemyTaskManager : MonoBehaviour
     public float conversationDistance = 2f;
     private static List<EnemyTaskManager> availableForConversation = new List<EnemyTaskManager>();
     private EnemyTaskManager conversationPartner;
+
+    [Header("Conversation Audio")]
+    [Tooltip("FMOD event for this enemy's conversation audio.")]
+    public EventReference conversationAudioEvent;
+    private EventInstance conversationInstance;
 
     private void Start()
     {
@@ -128,6 +134,10 @@ public class EnemyTaskManager : MonoBehaviour
         conversationPartner.agent.isStopped = true;
         Debug.Log($"{gameObject.name} and {conversationPartner.gameObject.name} are talking...");
 
+        // **Play conversation audio for each participant**
+        PlayConversationAudio();
+        conversationPartner.PlayConversationAudio();
+
         yield return new WaitForSeconds(taskDuration);
 
         agent.isStopped = false;
@@ -135,6 +145,15 @@ public class EnemyTaskManager : MonoBehaviour
 
         EndTask();
         conversationPartner.EndTask();
+    }
+
+    private void PlayConversationAudio()
+    {
+        if (conversationAudioEvent.IsNull) return;
+
+        conversationInstance = RuntimeManager.CreateInstance(conversationAudioEvent);
+        RuntimeManager.AttachInstanceToGameObject(conversationInstance, gameObject); // Updated for modern FMOD
+        conversationInstance.start();
     }
 
     private void FindConversationPartner()
