@@ -47,6 +47,17 @@ public class EnemyBase : MonoBehaviour
     private bool isSearching;
     private Vector3 lastSeenPosition;
 
+    [Header("Spotlight Settings")]
+    public Light fovSpotlight;                       // Reference to the spotlight
+    public Color spotlightColor = Color.red;         // Color of the FOV light
+    public float spotlightIntensity = 40f;           // Brightness
+    public float spotlightOffsetForward = 0.5f;      // How far forward from the head
+    public float spotlightOffsetUp = 0f;             // Vertical offset
+    [Range(0.1f, 1f)]
+    public float spotlightInnerAngleFactor = 0.6f;   // % of outer angle
+
+
+
     private NavMeshAgent agent;
     private float chaseSpeed;
 
@@ -75,14 +86,20 @@ public class EnemyBase : MonoBehaviour
         detectionTimer = 0f;
         lostTimer = 0f;
         waypointIndex = 0;
+
+        if (fovSpotlight != null)
+        {
+            fovSpotlight.type = LightType.Spot;
+            fovSpotlight.color = spotlightColor;
+            fovSpotlight.intensity = spotlightIntensity;
+        }
+
+
     }
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.L))
-        {
-            TriggerLockdown();
-        }
+        
         switch (currentState)
         {
             case EnemyState.Patrolling:
@@ -101,18 +118,17 @@ public class EnemyBase : MonoBehaviour
                 Lockdown();
                 break;
         }
+
+        UpdateSpotlight();
+
     }
 
     public bool lockdownActive = false; // Toggle lockdown mode
 
-    public void TriggerLockdown()
-    {
-        Debug.Log($"{gameObject.name} entered lockdown mode!");
-        currentState = EnemyState.Lockdown;
-    }
     public void StartLockdown()
     {
         lockdownActive = true;
+        Debug.Log($"{gameObject.name} entered lockdown mode!");
         currentState = EnemyState.Lockdown;
     }
 
@@ -376,6 +392,28 @@ public class EnemyBase : MonoBehaviour
         }
         Destroy(gameObject);
     }
+
+    private void UpdateSpotlight()
+    {
+        if (fovSpotlight == null || head == null) return;
+
+        // Match the position and direction of the head
+        Vector3 offset = head.forward * spotlightOffsetForward + Vector3.up * spotlightOffsetUp;
+        fovSpotlight.transform.position = head.position + offset;
+        fovSpotlight.transform.rotation = Quaternion.LookRotation(head.forward);
+
+        // Match FOV and sight range dynamically
+        fovSpotlight.spotAngle = fieldOfView;
+        fovSpotlight.innerSpotAngle = fieldOfView * spotlightInnerAngleFactor;
+        fovSpotlight.range = sightRange;
+
+        // Ensure color and intensity stay consistent
+        fovSpotlight.color = spotlightColor;
+        fovSpotlight.intensity = spotlightIntensity;
+    }
+
+
+
 
     private void OnDrawGizmos()
     {

@@ -10,6 +10,7 @@ TagManager:
   - PauseMenu
   - AudioSource
   - Eyes
+  - NPC
   layers:
   - Default
   - TransparentFX
@@ -20,7 +21,7 @@ TagManager:
   - Door
   - Interactable
   - AudioSource
-  - 
+  - NPC
   - 
   - 
   - 
