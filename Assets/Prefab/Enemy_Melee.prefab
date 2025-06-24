@@ -230,17 +230,17 @@ MonoBehaviour:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 2
-      outSlope: 2
+      time: -0.0000076293945
+      value: 1
+      inSlope: 0
+      outSlope: 0
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
       outWeight: 0
     - serializedVersion: 3
       time: 1
-      value: 1
+      value: 0
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -259,11 +259,9 @@ MonoBehaviour:
   fovSpotlight: {fileID: 8726443986610014967}
   spotlightColor: {r: 1, g: 0, b: 0, a: 1}
   spotlightIntensity: 40
-  spotlightRange: 15
-  spotlightSpotAngle: 90
-  spotlightInnerAngleFactor: 0.6
   spotlightOffsetForward: 0.5
   spotlightOffsetUp: 0
+  spotlightInnerAngleFactor: 0.6
   lockdownActive: 0
   damage: 20
   attackCooldown: 1.5
@@ -285,6 +283,13 @@ MonoBehaviour:
   coffeeBreakLocation: {fileID: 0}
   taskDuration: 5
   conversationDistance: 2
+  conversationAudioEvent:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
 --- !u!195 &4367287299429225708
 NavMeshAgent:
   m_ObjectHideFlags: 0
