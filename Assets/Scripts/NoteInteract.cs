@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class NoteInteract : MonoBehaviour
+public class NoteInteract : Interactable
 {
     [SerializeField] GameObject note;
     Pause pause;
