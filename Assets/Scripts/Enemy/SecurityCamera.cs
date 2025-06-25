@@ -140,17 +140,23 @@ public class SecurityCamera : MonoBehaviour
 
     private void AlertEnemies()
     {
-        Debug.Log("Security Camera ALERT! Enemies are now chasing!");
+        if (player == null) return;
+
+        Vector3 lastKnownPosition = player.position;
         GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
+
         foreach (GameObject enemy in enemies)
         {
             EnemyBase enemyScript = enemy.GetComponent<EnemyBase>();
             if (enemyScript != null)
             {
-                enemyScript.currentState = EnemyBase.EnemyState.Chasing;
+                enemyScript.ReceiveCameraAlert(lastKnownPosition);
             }
         }
+
+        Debug.Log("Security Camera ALERT! Enemies are now searching the area!");
     }
+
 
     private void GenerateVisionCone()
     {

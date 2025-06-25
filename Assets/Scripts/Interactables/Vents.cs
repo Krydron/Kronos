@@ -17,11 +17,16 @@
 * Changed playerg GameObject variable to player, set it to private and found player in code
 * Changing public desitnation variable to SerializedField
 * added a distance check
+* 
+* Edited by: Owen Clifton
+* Date: 25/06/25
+* Changed inheritance
+* changed Interact() to override
 ***************************************************************************************************************/
 
 using UnityEngine;
 
-public class Vents : MonoBehaviour
+public class Vents : Interactable
 {
     [SerializeField] Transform destination;
     [SerializeField] float interactionDistance;
@@ -32,7 +37,7 @@ public class Vents : MonoBehaviour
         player = GameObject.Find("Player");
     }
 
-    public bool Interact()
+    public override bool Interact()
     {
         if (Vector3.Distance(transform.position, player.transform.position) <= interactionDistance)
         {

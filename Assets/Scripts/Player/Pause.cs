@@ -55,13 +55,14 @@ public class Pause : MonoBehaviour
 
     public void PauseToggle()
     {
-        
         audioSources = GameObject.FindGameObjectsWithTag("AudioSource");
         paused = !paused;
         Debug.Log("Paused: " + paused);
         ToggleCursor();
         foreach (GameObject source in audioSources)
         {
+            Debug.Log("Audio Found: "+source.name);
+            if (source == null) { return; }
             source.GetComponent<StudioEventEmitter>().EventInstance.setPaused(paused);
         }
         if (paused) { Time.timeScale = 0f; return; }

@@ -23,6 +23,7 @@ public class Shooting : MonoBehaviour
     [SerializeField] float shootDelay;
     float shootTime;
     AmmoDisplay ammoDisplay;
+    PlayerTakedown playerTakedown;
 
     private void Start()
     {
@@ -31,6 +32,7 @@ public class Shooting : MonoBehaviour
         ammoDisplay = GameObject.Find("AmmoDisplay").GetComponent<AmmoDisplay>();
         //weapon = inventory.GetWeapon();
         //ammoDisplay.UpdatDisplay(weapon.Ammo(), weapon.Rounds());
+        playerTakedown = GetComponent<PlayerTakedown>(); // get reference
     }
 
     public void OnAttack()
@@ -40,6 +42,19 @@ public class Shooting : MonoBehaviour
         //get gun details from inventroy;
         weapon = inventory.GetWeapon();
         if (weapon == null ) { Debug.Log("weapon null"); return; }
+
+        // Try takedown first if melee weapon
+        if (weapon.name == "Melee" && playerTakedown != null)
+        {
+            Debug.Log("Attempting takedown");
+            bool takedownDone = playerTakedown.TryTakedown();
+            Debug.Log("Takedown result: " + takedownDone);
+            if (takedownDone)
+            {
+                Debug.Log("Takedown performed, skipping normal attack");
+                return;
+            }
+        }
 
         if (weapon.name == "Melee")
         {
