@@ -13,7 +13,7 @@
 
 using UnityEngine;
 
-public class VaultDoorInteract : MonoBehaviour
+public class VaultDoorInteract : Interactable
 {
     [SerializeField] GameObject UI;
 
@@ -24,7 +24,7 @@ public class VaultDoorInteract : MonoBehaviour
         //UI = GameObject.FindGameObjectWithTag
     }
 
-    public bool Interact()
+    public override bool Interact()
     {
         if (UI == null) { Debug.Log("UI is null"); }
         UI.SetActive(true);

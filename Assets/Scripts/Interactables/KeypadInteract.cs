@@ -13,7 +13,7 @@
 
 using UnityEngine;
 
-public class KeypadInteract : MonoBehaviour
+public class KeypadInteract : Interactable
 {
     [SerializeField] string password;
     [SerializeField] GameObject door;
@@ -26,7 +26,7 @@ public class KeypadInteract : MonoBehaviour
         
     }
 
-    public bool Interact()
+    public override bool Interact()
     {
         Debug.Log("Test");
         keypadUI.SetActive(true);

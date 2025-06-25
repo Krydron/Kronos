@@ -13,7 +13,7 @@
 
 using UnityEngine;
 
-public class InteractableMaps : MonoBehaviour
+public class InteractableMaps : Interactable
 {
     Map map;
     [SerializeField] private int mapType;
@@ -29,7 +29,7 @@ public class InteractableMaps : MonoBehaviour
         map = GameObject.Find("Map").GetComponent<Map>();
     }
 
-    public bool Interect()
+    public override bool Interact()
     {
         if (map == null) { return false; }
         Debug.Log("Saving Map");

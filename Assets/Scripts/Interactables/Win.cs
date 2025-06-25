@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Win : MonoBehaviour
+public class Win : Interactable
 {
     GameObject gameManager, player;
     [SerializeField] float distance;
@@ -11,7 +11,7 @@ public class Win : MonoBehaviour
         player = GameObject.FindGameObjectWithTag("Player");
     }
 
-    public bool Interact()
+    public override bool Interact()
     {
         if (Vector3.Distance(player.transform.position, transform.position) <= distance)
         {
