@@ -3,12 +3,16 @@ using System.Collections.Generic;
 
 public class NoteSave : MonoBehaviour
 {
-    private List<bool> list;
+    private List<bool> list = new List<bool>();
+    GameObject tablet;
+    NoteList notes;
     int numNotes;
 
     private void Start()
     {
-        numNotes = Resources.FindObjectsOfTypeAll<NoteList>()[0].NotesCount();
+        tablet = Resources.Load<GameObject>("Tablet").transform.Find("TabletNotes").gameObject;
+        notes = tablet.GetComponent<NoteList>();
+        numNotes = notes.NotesCount();
         GenerateList();
     }
 
@@ -20,7 +24,8 @@ public class NoteSave : MonoBehaviour
 
     private void GenerateList()
     {
-        list = new List<bool>();
+        Debug.Log("I'm alive!!!");
+        //list = new List<bool>();
         //GameObject tabletNotes = GameObject.Find("TabletNotes");
         //int numNotes = tabletNotes.GetComponent<NoteList>().NotesCount();
         for (int i = 0; i < numNotes; i++)
@@ -31,13 +36,13 @@ public class NoteSave : MonoBehaviour
 
     public List<bool> LoadList()
     {
-        if (list == null) { GenerateList(); }
-        return list;
+       // if (list == null) { GenerateList(); }
+       return list;
     }
 
     public void Activate(int value)
     {
-        if (list == null) { return; }
+        //if (list == null) { return; }
         list[value] = true;
     }
 }
