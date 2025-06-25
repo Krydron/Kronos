@@ -16,7 +16,7 @@ public class EnemySpriteManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        GetComponent<SpriteRenderer>().flipX = false;
+        //GetComponent<SpriteRenderer>().flipX = false;
         float rotation = transform.eulerAngles.y - transform.parent.eulerAngles.y;
         rotation -= 135;
         if (rotation < 0 )
@@ -42,8 +42,8 @@ public class EnemySpriteManager : MonoBehaviour
         else if (rotation > 270 && rotation < 360)
         {
             Debug.Log("face right");
-            animator.SetInteger("Direction", 1);
-            GetComponent<SpriteRenderer>().flipX = true;
+            animator.SetInteger("Direction", 3);
+            //GetComponent<SpriteRenderer>().flipX = true;
         }
     }
 }
