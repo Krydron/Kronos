@@ -22,10 +22,10 @@ public class NoteList : MonoBehaviour
 
     public void LoadList(List<bool> list)
     {
-        if (list == null) { Debug.Log("List is null"); }
-        for (int i = 0; i < list.Count -1; i++)
+        //if (list == null) { Debug.Log("List is null"); }
+        for (int i = 0; i < list.Count; i++)
         {
-            //Debug.Log(i + " is " + list[i].ToString());
+            Debug.Log(i + " is " + list[i].ToString());
             noteButtons[i].SetActive(list[i]);
         }
     }

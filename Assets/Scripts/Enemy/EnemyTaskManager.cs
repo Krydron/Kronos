@@ -1,12 +1,11 @@
 /**************************************************************************************************************
-* <Name> Class
+* EnemyTaskManager Class
 *
-* The header file for the <Name> class.
+* The header file for the EnemyTaskManager class.
 * 
-* This class 
-* 
+* This class manages enemy tasks like CoffeeBreak and Conversation, starting tasks at specified times.
 *
-* Created by: <Kry> 
+* Created by: Kry
 * Date: <need to add>
 *
 ***************************************************************************************************************/
@@ -25,6 +24,7 @@ public class EnemyTaskManager : MonoBehaviour
     private EnemyBase enemyBase;
     private NavMeshAgent agent;
     private bool isPerformingTask = false;
+    private bool taskStarted = false;
 
     [Header("Coffee Break Task")]
     public Transform coffeeBreakLocation;
@@ -40,6 +40,10 @@ public class EnemyTaskManager : MonoBehaviour
     public EventReference conversationAudioEvent;
     private EventInstance conversationInstance;
 
+    [Header("Task Start Time")]
+    [Tooltip("Time in seconds after which this task should start")]
+    public float taskStartTime = 0f;
+
     private void Start()
     {
         enemyBase = GetComponent<EnemyBase>();
@@ -47,15 +51,51 @@ public class EnemyTaskManager : MonoBehaviour
 
         if (assignedTask != TaskType.None)
         {
-            Invoke(nameof(StartTask), 2f); // Start after delay
+            // Start coroutine to wait until the global elapsed time reaches taskStartTime
+            StartCoroutine(WaitForTaskStartTime());
         }
     }
 
+    private IEnumerator WaitForTaskStartTime()
+    {
+        while (TimeTracker.Instance == null || TimeTracker.Instance.elapsedTime < taskStartTime)
+        {
+            yield return null;
+        }
+
+        if (assignedTask == TaskType.Conversation)
+        {
+            // Add self to available list and try to find partner
+            availableForConversation.Add(this);
+
+            // Wait until a partner is found
+            while (conversationPartner == null)
+            {
+                FindConversationPartner();
+                yield return null;
+            }
+
+            // At this point, conversationPartner is set
+            // Only the enemy that found the partner (caller) starts the PerformConversation coroutine
+            if (conversationPartner != null && !isPerformingTask)
+            {
+                StartTask();
+            }
+        }
+        else
+        {
+            // For other tasks, just start normally
+            StartTask();
+        }
+    }
+
+
     public void StartTask()
     {
-        if (isPerformingTask || assignedTask == TaskType.None) return;
+        if (isPerformingTask || assignedTask == TaskType.None || taskStarted) return;
 
-        Debug.Log($"{gameObject.name} is starting task: {assignedTask}");
+        taskStarted = true;
+        Debug.Log($"{gameObject.name} is starting task: {assignedTask} at time {TimeTracker.Instance.elapsedTime}");
         isPerformingTask = true;
         enemyBase.currentState = EnemyBase.EnemyState.Patrolling; // Keep in patrol state for now
 
@@ -164,12 +204,15 @@ public class EnemyTaskManager : MonoBehaviour
             {
                 conversationPartner = enemy;
                 enemy.conversationPartner = this;
+
+                // Remove both from available list to prevent other pairings
                 availableForConversation.Remove(enemy);
                 availableForConversation.Remove(this);
                 break;
             }
         }
     }
+
 
     private void EndTask()
     {
