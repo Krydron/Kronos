@@ -28,6 +28,7 @@ public class Inventory : MonoBehaviour
     [SerializeField] public List<Key> keys;
     [SerializeField] public Weapon[] weapons;
     [SerializeField] public Weapon[] items;
+    [SerializeField] private List<Item> collectedItems = new List<Item>();
     public uint weaponPointer;
     private CashDisplay cashDisplay;
 
@@ -124,7 +125,28 @@ public class Inventory : MonoBehaviour
         //UpdateAmmoDisplay();
     }
 
-    
+    public void AddItemToInventory(Item item)
+    {
+        if (!collectedItems.Contains(item))
+        {
+            collectedItems.Add(item);
+            Debug.Log($"Item '{item.itemName}' added to inventory.");
+        }
+    }
+
+    public bool HasItem(Item item)
+    {
+        return collectedItems.Contains(item);
+    }
+
+    public void RemoveItem(Item item)
+    {
+        if (collectedItems.Contains(item))
+        {
+            collectedItems.Remove(item);
+            Debug.Log($"Item '{item.itemName}' removed from inventory.");
+        }
+    }
 
     // Update is called once per frame
     void Update()

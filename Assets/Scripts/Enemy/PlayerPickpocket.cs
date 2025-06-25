@@ -1,21 +1,42 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerPickpocket : MonoBehaviour
 {
     private Inventory inventory;
     private float pickpocketRange = 2f; // The range within which pickpocketing is allowed
 
+    private PlayerInput playerInput;
+    private InputAction interactAction;
+
     void Start()
     {
         inventory = GetComponent<Inventory>();
+        playerInput = GetComponent<PlayerInput>();
+
+        if (playerInput != null)
+        {
+            interactAction = playerInput.actions["Interact"];
+            if (interactAction != null)
+            {
+                interactAction.performed += ctx => TryPickpocket();
+            }
+            else
+            {
+                Debug.LogError("Interact action not found in PlayerInput actions.");
+            }
+        }
+        else
+        {
+            Debug.LogError("PlayerInput component not found.");
+        }
     }
 
-    void Update()
+    void OnDestroy()
     {
-        // Detect if the player presses the pickpocket button (e.g., 'E' or right-click)
-        if (Input.GetKeyDown(KeyCode.E))
+        if (interactAction != null)
         {
-            TryPickpocket();
+            interactAction.performed -= ctx => TryPickpocket();
         }
     }
 
@@ -58,6 +79,4 @@ public class PlayerPickpocket : MonoBehaviour
             }
         }
     }
-
-
 }
