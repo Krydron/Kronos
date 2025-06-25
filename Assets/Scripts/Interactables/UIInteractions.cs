@@ -115,11 +115,10 @@ public class UIInteractions : MonoBehaviour
         foreach (GameObject interactable in interactables)
         {
             if (Vector3.Distance(player.transform.position, interactable.transform.position) > interactDistance) { continue; }
-            //interactable.GetComponent<Interactable>().Interact();
-
-
+            if (interactable.GetComponent<Interactable>().Interact()) { break; }
             Debug.Log(interactable.name);
-            if (interactable.GetComponent<InteractableMaps>() != null)
+
+            /*if (interactable.GetComponent<InteractableMaps>() != null)
             {
                 if (interactable.GetComponent<InteractableMaps>().Interect()) { break; }
             }
@@ -145,8 +144,8 @@ public class UIInteractions : MonoBehaviour
             }
             if (interactable.GetComponent<NoteInteract>() != null)
             {
-                if (interactable.GetComponent<NoteInteract>().Interact()) { break; }
-            }
+               if (interactable.GetComponent<NoteInteract>().Interact()) { break; }
+            }*/
         }
     }
 }

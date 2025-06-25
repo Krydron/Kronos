@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class FlashbackQuit : MonoBehaviour
+public class FlashbackQuit : Interactable
 {
     GameObject player;
     GameObject gameManager;
@@ -12,7 +12,7 @@ public class FlashbackQuit : MonoBehaviour
         gameManager = GameObject.Find("GameManager");
     }
 
-    public bool Exit()
+    public override bool Interact()
     {
         //if in range
         player = GameObject.FindGameObjectWithTag("Player");
