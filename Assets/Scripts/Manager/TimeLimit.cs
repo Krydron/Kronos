@@ -33,6 +33,7 @@ public class TimeLimit : MonoBehaviour
 
     private void OnLevelWasLoaded(int level)
     {
+        if (level != 1) { return; }
         Debug.Log("Counter level: " + level);
         counter = 0;
         StartCoroutine(Counter());

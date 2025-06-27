@@ -71,8 +71,12 @@ public class SceneLoader : MonoBehaviour
 
     public void EndFlashback(int i)
     {
-        FlashbackSwitches[i].tracker = false;
-        FlashbackSwitches[i].played = true;
+        try
+        {
+            FlashbackSwitches[i].tracker = false;
+            FlashbackSwitches[i].played = true;
+        }
+        catch { Debug.Log("Trigger null"); }
         ReloadScene();
     }
 
