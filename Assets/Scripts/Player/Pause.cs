@@ -1,6 +1,20 @@
+/**************************************************************************************************************
+* <Name> Class
+*
+* The header file for the <Name> class.
+* 
+* This class 
+* 
+*
+* Created by: <Owen Clifton> 
+* Date: <need to add>
+*
+***************************************************************************************************************/
+
 using FMOD.Studio;
 using FMODUnity;
 using UnityEngine;
+using System.Collections.Generic;
 
 public class Pause : MonoBehaviour
 {
@@ -9,7 +23,10 @@ public class Pause : MonoBehaviour
     GameObject blur;
     GameObject[] audioSources;
     UIInteractions uIInteractions;
-    FMODUnity.RuntimeManager runtimeManager; 
+    FMODUnity.RuntimeManager runtimeManager;
+
+    //Menus needed to close
+    [SerializeField] List<GameObject> menues;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -21,6 +38,7 @@ public class Pause : MonoBehaviour
         blur.SetActive(false);
         uIInteractions = GetComponent<UIInteractions>();
         //runtimeManager = 
+        
     }
 
     public void ToggleCursor()
@@ -37,13 +55,14 @@ public class Pause : MonoBehaviour
 
     public void PauseToggle()
     {
-        
         audioSources = GameObject.FindGameObjectsWithTag("AudioSource");
         paused = !paused;
         Debug.Log("Paused: " + paused);
         ToggleCursor();
         foreach (GameObject source in audioSources)
         {
+            Debug.Log("Audio Found: "+source.name);
+            if (source == null) { return; }
             source.GetComponent<StudioEventEmitter>().EventInstance.setPaused(paused);
         }
         if (paused) { Time.timeScale = 0f; return; }
@@ -62,9 +81,15 @@ public class Pause : MonoBehaviour
 
     public void OnPause()
     {
+        //hide menus
+        foreach (GameObject m in menues)
+        {
+            m.SetActive(false);
+        }
+
         //Display menu
-        menu.SetActive(!paused);
-        blur.SetActive(!paused);
+        //menu.SetActive(!paused);
+        //blur.SetActive(!paused);
         //Pause
         if (uIInteractions.MenuOpen())
         {
