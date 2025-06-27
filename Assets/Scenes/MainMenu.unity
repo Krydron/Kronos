@@ -460,6 +460,7 @@ MonoBehaviour:
     have: 0
   weapons: []
   items: []
+  collectedItems: []
   weaponPointer: 0
 --- !u!114 &1026528492
 MonoBehaviour:
@@ -1074,6 +1075,10 @@ PrefabInstance:
     - target: {fileID: 3349674183337602106, guid: 2c27c8537c8aa6745ae6f1a3acf777f5, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7406683613313818336, guid: 2c27c8537c8aa6745ae6f1a3acf777f5, type: 3}
+      propertyPath: minutes
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 7950492628626057732, guid: 2c27c8537c8aa6745ae6f1a3acf777f5, type: 3}
       propertyPath: numNotes

@@ -64,7 +64,7 @@ public class NPCInteraction : MonoBehaviour
         }
 
         RuntimeManager.PlayOneShot(eventRef, transform.position);
-        Debug.Log($"[NPCInteraction] Played {context.ToUpper()} FMOD event on '{gameObject.name}': {eventRef.Path}");
+        //Debug.Log($"[NPCInteraction] Played {context.ToUpper()} FMOD event on '{gameObject.name}': {eventRef.Path}");
     }
 
     public bool HasReceivedItem() => itemGiven;

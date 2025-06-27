@@ -90,8 +90,8 @@ public class SceneLoader : MonoBehaviour
 
     public void Play()
     {
-        //SceneManager.LoadScene(1);
-        ReloadScene();
+        SceneManager.LoadScene(2);
+        //ReloadScene();
     }
 
     public void ReturnToMainMenu()
