@@ -3,22 +3,18 @@ using UnityEngine;
 public class Win : Interactable
 {
     GameObject gameManager, player;
-    [SerializeField] float distance;
+    //[SerializeField] float distance;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private void OnEnable()
     {
         gameManager = GameObject.Find("GameManager");
-        player = GameObject.FindGameObjectWithTag("Player");
+        //player = GameObject.FindGameObjectWithTag("Player");
     }
 
     public override bool Interact()
     {
-        if (Vector3.Distance(player.transform.position, transform.position) <= distance)
-        {
-            gameManager.GetComponent<SceneLoader>().Win();
-            return true;
-        }
-        return false;
+        gameManager.GetComponent<SceneLoader>().Win();
+        return true;
     }
 }
 
