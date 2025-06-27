@@ -13,6 +13,7 @@
 
 using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class DoorManager : MonoBehaviour
 {
@@ -62,14 +63,16 @@ public class DoorManager : MonoBehaviour
 
     private void Start()
     {
+        SceneManager.sceneLoaded += OnSceneLoaded;
         //player = GameObject.FindGameObjectWithTag("Player");
         //doors = GameObject.FindGameObjectsWithTag("Door");
         //inventory = player.GetComponent<Inventory>();
         //StartCoroutine(CheckDoors());
     }
 
-    private void OnLevelWasLoaded(int level)
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
+        if (scene.name != "Ship") { return; }
         player = GameObject.FindGameObjectWithTag("Player");
         if (player == null) { return; }
         doors = GameObject.FindGameObjectsWithTag("Door");

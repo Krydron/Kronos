@@ -71,8 +71,12 @@ public class SceneLoader : MonoBehaviour
 
     public void EndFlashback(int i)
     {
-        FlashbackSwitches[i].tracker = false;
-        FlashbackSwitches[i].played = true;
+        try
+        {
+            FlashbackSwitches[i].tracker = false;
+            FlashbackSwitches[i].played = true;
+        }
+        catch { Debug.Log("Trigger null"); }
         ReloadScene();
     }
 
@@ -90,8 +94,8 @@ public class SceneLoader : MonoBehaviour
 
     public void Play()
     {
-        //SceneManager.LoadScene(1);
-        ReloadScene();
+        SceneManager.LoadScene(2);
+        //ReloadScene();
     }
 
     public void ReturnToMainMenu()
