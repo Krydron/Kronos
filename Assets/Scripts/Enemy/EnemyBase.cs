@@ -10,6 +10,9 @@ public class EnemyBase : MonoBehaviour
 
     public Transform head;
 
+    public static List<EnemyBase> AllGuards = new List<EnemyBase>();
+
+
     [Header("Patrolling")]
     public Transform[] patrolPoints;                   // Array of patrol waypoints
     private int waypointIndex;                         // Current index in the waypoint array
@@ -29,6 +32,10 @@ public class EnemyBase : MonoBehaviour
     private float detectionTimer;                      // Timer for accumulating detection
     private float lostTimer;                           // Timer after losing sight
     private bool playerInSight;                        // Whether the player is currently visible
+
+    [SerializeField] private float alertRadius = 10f;  // Adjustable in inspector
+    public bool isAlerted = false;                     // Track if this guard is alerted
+
 
     [Header("Health")]
     public int maxHealth = 100;
@@ -160,6 +167,14 @@ public class EnemyBase : MonoBehaviour
         // Check for player visibility
         if (CanSeePlayer())
         {
+            if (!isAlerted)
+            {
+                isAlerted = true;
+                AlertNearbyGuards();
+                StartChasingPlayer();
+                return;
+            }
+
             float angle = Vector3.Angle(head.forward, (player.transform.position - head.position).normalized);
             float curveMultiplier = angleDetectionCurve.Evaluate(angle / (fieldOfView / 2));
             detectionTimer += Time.deltaTime * curveMultiplier;
@@ -268,12 +283,21 @@ public class EnemyBase : MonoBehaviour
         // Check for player during searching — switch to chasing if player spotted
         if (CanSeePlayer())
         {
+            if (!isAlerted)
+            {
+                isAlerted = true;
+                AlertNearbyGuards();
+                StartChasingPlayer();
+                return;
+            }
+
             currentState = EnemyState.Chasing;
             searchPoints.Clear();
             lostTimer = 0f;
-            isWaitingAtSearchPoint = false;  // Stop waiting if chasing now
+            isWaitingAtSearchPoint = false;
             isSearching = false;
         }
+
     }
 
     // Updated coroutine for waiting at search points
@@ -424,6 +448,51 @@ public class EnemyBase : MonoBehaviour
         fovSpotlight.intensity = spotlightIntensity;
     }
 
+    private void OnEnable()
+    {
+        if (!AllGuards.Contains(this))
+            AllGuards.Add(this);
+    }
+
+    private void OnDisable()
+    {
+        if (AllGuards.Contains(this))
+            AllGuards.Remove(this);
+    }
+
+    public void AlertNearbyGuards()
+    {
+        foreach (var guard in AllGuards)
+        {
+            if (guard == this) continue;
+
+            float distance = Vector3.Distance(transform.position, guard.transform.position);
+            if (distance <= alertRadius)
+            {
+                guard.BecomeAlerted();
+            }
+        }
+    }
+
+    public void BecomeAlerted()
+    {
+        if (isAlerted) return;
+
+        isAlerted = true;
+        Debug.Log(name + " is now alerted!");
+
+        // Trigger your alert / chase behavior here
+        StartChasingPlayer();
+    }
+
+    private void StartChasingPlayer()
+    {
+        if (player == null) return;
+
+        lastSeenPosition = player.transform.position;
+        currentState = EnemyState.Chasing;
+        agent.SetDestination(lastSeenPosition);
+    }
 
 
 
