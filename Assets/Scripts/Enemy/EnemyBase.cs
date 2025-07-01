@@ -38,6 +38,10 @@ public class EnemyBase : MonoBehaviour
     public GameObject keycardPrefab;
     public bool hasKeycard = false;
 
+    [Header("Item Drop")]
+    public GameObject itemPrefab;
+    public bool hasItem = false;
+
     [Header("Search Behavior")]
     public float searchWaitTime = 3f;                  // Wait time at each search point
     public float searchRadius = 6f;                    // Radius of search circle
@@ -386,12 +390,20 @@ public class EnemyBase : MonoBehaviour
     private void Die()
     {
         Debug.Log("Enemy died!");
+
         if (hasKeycard && keycardPrefab != null)
         {
             Instantiate(keycardPrefab, transform.position, Quaternion.identity);
         }
+
+        if (hasItem && itemPrefab != null)
+        {
+            Instantiate(itemPrefab, transform.position, Quaternion.identity);
+        }
+
         Destroy(gameObject);
     }
+
 
     private void UpdateSpotlight()
     {
