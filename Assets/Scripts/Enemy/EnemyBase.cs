@@ -452,11 +452,15 @@ public class EnemyBase : MonoBehaviour
         currentHealth -= damage;
         Debug.Log("Enemy health: " + currentHealth);
 
+        // Make enemy alerted immediately on damage
+        BecomeAlerted();
+
         if (currentHealth <= 0)
         {
             Die();
         }
     }
+
 
     private void Die()
     {
