@@ -28,6 +28,8 @@ public class PlayerMovement : MonoBehaviour
     private bool sneaking;
     [SerializeField] float sneakSpeed;
 
+    Vector3 moveDirection;
+
 
     //Added by Kry
     [Header("Detection Modifiers")]
@@ -40,6 +42,11 @@ public class PlayerMovement : MonoBehaviour
     public float DetectionTimeModifier { get; private set; }
 
     GameObject camera;
+
+    //For slope code
+    RaycastHit hit;
+    float angle;
+    [SerializeField] float maxAngle;
 
     void Start()
     {
@@ -75,6 +82,16 @@ public class PlayerMovement : MonoBehaviour
     {
         // Toggle sneaking
         sneaking = !sneaking;
+        if (sneaking) 
+        {
+            transform.localScale = new Vector3(1, 0.5f, 1);
+            rigidbody.AddForce(Vector3.down*80);
+        }
+        else
+        {
+            transform.localScale = new Vector3(1, 1, 1);
+        }
+
         Debug.Log("Sneaking: " + sneaking);
 
         if (sneaking)
@@ -96,24 +113,55 @@ public class PlayerMovement : MonoBehaviour
 
     private void MovePlayer()
     {
-        if (!sneaking)
+        /*if (!sneaking)
         {
             rigidbody.linearVelocity = transform.TransformDirection(new Vector3(move.x * playerSpeed * Time.deltaTime, rigidbody.linearVelocity.y, move.y * playerSpeed * Time.deltaTime));
         }
         else
         {
             rigidbody.linearVelocity = transform.TransformDirection(new Vector3(move.x * sneakSpeed * Time.deltaTime, rigidbody.linearVelocity.y, move.y * sneakSpeed * Time.deltaTime));
-        }
+        }*/
+
+        moveDirection.y = rigidbody.linearVelocity.y;
+        rigidbody.linearVelocity = moveDirection;
+        //rigidbody.linearVelocity
+        //rigidbody.AddForce(moveDirection*playerSpeed, ForceMode.Force);
 
         rigidbody.rotation = Quaternion.Euler(0, rotationY, 0);
         camera.transform.position = new Vector3(transform.position.x, transform.position.y+1, transform.position.z);
         camera.transform.rotation = Quaternion.Euler(rotationX, rotationY, 0);
     }
 
+    private bool OnSlope()
+    {
+        if (Physics.Raycast(transform.position, Vector3.down, out hit, transform.localScale.y/2+0.8f))
+        {
+            angle = Vector3.Angle(Vector3.up, hit.normal);
+            Debug.Log("Stand On "+hit.transform.name+" "+ angle);
+            return angle < maxAngle && angle != 0;
+        }
+        return false;
+    }
+
 
     void Update()
     {
-        
+
+        moveDirection = transform.TransformDirection(new Vector3(move.x * playerSpeed, 0, move.y * playerSpeed));
+        if (OnSlope()) { 
+            moveDirection = (Vector3.ProjectOnPlane(moveDirection, hit.normal).normalized*playerSpeed);
+            rigidbody.useGravity = false;
+            if (rigidbody.angularVelocity.y < 0)
+            {
+                rigidbody.useGravity = true;
+                moveDirection = transform.TransformDirection(Vector3.ProjectOnPlane(new Vector3(move.x, rigidbody.linearVelocity.y, move.y), hit.normal).normalized * playerSpeed);
+            }
+        }
+        else
+        {
+            rigidbody.useGravity = true;
+        }
+        if (sneaking) { moveDirection.x /= 2; moveDirection.z /= 2; }
     }
 
     private void FixedUpdate()
