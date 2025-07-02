@@ -23,7 +23,15 @@ public class Doors : MonoBehaviour
 
     public void HoldDoor(float seconds)
     {
-        StartCoroutine(HoldDoorE(seconds));
+        OpenDoor();
+        type = DoorType.Default;
+        //StartCoroutine(HoldDoorE(seconds));
+    }
+    
+    public void LockDoor()
+    {
+        type = DoorType.Disabled;
+        CloseDoor();
     }
 
     private void Start()
