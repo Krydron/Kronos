@@ -47,10 +47,10 @@ Rigidbody:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4405403554042559979}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Mass: 100
-  m_Drag: 0
-  m_AngularDrag: 0.05
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
   m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
@@ -132,14 +132,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75b3717028ed56646af633aab14a55d6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerSpeed: 500
+  playerSpeed: 10
   mouseSensitivityX: 20
   mouseSensitivityY: 20
-  sneakSpeed: 250
+  sneakDivider: 2
   normalDetectionRange: 15
   sneakDetectionRange: 7
   normalDetectionTime: 2
   sneakDetectionTime: 4
+  maxAngle: 45
 --- !u!114 &5297129526156172632
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -160,6 +161,7 @@ MonoBehaviour:
     have: 0
   weapons: []
   items: []
+  collectedItems: []
   weaponPointer: 0
 --- !u!114 &8863089894577011506
 MonoBehaviour:
@@ -174,7 +176,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   health: 200
-  healthBar: {fileID: 0}
 --- !u!114 &7438934884513925036
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -200,6 +201,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ea548e924fb6474f9037ca80f47e946, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  interactDistance: 0
 --- !u!114 &2255673058471272106
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -212,3 +214,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04d95daf00e2c0a43b13d18eb51dbc7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  menues: []
