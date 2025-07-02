@@ -283,13 +283,13 @@ MonoBehaviour:
   head: {fileID: 75131312681568723}
   patrolPoints: []
   patrolWaitTime: 2
-  patrolSpeed: 3.5
+  patrolSpeed: 4.5
   player: {fileID: 0}
   sightRange: 30
-  fieldOfView: 150
-  detectionTime: 2
+  fieldOfView: 210
+  detectionTime: 0.3
   lostTime: 3
-  minDistance: 6
+  minDistance: 10
   angleDetectionCurve:
     serializedVersion: 2
     m_Curve:
@@ -314,9 +314,13 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  alertRadius: 10
+  isAlerted: 0
   maxHealth: 100
   keycardPrefab: {fileID: 0}
   hasKeycard: 0
+  itemPrefab: {fileID: 0}
+  hasItem: 0
   searchWaitTime: 3
   searchRadius: 6
   searchPointsCount: 5
@@ -326,6 +330,18 @@ MonoBehaviour:
   spotlightOffsetForward: 0.5
   spotlightOffsetUp: 0
   spotlightInnerAngleFactor: 0.6
+  footstepEvent:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  footstepInterval: 0.5
+  patrolRotationSpeed: 2
+  spottedRotationSpeed: 5
+  chaseRotationSpeed: 20
+  searchRotationSpeed: 10
   lockdownActive: 0
   bulletPrefab: {fileID: 7768977386190836073, guid: 69b9abcb17d849f4c9d342446aa1d989, type: 3}
   firePoint: {fileID: 2861583945321015477}
