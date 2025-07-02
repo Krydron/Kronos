@@ -1,14 +1,3 @@
-/**************************************************************************************************************
-* EnemyTaskManager Class
-*
-* The header file for the EnemyTaskManager class.
-* 
-* This class manages enemy tasks like CoffeeBreak and Conversation, starting tasks at specified times.
-*
-* Created by: Kry
-* Date: <need to add>
-*
-***************************************************************************************************************/
 using UnityEngine;
 using UnityEngine.AI;
 using System.Collections;
@@ -19,185 +8,253 @@ using FMOD.Studio;
 public class EnemyTaskManager : MonoBehaviour
 {
     public enum TaskType { None, CoffeeBreak, Conversation }
-    public TaskType assignedTask = TaskType.None;
+
+    [System.Serializable]
+    public class TaskData
+    {
+        public TaskType taskType = TaskType.None;
+
+        [Header("Coffee Break Settings")]
+        public Transform coffeeBreakLocation;
+        public float taskDuration = 5f;
+
+        [Header("Conversation Settings")]
+        public float conversationDistance = 2f;
+
+        [Header("Task Timing")]
+        [Tooltip("Time in seconds after which this task should start")]
+        public float taskStartTime = 0f;
+
+        [Header("Conversation Audio")]
+        public EventReference conversationAudioEvent;
+    }
+
+    [Header("Task Queue")]
+    [Tooltip("Sequence of tasks for this enemy to perform")]
+    public List<TaskData> taskQueue = new List<TaskData>();
+
+    [Tooltip("Should the task queue repeat endlessly?")]
+    public bool repeatTasks = false;
+
+    [Tooltip("Delay in seconds before repeating the entire task queue")]
+    public float repeatDelay = 5f;
+
 
     private EnemyBase enemyBase;
     private NavMeshAgent agent;
+
     private bool isPerformingTask = false;
-    private bool taskStarted = false;
+    private bool isConversationLeader = false; // NEW: leader flag to control conversation sequence
+    private int currentTaskIndex = 0;
 
-    [Header("Coffee Break Task")]
-    public Transform coffeeBreakLocation;
-    public float taskDuration = 5f;
-
-    [Header("Conversation Task")]
-    public float conversationDistance = 2f;
     private static List<EnemyTaskManager> availableForConversation = new List<EnemyTaskManager>();
     private EnemyTaskManager conversationPartner;
 
-    [Header("Conversation Audio")]
-    [Tooltip("FMOD event for this enemy's conversation audio.")]
-    public EventReference conversationAudioEvent;
     private EventInstance conversationInstance;
-
-    [Header("Task Start Time")]
-    [Tooltip("Time in seconds after which this task should start")]
-    public float taskStartTime = 0f;
 
     private void Start()
     {
         enemyBase = GetComponent<EnemyBase>();
         agent = GetComponent<NavMeshAgent>();
 
-        if (assignedTask != TaskType.None)
+        if (taskQueue.Count > 0)
         {
-            // Start coroutine to wait until the global elapsed time reaches taskStartTime
-            StartCoroutine(WaitForTaskStartTime());
+            StartCoroutine(TaskQueueRoutine());
         }
     }
 
-    private IEnumerator WaitForTaskStartTime()
+    private IEnumerator TaskQueueRoutine()
     {
-        while (TimeTracker.Instance == null || TimeTracker.Instance.elapsedTime < taskStartTime)
+        do
         {
-            yield return null;
-        }
-
-        if (assignedTask == TaskType.Conversation)
-        {
-            // Add self to available list and try to find partner
-            availableForConversation.Add(this);
-
-            // Wait until a partner is found
-            while (conversationPartner == null)
+            for (currentTaskIndex = 0; currentTaskIndex < taskQueue.Count; currentTaskIndex++)
             {
-                FindConversationPartner();
-                yield return null;
+                var task = taskQueue[currentTaskIndex];
+
+                // Wait until global elapsed time reaches this task's start time
+                while (TimeTracker.Instance == null || TimeTracker.Instance.elapsedTime < task.taskStartTime)
+                    yield return null;
+
+                // Perform task based on its type
+                yield return PerformTask(task);
             }
 
-            // At this point, conversationPartner is set
-            // Only the enemy that found the partner (caller) starts the PerformConversation coroutine
-            if (conversationPartner != null && !isPerformingTask)
+            if (repeatTasks)
             {
-                StartTask();
+                Debug.Log($"{gameObject.name} waiting {repeatDelay} seconds before repeating tasks.");
+                yield return new WaitForSeconds(repeatDelay);
             }
-        }
-        else
-        {
-            // For other tasks, just start normally
-            StartTask();
-        }
+
+        } while (repeatTasks);
     }
 
 
-    public void StartTask()
+    private IEnumerator PerformTask(TaskData task)
     {
-        if (isPerformingTask || assignedTask == TaskType.None || taskStarted) return;
-
-        taskStarted = true;
-        Debug.Log($"{gameObject.name} is starting task: {assignedTask} at time {TimeTracker.Instance.elapsedTime}");
         isPerformingTask = true;
-        enemyBase.currentState = EnemyBase.EnemyState.Patrolling; // Keep in patrol state for now
+        enemyBase.currentState = EnemyBase.EnemyState.Patrolling;
 
-        switch (assignedTask)
+        switch (task.taskType)
         {
             case TaskType.CoffeeBreak:
-                StartCoroutine(PerformCoffeeBreak());
+                yield return PerformCoffeeBreak(task);
                 break;
+
             case TaskType.Conversation:
-                StartCoroutine(PerformConversation());
+                yield return PerformConversation(task);
                 break;
+
             default:
-                isPerformingTask = false;
+                Debug.LogWarning($"{gameObject.name} has unknown or None task type.");
                 break;
         }
+
+        isPerformingTask = false;
     }
 
-    private IEnumerator PerformCoffeeBreak()
+    private IEnumerator PerformCoffeeBreak(TaskData task)
     {
-        if (coffeeBreakLocation == null)
+        if (task.coffeeBreakLocation == null)
         {
             Debug.LogWarning($"{gameObject.name} has no coffee break location assigned.");
-            isPerformingTask = false;
             yield break;
         }
 
         Debug.Log($"{gameObject.name} is moving to coffee break location.");
-        agent.SetDestination(coffeeBreakLocation.position);
+        agent.SetDestination(task.coffeeBreakLocation.position);
 
         while (agent.pathPending || agent.remainingDistance > 0.5f)
-        {
             yield return null;
-        }
 
-        // **Stop movement and perform task**
         Debug.Log($"{gameObject.name} has reached coffee break location. Taking a break...");
-        agent.isStopped = true; // Stop the agent from moving
-        yield return new WaitForSeconds(taskDuration); // Wait for task duration
-
-        agent.isStopped = false; // Resume movement
-        EndTask();
+        agent.isStopped = true;
+        yield return new WaitForSeconds(task.taskDuration);
+        agent.isStopped = false;
     }
 
-    private IEnumerator PerformConversation()
+    private IEnumerator PerformConversation(TaskData task)
     {
-        availableForConversation.Add(this);
+        // Add self to available list if not already present
+        if (!availableForConversation.Contains(this))
+        {
+            availableForConversation.Add(this);
+            Debug.Log($"{gameObject.name} added to availableForConversation.");
+        }
 
+        // Wait until partner assigned
         while (conversationPartner == null)
         {
-            yield return null; // Wait until a partner is found
             FindConversationPartner();
+
+            if (conversationPartner != null)
+            {
+                Debug.Log($"{gameObject.name} found partner {conversationPartner.gameObject.name}.");
+                break;
+            }
+
+            yield return null;
         }
 
         if (conversationPartner == null)
         {
             Debug.LogWarning($"{gameObject.name} could not find a conversation partner.");
             availableForConversation.Remove(this);
-            isPerformingTask = false;
             yield break;
         }
 
-        Vector3 midpoint = (transform.position + conversationPartner.transform.position) / 2;
-
-        Debug.Log($"{gameObject.name} and {conversationPartner.gameObject.name} are moving to talk at {midpoint}");
-        agent.SetDestination(midpoint);
-        conversationPartner.agent.SetDestination(midpoint);
-
-        while (agent.pathPending || agent.remainingDistance > conversationDistance ||
-               conversationPartner.agent.pathPending || conversationPartner.agent.remainingDistance > conversationDistance)
+        // Assign conversation leader if neither has it yet
+        if (!isConversationLeader && !conversationPartner.isConversationLeader)
         {
-            yield return null;
+            isConversationLeader = true;
         }
 
-        // **Stop movement and "talk"**
-        agent.isStopped = true;
-        conversationPartner.agent.isStopped = true;
-        Debug.Log($"{gameObject.name} and {conversationPartner.gameObject.name} are talking...");
+        if (isConversationLeader)
+        {
+            Vector3 midpoint = (transform.position + conversationPartner.transform.position) * 0.5f;
+            Debug.Log($"{gameObject.name} and {conversationPartner.gameObject.name} moving to midpoint {midpoint}.");
 
-        // **Play conversation audio for each participant**
-        PlayConversationAudio();
-        conversationPartner.PlayConversationAudio();
+            float timeout = 10f;
+            float timer = 0f;
 
-        yield return new WaitForSeconds(taskDuration);
+            bool thisArrived = false;
+            bool partnerArrived = false;
 
-        agent.isStopped = false;
-        conversationPartner.agent.isStopped = false;
+            while ((!thisArrived || !partnerArrived) && timer < timeout)
+            {
+                timer += Time.deltaTime;
 
-        EndTask();
-        conversationPartner.EndTask();
+                // Keep updating destination every frame
+                agent.SetDestination(midpoint);
+                conversationPartner.agent.SetDestination(midpoint);
+
+                if (!agent.pathPending)
+                {
+                    Debug.Log($"{gameObject.name} distance to midpoint: {agent.remainingDistance}");
+                    if (agent.remainingDistance <= task.conversationDistance)
+                        thisArrived = true;
+                    else if (agent.pathStatus == NavMeshPathStatus.PathInvalid || agent.pathStatus == NavMeshPathStatus.PathPartial)
+                        thisArrived = true; // Treat as arrived to prevent deadlock
+                }
+
+                if (!conversationPartner.agent.pathPending)
+                {
+                    Debug.Log($"{conversationPartner.gameObject.name} distance to midpoint: {conversationPartner.agent.remainingDistance}");
+                    if (conversationPartner.agent.remainingDistance <= task.conversationDistance)
+                        partnerArrived = true;
+                    else if (conversationPartner.agent.pathStatus == NavMeshPathStatus.PathInvalid || conversationPartner.agent.pathStatus == NavMeshPathStatus.PathPartial)
+                        partnerArrived = true; // Treat as arrived to prevent deadlock
+                }
+
+                yield return null;
+            }
+
+            if (timer >= timeout)
+                Debug.LogWarning($"{gameObject.name} and {conversationPartner.gameObject.name} conversation move timed out.");
+
+            agent.isStopped = true;
+            conversationPartner.agent.isStopped = true;
+
+            Debug.Log($"{gameObject.name} and {conversationPartner.gameObject.name} started talking.");
+
+            PlayConversationAudio(task.conversationAudioEvent);
+            conversationPartner.PlayConversationAudio(task.conversationAudioEvent);
+
+            yield return new WaitForSeconds(task.taskDuration);
+
+            agent.isStopped = false;
+            conversationPartner.agent.isStopped = false;
+
+            Debug.Log($"{gameObject.name} and {conversationPartner.gameObject.name} finished talking.");
+
+            // Cleanup
+            EndConversation();
+            conversationPartner.EndConversation();
+
+            isConversationLeader = false;
+        }
+        else
+        {
+            // Wait for the leader to finish conversation
+            while (isConversationLeader || conversationPartner.isConversationLeader)
+            {
+                yield return null;
+            }
+        }
     }
 
-    private void PlayConversationAudio()
+    private void PlayConversationAudio(EventReference audioEvent)
     {
-        if (conversationAudioEvent.IsNull) return;
+        if (audioEvent.IsNull) return;
 
-        conversationInstance = RuntimeManager.CreateInstance(conversationAudioEvent);
-        RuntimeManager.AttachInstanceToGameObject(conversationInstance, gameObject); // Updated for modern FMOD
+        conversationInstance = RuntimeManager.CreateInstance(audioEvent);
+        RuntimeManager.AttachInstanceToGameObject(conversationInstance, gameObject);
         conversationInstance.start();
     }
 
     private void FindConversationPartner()
     {
+        if (conversationPartner != null) return;
+
         foreach (var enemy in availableForConversation)
         {
             if (enemy != this && enemy.conversationPartner == null)
@@ -205,20 +262,21 @@ public class EnemyTaskManager : MonoBehaviour
                 conversationPartner = enemy;
                 enemy.conversationPartner = this;
 
-                // Remove both from available list to prevent other pairings
                 availableForConversation.Remove(enemy);
                 availableForConversation.Remove(this);
+
+                Debug.Log($"{gameObject.name} paired with {enemy.gameObject.name} for conversation.");
                 break;
             }
         }
     }
 
-
-    private void EndTask()
+    private void EndConversation()
     {
-        Debug.Log($"{gameObject.name} finished task and is resuming patrol.");
-        isPerformingTask = false;
-        assignedTask = TaskType.None;
-        enemyBase.currentState = EnemyBase.EnemyState.Patrolling;
+        conversationPartner = null;
+        isConversationLeader = false;
+
+        if (availableForConversation.Contains(this))
+            availableForConversation.Remove(this);
     }
 }
