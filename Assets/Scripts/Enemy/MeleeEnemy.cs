@@ -1,16 +1,3 @@
-/**************************************************************************************************************
-* <Name> Class
-*
-* The header file for the <Name> class.
-* 
-* This class 
-* 
-*
-* Created by: <Kry> 
-* Date: <need to add>
-*
-***************************************************************************************************************/
-
 using System.Collections;
 using UnityEngine;
 
@@ -19,14 +6,25 @@ public class MeleeEnemy : EnemyBase
     public int damage = 20;
     public float attackCooldown = 1.5f;
     private bool canAttack = true;
-    [SerializeField] float attackDistance;
 
     [Header("Melee Attack")]
-    public GameObject meleeHitbox; // Assign a hitbox in Unity
+    [SerializeField] float attackDistance = 2f;
+    public GameObject meleeHitbox; // Assign in Inspector
+
+    private MeleeHitbox hitboxScript;
+
+    private void Awake()
+    {
+        if (meleeHitbox != null)
+        {
+            hitboxScript = meleeHitbox.GetComponent<MeleeHitbox>();
+            meleeHitbox.SetActive(false);
+        }
+    }
 
     protected override void Attack()
     {
-        if (Vector3.Distance(transform.position, player.transform.position) > 2f)
+        if (Vector3.Distance(transform.position, player.transform.position) > attackDistance)
         {
             currentState = EnemyState.Chasing;
             return;
@@ -43,22 +41,23 @@ public class MeleeEnemy : EnemyBase
         canAttack = false;
         Debug.Log("Melee enemy swings!");
 
-        //meleeHitbox.SetActive(true); // Activate hitbox for the attack
-        //yield return new WaitForSeconds(0.3f); // Attack duration
-        //meleeHitbox.SetActive(false);
-
-
-        RaycastHit hit;
-        if (Physics.Raycast(transform.position, transform.forward, out hit, attackDistance))
+        // Enable hitbox and initialize damage
+        if (meleeHitbox != null)
         {
-            if (hit.transform.CompareTag("Player"))
-            {
-                Debug.Log("Hit Player");
-                hit.rigidbody.gameObject.GetComponent<PlayerHealth>().DecrementHealth(damage);
-            }
-            Debug.Log("Hit: "+hit.transform.name);
+            hitboxScript.Initialize(this, damage);
+            meleeHitbox.SetActive(true);
         }
-        yield return new WaitForSeconds(attackCooldown);
+
+        // Attack swing duration - adjust as needed
+        yield return new WaitForSeconds(0.3f);
+
+        // Disable hitbox after swing
+        if (meleeHitbox != null)
+        {
+            meleeHitbox.SetActive(false);
+        }
+
+        yield return new WaitForSeconds(attackCooldown - 0.3f);
         canAttack = true;
     }
 }

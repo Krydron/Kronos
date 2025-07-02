@@ -42,6 +42,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7626598306428207436}
   - component: {fileID: 1935399597864925891}
+  - component: {fileID: 9095251732732260084}
   m_Layer: 0
   m_Name: WeaponHitBox
   m_TagString: Untagged
@@ -85,6 +86,19 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1.03, y: 0.35, z: 1.22}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &9095251732732260084
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3695015823627302528}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 063e368f3a4761647aacc0ce9a72efa7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damage: 20
 --- !u!1 &5756213452282658361
 GameObject:
   m_ObjectHideFlags: 0
@@ -250,9 +264,13 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  alertRadius: 10
+  isAlerted: 0
   maxHealth: 100
   keycardPrefab: {fileID: 0}
   hasKeycard: 0
+  itemPrefab: {fileID: 0}
+  hasItem: 0
   searchWaitTime: 3
   searchRadius: 6
   searchPointsCount: 5
@@ -262,6 +280,18 @@ MonoBehaviour:
   spotlightOffsetForward: 0.5
   spotlightOffsetUp: 0
   spotlightInnerAngleFactor: 0.6
+  footstepEvent:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  footstepInterval: 0.5
+  patrolRotationSpeed: 2
+  spottedRotationSpeed: 5
+  chaseRotationSpeed: 8
+  searchRotationSpeed: 3
   lockdownActive: 0
   damage: 20
   attackCooldown: 1.5
@@ -279,17 +309,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f2dfdb14b33f4b47b4807456373f80a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  assignedTask: 1
-  coffeeBreakLocation: {fileID: 0}
-  taskDuration: 5
-  conversationDistance: 2
-  conversationAudioEvent:
-    Guid:
-      Data1: 0
-      Data2: 0
-      Data3: 0
-      Data4: 0
-    Path: 
+  taskQueue: []
+  repeatTasks: 0
+  repeatDelay: 5
 --- !u!195 &4367287299429225708
 NavMeshAgent:
   m_ObjectHideFlags: 0
