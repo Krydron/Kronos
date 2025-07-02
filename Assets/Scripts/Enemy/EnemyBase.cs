@@ -12,9 +12,7 @@ public class EnemyBase : MonoBehaviour
     public EnemyState currentState;
 
     public Transform head;
-
     public static List<EnemyBase> AllGuards = new List<EnemyBase>();
-
 
     [Header("Patrolling")]
     public Transform[] patrolPoints;
@@ -74,13 +72,19 @@ public class EnemyBase : MonoBehaviour
     public float spotlightInnerAngleFactor = 0.6f;
 
     [Header("Audio / Movement Tracking")]
-    public EventReference footstepEvent;  
-
-    public float footstepInterval = 0.5f;  // Time between footsteps
-
+    public EventReference footstepEvent;
+    public float footstepInterval = 0.5f;
     private float footstepTimer = 0f;
     private bool isMoving = false;
 
+    [Header("Rotation Speeds")]
+    public float patrolRotationSpeed = 2f;
+    public float spottedRotationSpeed = 5f;
+    public float chaseRotationSpeed = 8f;
+    public float searchRotationSpeed = 3f;
+
+    [Header("LockDown")]
+    public bool lockdownActive = false;
     public GameObject GetKeycard()
     {
         return hasKeycard ? keycardPrefab : null;
@@ -165,8 +169,6 @@ public class EnemyBase : MonoBehaviour
         }
     }
 
-    
-    public bool lockdownActive = false;
 
     public void StartLockdown()
     {
@@ -198,6 +200,8 @@ public class EnemyBase : MonoBehaviour
 
         if (CanSeePlayer())
         {
+            RotateTowards(player.transform.position, spottedRotationSpeed);
+
             if (!isAlerted)
             {
                 isAlerted = true;
@@ -219,6 +223,7 @@ public class EnemyBase : MonoBehaviour
         }
         else
         {
+            RotateTowards(agent.steeringTarget, patrolRotationSpeed);
             detectionTimer = Mathf.Clamp(detectionTimer - Time.deltaTime, 0, detectionTime);
         }
 
@@ -253,6 +258,9 @@ public class EnemyBase : MonoBehaviour
         {
             playerInSight = true;
             lastSeenPosition = player.transform.position;
+
+            RotateTowards(player.transform.position, chaseRotationSpeed);
+
             float distance = Vector3.Distance(player.transform.position, transform.position);
 
             if (distance >= minDistance)
@@ -323,6 +331,11 @@ public class EnemyBase : MonoBehaviour
             isWaitingAtSearchPoint = false;
             isSearching = false;
         }
+        else
+        {
+            if (searchPoints.Count > 0)
+                RotateTowards(searchPoints[searchPointIndex], searchRotationSpeed);
+        }
     }
 
     private IEnumerator WaitAtSearchPoint()
@@ -370,6 +383,20 @@ public class EnemyBase : MonoBehaviour
         isSearching = false;
         lostTimer = 0f;
     }
+
+    private void RotateTowards(Vector3 targetPosition, float rotationSpeed)
+    {
+        Vector3 direction = (targetPosition - head.position).normalized;
+        direction.y = 0;
+
+        if (direction.sqrMagnitude > 0.01f)
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(direction);
+            head.rotation = Quaternion.Slerp(head.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+        }
+    }
+
+    // (the rest of your methods like Alert, TakeDamage, Die etc. stay the same below)
 
     public void ReceiveCameraAlert(Vector3 alertPosition)
     {
