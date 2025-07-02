@@ -10,7 +10,8 @@ public class TEMP_ExplodableWall : Interactable
     {
         bomb.SetActive(true);
         yield return new WaitForSeconds(time);
-        Destroy(gameObject);
+        //Destroy(gameObject);
+        gameObject.SetActive(false);
     }
 
     public override bool Interact()
