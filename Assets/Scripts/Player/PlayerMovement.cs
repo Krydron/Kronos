@@ -26,7 +26,7 @@ public class PlayerMovement : MonoBehaviour
     Vector2 look;
 
     private bool sneaking;
-    [SerializeField] float sneakSpeed;
+    [SerializeField] float sneakDivider;
 
     Vector3 moveDirection;
 
@@ -149,19 +149,21 @@ public class PlayerMovement : MonoBehaviour
 
         moveDirection = transform.TransformDirection(new Vector3(move.x * playerSpeed, 0, move.y * playerSpeed));
         if (OnSlope()) { 
-            moveDirection = (Vector3.ProjectOnPlane(moveDirection, hit.normal).normalized*playerSpeed);
+            moveDirection = (Vector3.ProjectOnPlane(moveDirection, hit.normal));
             rigidbody.useGravity = false;
             if (rigidbody.angularVelocity.y < 0)
             {
-                rigidbody.useGravity = true;
-                moveDirection = transform.TransformDirection(Vector3.ProjectOnPlane(new Vector3(move.x, rigidbody.linearVelocity.y, move.y), hit.normal).normalized * playerSpeed);
+                rigidbody.AddForce(Vector3.down*180f,ForceMode.Acceleration);
+                //moveDirection.y -= 180f;
+                //rigidbody.useGravity = true;
+                //moveDirection = Vector3.ProjectOnPlane(new Vector3(move.x* playerSpeed, 0, move.y*playerSpeed).normalized, hit.normal).normalized * playerSpeed;
             }
         }
         else
         {
             rigidbody.useGravity = true;
         }
-        if (sneaking) { moveDirection.x /= 2; moveDirection.z /= 2; }
+        if (sneaking) { moveDirection.x /= sneakDivider; moveDirection.z /= 2; }
     }
 
     private void FixedUpdate()
