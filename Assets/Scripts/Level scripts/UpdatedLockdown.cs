@@ -17,15 +17,15 @@ public class UpdatedLockdown : MonoBehaviour
     [SerializeField] public float flickerDelay = 0.1f;
 
     // work in progress to see if delegates are easier to work with
-    public delegate void lockdown();
-    public static lockdown onLockdown;
-    public UpdatedLockdown()
-    {
-        onLockdown = InitiateLockdown;
-    }
-    public event lockdown OnLockdown;
+    //public delegate void lockdown();
+    //public static lockdown onLockdown;
+    //public UpdatedLockdown()
+    //{
+    //    onLockdown = InitiateLockdown;
+    //}
+    //public event lockdown OnLockdown;
 
-    public event lockdown lockdownCompleted;
+    //public event lockdown lockdownCompleted;
     // work in progress to see if delegates are easier to work with
     private void Start()
     {
@@ -39,15 +39,10 @@ public class UpdatedLockdown : MonoBehaviour
 
         StartCoroutine("Flicker");
         animator.SetBool("shutters close", true);
-
+        StartCoroutine("Countdown");
+        //enemy conditions
     }
-   public void LockdownEndConditions()
-    {
-        if(CompareTag("Player"))
-        {
-            
-        }
-    }
+ 
     public void EndLockdown()
     {
         StopAllCoroutines();
@@ -61,6 +56,14 @@ public class UpdatedLockdown : MonoBehaviour
         }
 
 
+    }
+    IEnumerator Countdown()
+    {
+       yield return new WaitForSeconds(45f);
+        EndLockdown();
+        
+
+        
     }
     IEnumerator Flicker()
     {

@@ -1206,7 +1206,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 51be664ab3972ed4b9cbdda0e5d61aad, type: 3}
       propertyPath: m_Name
-      value: normal
+      value: explode wall
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 51be664ab3972ed4b9cbdda0e5d61aad, type: 3}
+      propertyPath: m_TagString
+      value: exploding wall
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -2943,67 +2947,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3942933d388d2c549b72a5deeccc9c01, type: 3}
---- !u!1001 &7072335945311878282
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 105664135164999280, guid: 8a0a02a880ad0af4e9d76fdd042515f6, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 5.48
-      objectReference: {fileID: 0}
-    - target: {fileID: 105664135164999280, guid: 8a0a02a880ad0af4e9d76fdd042515f6, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 3.017
-      objectReference: {fileID: 0}
-    - target: {fileID: 105664135164999280, guid: 8a0a02a880ad0af4e9d76fdd042515f6, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -10.7474
-      objectReference: {fileID: 0}
-    - target: {fileID: 105664135164999280, guid: 8a0a02a880ad0af4e9d76fdd042515f6, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 105664135164999280, guid: 8a0a02a880ad0af4e9d76fdd042515f6, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 105664135164999280, guid: 8a0a02a880ad0af4e9d76fdd042515f6, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 105664135164999280, guid: 8a0a02a880ad0af4e9d76fdd042515f6, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 105664135164999280, guid: 8a0a02a880ad0af4e9d76fdd042515f6, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 105664135164999280, guid: 8a0a02a880ad0af4e9d76fdd042515f6, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 105664135164999280, guid: 8a0a02a880ad0af4e9d76fdd042515f6, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2340429986994832393, guid: 8a0a02a880ad0af4e9d76fdd042515f6, type: 3}
-      propertyPath: m_Name
-      value: exploding wall
-      objectReference: {fileID: 0}
-    - target: {fileID: 4047884170747004614, guid: 8a0a02a880ad0af4e9d76fdd042515f6, type: 3}
-      propertyPath: delay
-      value: 5
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 8a0a02a880ad0af4e9d76fdd042515f6, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -3015,7 +2958,6 @@ SceneRoots:
   - {fileID: 1323471406}
   - {fileID: 1553735081}
   - {fileID: 1086971777}
-  - {fileID: 7072335945311878282}
   - {fileID: 4305011633991872699}
   - {fileID: 1191329059716265424}
   - {fileID: 1132187734}
