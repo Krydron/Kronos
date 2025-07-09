@@ -169,6 +169,14 @@ public class EnemyBase : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Returns true if the enemy is currently in the Chasing state.
+    /// </summary>
+    public bool IsChasingPlayer()
+    {
+        return currentState == EnemyState.Chasing;
+    }
+
 
     public void StartLockdown()
     {
