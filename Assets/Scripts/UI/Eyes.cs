@@ -57,7 +57,8 @@ public class Eyes : MonoBehaviour
 
     public void ShutEyes()
     {
-        StartCoroutine(CloseEyes());
+        transform.Find("Eye").GetComponent<Animator>().SetBool("Open",false);
+        //StartCoroutine(CloseEyes());
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -65,7 +66,7 @@ public class Eyes : MonoBehaviour
     {
         eyelidUp = transform.Find("Eyelid_Up").gameObject;
         eyelidDown = transform.Find("Eyelid_Down").gameObject;
-        StartCoroutine(OpenEyes());
+        //StartCoroutine(OpenEyes());
     }
 
     // Update is called once per frame

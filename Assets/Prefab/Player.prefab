@@ -49,7 +49,7 @@ Rigidbody:
   m_GameObject: {fileID: 4405403554042559979}
   serializedVersion: 5
   m_Mass: 100
-  m_LinearDamping: 0
+  m_LinearDamping: 5
   m_AngularDamping: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
@@ -132,7 +132,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75b3717028ed56646af633aab14a55d6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerSpeed: 10
+  playerSpeed: 80
   mouseSensitivityX: 20
   mouseSensitivityY: 20
   sneakDivider: 2
@@ -188,7 +188,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5973ce885e44b244f9ba6d8322f91786, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shootDelay: 1
+  shootDelay: 0.3
 --- !u!114 &7883426963325819718
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -201,7 +201,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ea548e924fb6474f9037ca80f47e946, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  interactDistance: 0
+  interactDistance: 2
 --- !u!114 &2255673058471272106
 MonoBehaviour:
   m_ObjectHideFlags: 0

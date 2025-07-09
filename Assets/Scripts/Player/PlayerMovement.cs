@@ -30,6 +30,7 @@ public class PlayerMovement : MonoBehaviour
 
     Vector3 moveDirection;
 
+    [SerializeField] GameObject steppingSound;
 
     //Added by Kry
     [Header("Detection Modifiers")]
@@ -123,9 +124,9 @@ public class PlayerMovement : MonoBehaviour
         }*/
 
         moveDirection.y = rigidbody.linearVelocity.y;
-        rigidbody.linearVelocity = moveDirection;
+        //rigidbody.linearVelocity = moveDirection;
         //rigidbody.linearVelocity
-        //rigidbody.AddForce(moveDirection*playerSpeed, ForceMode.Force);
+        rigidbody.AddForce(moveDirection, ForceMode.Acceleration);
 
         rigidbody.rotation = Quaternion.Euler(0, rotationY, 0);
         camera.transform.position = new Vector3(transform.position.x, transform.position.y+1, transform.position.z);
@@ -137,7 +138,7 @@ public class PlayerMovement : MonoBehaviour
         if (Physics.Raycast(transform.position, Vector3.down, out hit, transform.localScale.y/2+0.8f))
         {
             angle = Vector3.Angle(Vector3.up, hit.normal);
-            Debug.Log("Stand On "+hit.transform.name+" "+ angle);
+            //Debug.Log("Stand On "+hit.transform.name+" "+ angle);
             return angle < maxAngle && angle != 0;
         }
         return false;
@@ -164,6 +165,11 @@ public class PlayerMovement : MonoBehaviour
             rigidbody.useGravity = true;
         }
         if (sneaking) { moveDirection.x /= sneakDivider; moveDirection.z /= 2; }
+
+        if ((rigidbody.linearVelocity.x + rigidbody.linearVelocity.z) > 0)
+        {
+            //steppingSound.GetComponent<>
+        }
     }
 
     private void FixedUpdate()

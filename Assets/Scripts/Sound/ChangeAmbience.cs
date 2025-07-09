@@ -22,6 +22,8 @@ public class ChangeAmbience : MonoBehaviour
         musicEvent.getDescription(out musicDesc);
         musicDesc.getParameterDescriptionByName("Level", out paramDesc);
         paramID = paramDesc.id;
+
+        musicEvent.setParameterByID(paramID, value);
     }
 
     public void Default()

@@ -477,11 +477,13 @@ MonoBehaviour:
   playerSpeed: 1000
   mouseSensitivityX: 100
   mouseSensitivityY: 100
-  sneakSpeed: 250
+  sneakDivider: 0
+  steppingSound: {fileID: 0}
   normalDetectionRange: 15
   sneakDetectionRange: 7
   normalDetectionTime: 2
   sneakDetectionTime: 4
+  maxAngle: 0
 --- !u!114 &1026528493
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -927,6 +929,10 @@ PrefabInstance:
     - target: {fileID: 1567092597879837734, guid: 7b7e1e8527b1d9f4c87784216302bb8f, type: 3}
       propertyPath: m_Name
       value: Background Music
+      objectReference: {fileID: 0}
+    - target: {fileID: 3296420395926478078, guid: 7b7e1e8527b1d9f4c87784216302bb8f, type: 3}
+      propertyPath: value
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4656765826169506507, guid: 7b7e1e8527b1d9f4c87784216302bb8f, type: 3}
       propertyPath: m_LocalPosition.x

@@ -240,26 +240,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
-    - target: {fileID: 5978471191380485603, guid: 848e424ffa89b8d4b881577d23c3f737, type: 3}
-      propertyPath: sneakSpeed
-      value: 250
-      objectReference: {fileID: 0}
-    - target: {fileID: 5978471191380485603, guid: 848e424ffa89b8d4b881577d23c3f737, type: 3}
-      propertyPath: playerSpeed
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 5978471191380485603, guid: 848e424ffa89b8d4b881577d23c3f737, type: 3}
-      propertyPath: mouseSensitivityX
-      value: 50
-      objectReference: {fileID: 0}
-    - target: {fileID: 5978471191380485603, guid: 848e424ffa89b8d4b881577d23c3f737, type: 3}
-      propertyPath: mouseSensitivityY
-      value: 50
-      objectReference: {fileID: 0}
-    - target: {fileID: 7883426963325819718, guid: 848e424ffa89b8d4b881577d23c3f737, type: 3}
-      propertyPath: interactDistance
-      value: 2
-      objectReference: {fileID: 0}
     - target: {fileID: 8480532155893375362, guid: 848e424ffa89b8d4b881577d23c3f737, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -848,6 +828,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Eyes
       objectReference: {fileID: 0}
+    - target: {fileID: 7489219484345432782, guid: 5a46a2638fce7c641a9e2b162563eb00, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8748346922057251518, guid: 5a46a2638fce7c641a9e2b162563eb00, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -973,6 +961,7 @@ GameObject:
   m_Component:
   - component: {fileID: 647371183}
   - component: {fileID: 647371184}
+  - component: {fileID: 647371185}
   m_Layer: 8
   m_Name: BackgroundMusic
   m_TagString: AudioSource
@@ -1028,6 +1017,19 @@ MonoBehaviour:
   OverrideAttenuation: 0
   OverrideMinDistance: 1
   OverrideMaxDistance: 10000
+--- !u!114 &647371185
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 647371181}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f071c718414ac384cab4ef37a10dd044, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  value: 1
 --- !u!1 &909869751
 GameObject:
   m_ObjectHideFlags: 0
