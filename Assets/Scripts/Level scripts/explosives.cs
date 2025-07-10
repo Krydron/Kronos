@@ -8,17 +8,24 @@ using UnityEngine;
 public class explosives : MonoBehaviour
 
 {
+    [SerializeField, Range(0, 60)] float time;
+
     //pickup/inventory code
     //throw code
-    private void OnCollisionEnter(Collision collision)
+    /*private void OnCollisionEnter(Collision collision)
     {
         if(collision.gameObject.tag == "exploding wall")
         {
-            Destroy(collision.gameObject, 5f);
+            Interact();
         }
-    }
+    }*/
 
-
+    public void Interact() {
+        //Check for inventory
+        //Decrement bombs
+        //Show bomb model
+        Destroy(gameObject,time);
+    })
 
 
 
