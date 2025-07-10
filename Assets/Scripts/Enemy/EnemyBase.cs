@@ -34,6 +34,13 @@ public class EnemyBase : MonoBehaviour
     private float lostTimer;
     private bool playerInSight;
 
+    [Header("Turn Around Settings")]
+    [Tooltip("Time in seconds to complete the 180° turn")]
+    [SerializeField] private float turnDuration = 1f;
+    [SerializeField] private float alertDelayAfterTurn = 0.5f;
+
+    private bool isTurningAround = false;
+
     [SerializeField] private float alertRadius = 10f;
     public bool isAlerted = false;
 
@@ -76,6 +83,11 @@ public class EnemyBase : MonoBehaviour
     public float footstepInterval = 0.5f;
     private float footstepTimer = 0f;
     private bool isMoving = false;
+
+    [Header("Audio")]
+    public EventReference takeDamageEvent;
+    public EventReference deathEvent;
+
 
     [Header("Rotation Speeds")]
     public float patrolRotationSpeed = 2f;
@@ -167,6 +179,14 @@ public class EnemyBase : MonoBehaviour
                 footstepTimer = 0f;
             }
         }
+    }
+
+    /// <summary>
+    /// Returns true if the enemy is currently in the Chasing state.
+    /// </summary>
+    public bool IsChasingPlayer()
+    {
+        return currentState == EnemyState.Chasing;
     }
 
 
@@ -452,6 +472,12 @@ public class EnemyBase : MonoBehaviour
         currentHealth -= damage;
         Debug.Log("Enemy health: " + currentHealth);
 
+        // Play damage audio
+        if (!takeDamageEvent.IsNull)
+        {
+            RuntimeManager.PlayOneShot(takeDamageEvent, transform.position);
+        }
+
         // Make enemy alerted immediately on damage
         BecomeAlerted();
 
@@ -464,16 +490,14 @@ public class EnemyBase : MonoBehaviour
 
     private void Die()
     {
-        Debug.Log("Enemy died!");
-
-        if (hasKeycard && keycardPrefab != null)
+        if (!deathEvent.IsNull)
         {
-            Instantiate(keycardPrefab, transform.position, Quaternion.identity);
+            RuntimeManager.PlayOneShot(deathEvent, transform.position);
         }
 
-        if (hasItem && itemPrefab != null)
+        if (keycardPrefab != null)
         {
-            Instantiate(itemPrefab, transform.position, Quaternion.identity);
+            Instantiate(keycardPrefab, transform.position, Quaternion.identity);
         }
 
         Destroy(gameObject);
@@ -537,6 +561,50 @@ public class EnemyBase : MonoBehaviour
         lastSeenPosition = player.transform.position;
         currentState = EnemyState.Chasing;
         agent.SetDestination(lastSeenPosition);
+    }
+
+    private Coroutine turnAroundCoroutine;
+
+    public void TurnAroundForSeconds(float duration, float delayAfterTurn)
+    {
+        if (!isTurningAround)
+        {
+            StartCoroutine(TurnAroundCoroutine(duration, delayAfterTurn));
+        }
+    }
+
+    private IEnumerator TurnAroundCoroutine(float turnDuration, float alertDelayAfterTurn)
+    {
+        isTurningAround = true;
+
+        Quaternion startRotation = transform.rotation;
+        Quaternion targetRotation = startRotation * Quaternion.Euler(0f, 180f, 0f);
+
+        float elapsed = 0f;
+        while (elapsed < turnDuration)
+        {
+            transform.rotation = Quaternion.Slerp(startRotation, targetRotation, elapsed / turnDuration);
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+        transform.rotation = targetRotation;
+
+        yield return new WaitForSeconds(alertDelayAfterTurn);
+
+        BecomeAlerted();
+
+        yield return new WaitForSeconds(1f);
+
+        elapsed = 0f;
+        while (elapsed < turnDuration)
+        {
+            transform.rotation = Quaternion.Slerp(targetRotation, startRotation, elapsed / turnDuration);
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+        transform.rotation = startRotation;
+
+        isTurningAround = false;
     }
 
     private void OnDrawGizmos()
