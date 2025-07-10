@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Assalt Rifle
   m_EditorClassIdentifier: 
   damage: 40
-  ammo: 7
+  ammo: 10
   maxAmmo: 10
   rounds: 200
   maxRounds: 200

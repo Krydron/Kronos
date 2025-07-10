@@ -267,6 +267,8 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  turnDuration: 1
+  alertDelayAfterTurn: 0.5
   alertRadius: 10
   isAlerted: 0
   maxHealth: 100
@@ -285,12 +287,26 @@ MonoBehaviour:
   spotlightInnerAngleFactor: 0.6
   footstepEvent:
     Guid:
+      Data1: 2012319529
+      Data2: 1245209043
+      Data3: 1343535755
+      Data4: -1518592492
+    Path: event:/SFX/Enemy/Footstep
+  footstepInterval: 2
+  takeDamageEvent:
+    Guid:
       Data1: 0
       Data2: 0
       Data3: 0
       Data4: 0
     Path: 
-  footstepInterval: 0.5
+  deathEvent:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
   patrolRotationSpeed: 2
   spottedRotationSpeed: 5
   chaseRotationSpeed: 20
@@ -461,6 +477,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ff770f31fd35a64e9420cea2378b334, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  animations: 0
 --- !u!114 &8610765404673866005
 MonoBehaviour:
   m_ObjectHideFlags: 0

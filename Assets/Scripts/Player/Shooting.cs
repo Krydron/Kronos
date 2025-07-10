@@ -97,6 +97,7 @@ public class Shooting : MonoBehaviour
     {
         animator.SetTrigger("Reload");
         reloadSound.Play();
+        GameObject.Find("EnemyManager").GetComponent<EnemyAlertManager>().PlayerFiredGun();
         if (weapon.Rounds() <= 0)
         {
             Debug.Log("No Rounds");

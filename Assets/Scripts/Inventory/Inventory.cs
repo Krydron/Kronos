@@ -34,6 +34,8 @@ public class Inventory : MonoBehaviour
 
     private AmmoDisplay ammoDisplay;
 
+    [SerializeField] GameObject gunUI;
+
     public void ActivateKeyType(Doors.DoorType type)
     {
         for (int i = 0; i < keys.Count; i++)
@@ -95,11 +97,13 @@ public class Inventory : MonoBehaviour
     {
         weaponPointer = 0;
         UpdateAmmoDisplay();
+        gunUI.SetActive(true);
     }
     public void OnChangeWeapon2()
     {
         weaponPointer = 1;
         UpdateAmmoDisplay();
+        gunUI.SetActive(false);
     }
 
     private void UpdateAmmoDisplay()

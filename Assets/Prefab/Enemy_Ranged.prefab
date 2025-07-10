@@ -314,6 +314,8 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  turnDuration: 1
+  alertDelayAfterTurn: 0.5
   alertRadius: 10
   isAlerted: 0
   maxHealth: 100
@@ -332,12 +334,26 @@ MonoBehaviour:
   spotlightInnerAngleFactor: 0.6
   footstepEvent:
     Guid:
+      Data1: 2012319529
+      Data2: 1245209043
+      Data3: 1343535755
+      Data4: -1518592492
+    Path: event:/SFX/Enemy/Footstep
+  footstepInterval: 2
+  takeDamageEvent:
+    Guid:
       Data1: 0
       Data2: 0
       Data3: 0
       Data4: 0
     Path: 
-  footstepInterval: 0.5
+  deathEvent:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
   patrolRotationSpeed: 2
   spottedRotationSpeed: 5
   chaseRotationSpeed: 20
@@ -346,6 +362,20 @@ MonoBehaviour:
   bulletPrefab: {fileID: 7768977386190836073, guid: 69b9abcb17d849f4c9d342446aa1d989, type: 3}
   firePoint: {fileID: 2861583945321015477}
   shootCooldown: 1.5
+  shootSoundEvent:
+    Guid:
+      Data1: -813029856
+      Data2: 1193555853
+      Data3: -1793487223
+      Data4: 2046596902
+    Path: event:/SFX/Enemy/Shoot
+  reloadSoundEvent:
+    Guid:
+      Data1: 1733355496
+      Data2: 1099360831
+      Data3: 1042624182
+      Data4: 1150080969
+    Path: event:/SFX/Enemy/Reload
 --- !u!195 &8329307200442749345
 NavMeshAgent:
   m_ObjectHideFlags: 0

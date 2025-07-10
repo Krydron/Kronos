@@ -13,6 +13,7 @@
 
 using UnityEngine;
 using UnityEngine.InputSystem;
+using FMODUnity;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -51,6 +52,9 @@ public class PlayerMovement : MonoBehaviour
 
     //Animation
     [SerializeField] Animator animator;
+
+    [SerializeField] StudioEventEmitter walkingSound;
+    [SerializeField] StudioEventEmitter crouchingSound;
 
     void Start()
     {
@@ -173,10 +177,15 @@ public class PlayerMovement : MonoBehaviour
         {
             //steppingSound.GetComponent<>
             animator.SetBool("Walking", false);
+            walkingSound.Stop();
+            crouchingSound.Stop();
         }
         else
         {
             animator.SetBool("Walking", true);
+            if (walkingSound.IsPlaying() || crouchingSound.IsPlaying()) { return; }
+            if (sneaking) { crouchingSound.Play(); return; }
+            walkingSound.Play();
         }
     }
 
