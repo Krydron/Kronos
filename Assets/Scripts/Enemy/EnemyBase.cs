@@ -34,6 +34,13 @@ public class EnemyBase : MonoBehaviour
     private float lostTimer;
     private bool playerInSight;
 
+    [Header("Turn Around Settings")]
+    [Tooltip("Time in seconds to complete the 180° turn")]
+    [SerializeField] private float turnDuration = 1f;
+    [SerializeField] private float alertDelayAfterTurn = 0.5f;
+
+    private bool isTurningAround = false;
+
     [SerializeField] private float alertRadius = 10f;
     public bool isAlerted = false;
 
@@ -554,6 +561,50 @@ public class EnemyBase : MonoBehaviour
         lastSeenPosition = player.transform.position;
         currentState = EnemyState.Chasing;
         agent.SetDestination(lastSeenPosition);
+    }
+
+    private Coroutine turnAroundCoroutine;
+
+    public void TurnAroundForSeconds(float duration, float delayAfterTurn)
+    {
+        if (!isTurningAround)
+        {
+            StartCoroutine(TurnAroundCoroutine(duration, delayAfterTurn));
+        }
+    }
+
+    private IEnumerator TurnAroundCoroutine(float turnDuration, float alertDelayAfterTurn)
+    {
+        isTurningAround = true;
+
+        Quaternion startRotation = transform.rotation;
+        Quaternion targetRotation = startRotation * Quaternion.Euler(0f, 180f, 0f);
+
+        float elapsed = 0f;
+        while (elapsed < turnDuration)
+        {
+            transform.rotation = Quaternion.Slerp(startRotation, targetRotation, elapsed / turnDuration);
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+        transform.rotation = targetRotation;
+
+        yield return new WaitForSeconds(alertDelayAfterTurn);
+
+        BecomeAlerted();
+
+        yield return new WaitForSeconds(1f);
+
+        elapsed = 0f;
+        while (elapsed < turnDuration)
+        {
+            transform.rotation = Quaternion.Slerp(targetRotation, startRotation, elapsed / turnDuration);
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+        transform.rotation = startRotation;
+
+        isTurningAround = false;
     }
 
     private void OnDrawGizmos()
