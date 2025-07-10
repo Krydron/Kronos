@@ -12,6 +12,7 @@
 *
 ***************************************************************************************************************/
 
+using FMODUnity;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -24,6 +25,10 @@ public class Shooting : MonoBehaviour
     float shootTime;
     AmmoDisplay ammoDisplay;
     PlayerTakedown playerTakedown;
+
+    [SerializeField] Animator animator;
+    [SerializeField] StudioEventEmitter reloadSound;
+    [SerializeField] StudioEventEmitter shootSound;
 
     private void Start()
     {
@@ -74,6 +79,8 @@ public class Shooting : MonoBehaviour
         }
         weapon.Ammo(weapon.Ammo()-1);
         Debug.Log("Shoot");
+        animator.SetTrigger("Shoot");
+        shootSound.Play();
         //raycast from player
         if (Physics.Raycast(transform.position, camera.transform.forward, out RaycastHit hit))
         {
@@ -88,6 +95,8 @@ public class Shooting : MonoBehaviour
     }
     public void OnReload()
     {
+        animator.SetTrigger("Reload");
+        reloadSound.Play();
         if (weapon.Rounds() <= 0)
         {
             Debug.Log("No Rounds");

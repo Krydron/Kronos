@@ -236,6 +236,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2255673058471272106, guid: 848e424ffa89b8d4b881577d23c3f737, type: 3}
+      propertyPath: menues.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2255673058471272106, guid: 848e424ffa89b8d4b881577d23c3f737, type: 3}
+      propertyPath: 'menues.Array.data[0]'
+      value: 
+      objectReference: {fileID: 640425441}
     - target: {fileID: 4405403554042559979, guid: 848e424ffa89b8d4b881577d23c3f737, type: 3}
       propertyPath: m_Name
       value: Player
@@ -828,6 +836,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Eyes
       objectReference: {fileID: 0}
+    - target: {fileID: 1406750392915422720, guid: 5a46a2638fce7c641a9e2b162563eb00, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7489219484345432782, guid: 5a46a2638fce7c641a9e2b162563eb00, type: 3}
       propertyPath: m_IsActive
       value: 0
@@ -937,10 +949,6 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 1812705006}
-    - target: {fileID: 3809877422121543051, guid: cce7094bfbe588046be0ae95532babd7, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: OnPause
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -950,6 +958,11 @@ PrefabInstance:
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 3060821198403888816, guid: 8289847051b72dd4688f175345d7d369, type: 3}
   m_PrefabInstance: {fileID: 1231232262}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &640425441 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2139577767330590002, guid: cce7094bfbe588046be0ae95532babd7, type: 3}
+  m_PrefabInstance: {fileID: 586263594}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &647371181
 GameObject:
@@ -1365,6 +1378,10 @@ PrefabInstance:
     - target: {fileID: 2807381926601005123, guid: 8289847051b72dd4688f175345d7d369, type: 3}
       propertyPath: m_Name
       value: CanInteractUI
+      objectReference: {fileID: 0}
+    - target: {fileID: 2807381926601005123, guid: 8289847051b72dd4688f175345d7d369, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3060821198403888816, guid: 8289847051b72dd4688f175345d7d369, type: 3}
       propertyPath: m_Pivot.x

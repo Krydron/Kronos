@@ -49,6 +49,9 @@ public class PlayerMovement : MonoBehaviour
     float angle;
     [SerializeField] float maxAngle;
 
+    //Animation
+    [SerializeField] Animator animator;
+
     void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
@@ -149,12 +152,12 @@ public class PlayerMovement : MonoBehaviour
     {
 
         moveDirection = transform.TransformDirection(new Vector3(move.x * playerSpeed, 0, move.y * playerSpeed));
-        if (OnSlope()) { 
+        if (OnSlope()) {
             moveDirection = (Vector3.ProjectOnPlane(moveDirection, hit.normal));
             rigidbody.useGravity = false;
             if (rigidbody.angularVelocity.y < 0)
             {
-                rigidbody.AddForce(Vector3.down*180f,ForceMode.Acceleration);
+                rigidbody.AddForce(Vector3.down * 180f, ForceMode.Acceleration);
                 //moveDirection.y -= 180f;
                 //rigidbody.useGravity = true;
                 //moveDirection = Vector3.ProjectOnPlane(new Vector3(move.x* playerSpeed, 0, move.y*playerSpeed).normalized, hit.normal).normalized * playerSpeed;
@@ -166,9 +169,14 @@ public class PlayerMovement : MonoBehaviour
         }
         if (sneaking) { moveDirection.x /= sneakDivider; moveDirection.z /= 2; }
 
-        if ((rigidbody.linearVelocity.x + rigidbody.linearVelocity.z) > 0)
+        if (move.x == 0 && move.y == 0)
         {
             //steppingSound.GetComponent<>
+            animator.SetBool("Walking", false);
+        }
+        else
+        {
+            animator.SetBool("Walking", true);
         }
     }
 

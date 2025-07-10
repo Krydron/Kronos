@@ -18,6 +18,7 @@ GameObject:
   - component: {fileID: 7438934884513925036}
   - component: {fileID: 7883426963325819718}
   - component: {fileID: 2255673058471272106}
+  - component: {fileID: 8826525382249243597}
   m_Layer: 3
   m_Name: Player
   m_TagString: Player
@@ -37,7 +38,9 @@ Transform:
   m_LocalPosition: {x: 0, y: 2, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 5726402012112463715}
+  - {fileID: 5277452717909282692}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!54 &5103700228995587333
@@ -136,11 +139,13 @@ MonoBehaviour:
   mouseSensitivityX: 20
   mouseSensitivityY: 20
   sneakDivider: 2
+  steppingSound: {fileID: 0}
   normalDetectionRange: 15
   sneakDetectionRange: 7
   normalDetectionTime: 2
   sneakDetectionTime: 4
   maxAngle: 45
+  animator: {fileID: 0}
 --- !u!114 &5297129526156172632
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -153,13 +158,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c46049f82bbd0a44d9c80bd1ad633008, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  money: 0
+  money: -1
   keys:
   - type: 1
     have: 0
   - type: 2
     have: 0
-  weapons: []
+  - type: 3
+    have: 0
+  weapons:
+  - {fileID: 11400000, guid: 23cce52d64643304d92d261f675d3af1, type: 2}
+  - {fileID: 11400000, guid: 0b3747cf5bc718247ad06fff3cf17c1e, type: 2}
   items: []
   collectedItems: []
   weaponPointer: 0
@@ -189,6 +198,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   shootDelay: 0.3
+  animator: {fileID: 0}
+  reloadSound: {fileID: 9114205840511041889}
+  shootSound: {fileID: 8421298906597843841}
 --- !u!114 &7883426963325819718
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -214,4 +226,150 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04d95daf00e2c0a43b13d18eb51dbc7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  menues: []
+  menues:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+--- !u!114 &8826525382249243597
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4405403554042559979}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7ce451545728f6d45bc0a34805dd16ad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  interactRange: 5
+  rayHeightOffset: 0
+--- !u!1 &6805281791693398953
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5277452717909282692}
+  - component: {fileID: 9114205840511041889}
+  m_Layer: 3
+  m_Name: ReloadingSound
+  m_TagString: AudioSource
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5277452717909282692
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6805281791693398953}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8480532155893375362}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &9114205840511041889
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6805281791693398953}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: -150296353
+      Data2: 1223863604
+      Data3: 1308973473
+      Data4: -389039068
+    Path: event:/SFX/Player/Reload
+  Event: 
+  EventPlayTrigger: 0
+  EventStopTrigger: 0
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params: []
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20
+--- !u!1 &7947416052004832370
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5726402012112463715}
+  - component: {fileID: 8421298906597843841}
+  m_Layer: 3
+  m_Name: ShootingSound
+  m_TagString: AudioSource
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5726402012112463715
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7947416052004832370}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8480532155893375362}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8421298906597843841
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7947416052004832370}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: 1777977973
+      Data2: 1189173789
+      Data3: 755461537
+      Data4: -1747968674
+    Path: event:/SFX/Player/Shoot
+  Event: 
+  EventPlayTrigger: 0
+  EventStopTrigger: 0
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params: []
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20
