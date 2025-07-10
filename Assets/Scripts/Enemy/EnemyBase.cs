@@ -77,6 +77,11 @@ public class EnemyBase : MonoBehaviour
     private float footstepTimer = 0f;
     private bool isMoving = false;
 
+    [Header("Audio")]
+    public EventReference takeDamageEvent;
+    public EventReference deathEvent;
+
+
     [Header("Rotation Speeds")]
     public float patrolRotationSpeed = 2f;
     public float spottedRotationSpeed = 5f;
@@ -460,6 +465,12 @@ public class EnemyBase : MonoBehaviour
         currentHealth -= damage;
         Debug.Log("Enemy health: " + currentHealth);
 
+        // Play damage audio
+        if (!takeDamageEvent.IsNull)
+        {
+            RuntimeManager.PlayOneShot(takeDamageEvent, transform.position);
+        }
+
         // Make enemy alerted immediately on damage
         BecomeAlerted();
 
@@ -472,16 +483,14 @@ public class EnemyBase : MonoBehaviour
 
     private void Die()
     {
-        Debug.Log("Enemy died!");
-
-        if (hasKeycard && keycardPrefab != null)
+        if (!deathEvent.IsNull)
         {
-            Instantiate(keycardPrefab, transform.position, Quaternion.identity);
+            RuntimeManager.PlayOneShot(deathEvent, transform.position);
         }
 
-        if (hasItem && itemPrefab != null)
+        if (keycardPrefab != null)
         {
-            Instantiate(itemPrefab, transform.position, Quaternion.identity);
+            Instantiate(keycardPrefab, transform.position, Quaternion.identity);
         }
 
         Destroy(gameObject);
