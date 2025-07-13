@@ -14,12 +14,14 @@ public class EnemyBase : MonoBehaviour
     public Transform head;
     public static List<EnemyBase> AllGuards = new List<EnemyBase>();
 
-    [Header("Patrolling")]
+    [Header("Patrolling / Movement Speeds")]
     public Transform[] patrolPoints;
     private int waypointIndex;
     private bool isWaiting;
     public float patrolWaitTime = 3f;
     public float patrolSpeed = 3.5f;
+    public float chaseSpeed = 5.5f;
+
 
     [Header("Detection")]
     public GameObject player;
@@ -66,7 +68,6 @@ public class EnemyBase : MonoBehaviour
     private Vector3 lastSeenPosition;
 
     private NavMeshAgent agent;
-    private float chaseSpeed;
     private bool isWaitingAtSearchPoint = false;
 
     [Header("Spotlight Settings")]
@@ -108,7 +109,6 @@ public class EnemyBase : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
         agent.enabled = true;
 
-        chaseSpeed = agent.speed;
         currentHealth = maxHealth;
 
         if (patrolPoints.Length > 0)
