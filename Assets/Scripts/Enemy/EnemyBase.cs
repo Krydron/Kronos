@@ -81,9 +81,8 @@ public class EnemyBase : MonoBehaviour
 
     [Header("Audio / Movement Tracking")]
     public EventReference footstepEvent;
-    public float footstepInterval = 0.5f;
-    private float footstepTimer = 0f;
     private bool isMoving = false;
+    private EventInstance footstepInstance;
 
     [Header("Audio")]
     public EventReference takeDamageEvent;
@@ -127,6 +126,15 @@ public class EnemyBase : MonoBehaviour
             fovSpotlight.color = spotlightColor;
             fovSpotlight.intensity = spotlightIntensity;
         }
+
+        // Create the looping footstep sound instance
+        if (!footstepEvent.IsNull)
+        {
+            footstepInstance = RuntimeManager.CreateInstance(footstepEvent);
+            footstepInstance.set3DAttributes(RuntimeUtils.To3DAttributes(gameObject));
+            footstepInstance.start();
+            footstepInstance.setPaused(true); // start paused
+        }
     }
 
     private void Update()
@@ -152,31 +160,31 @@ public class EnemyBase : MonoBehaviour
 
         UpdateSpotlight();
         UpdateMovementAudio();
+
+        // Update footstepInstance position each frame
+        if (footstepInstance.isValid())
+        {
+            footstepInstance.set3DAttributes(RuntimeUtils.To3DAttributes(gameObject));
+        }
     }
 
     private void UpdateMovementAudio()
     {
-        if (!footstepEvent.IsNull)
+        if (footstepInstance.isValid())
         {
-            if (agent != null && agent.hasPath && agent.velocity.sqrMagnitude > 0.1f && !agent.isStopped)
-            {
-                if (!isMoving)
-                {
-                    isMoving = true;
-                    footstepTimer = 0f;
-                }
+            bool currentlyMoving = (agent != null && agent.hasPath && agent.velocity.sqrMagnitude > 0.1f && !agent.isStopped);
 
-                footstepTimer += Time.deltaTime;
-                if (footstepTimer >= footstepInterval)
-                {
-                    RuntimeManager.PlayOneShot(footstepEvent, transform.position);
-                    footstepTimer = 0f;
-                }
-            }
-            else
+            if (currentlyMoving && !isMoving)
             {
+                // Start footstep sound
+                footstepInstance.setPaused(false);
+                isMoving = true;
+            }
+            else if (!currentlyMoving && isMoving)
+            {
+                // Stop footstep sound
+                footstepInstance.setPaused(true);
                 isMoving = false;
-                footstepTimer = 0f;
             }
         }
     }
@@ -501,6 +509,16 @@ public class EnemyBase : MonoBehaviour
         }
 
         Destroy(gameObject);
+    }
+
+    private void OnDestroy()
+    {
+        // Release footstep instance properly
+        if (footstepInstance.isValid())
+        {
+            footstepInstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+            footstepInstance.release();
+        }
     }
 
     private void UpdateSpotlight()
