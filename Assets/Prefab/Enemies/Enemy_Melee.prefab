@@ -138,6 +138,7 @@ Transform:
   - {fileID: 1527567573471528911}
   - {fileID: 1157838177455602419}
   - {fileID: 7626598306428207436}
+  - {fileID: 8449356714705148869}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &2312870512908146038
@@ -285,13 +286,7 @@ MonoBehaviour:
   spotlightOffsetForward: 0.5
   spotlightOffsetUp: 0
   spotlightInnerAngleFactor: 0.6
-  footstepEvent:
-    Guid:
-      Data1: 2012319529
-      Data2: 1245209043
-      Data3: 1343535755
-      Data4: -1518592492
-    Path: event:/SFX/Enemy/Footstep
+  footstepEvent: {fileID: 6198021762540093815}
   footstepInterval: 2
   takeDamageEvent:
     Guid:
@@ -477,7 +472,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ff770f31fd35a64e9420cea2378b334, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animations: 0
+  animations: 4
 --- !u!114 &8610765404673866005
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -491,6 +486,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 0}
+  lookAtPlayer: 1
+  lockX: 1
 --- !u!1 &6122662226482112743
 GameObject:
   m_ObjectHideFlags: 0
@@ -531,7 +528,7 @@ Light:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6122662226482112743}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 11
   m_Type: 0
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -612,6 +609,69 @@ MonoBehaviour:
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
   m_SoftShadowQuality: 0
+--- !u!1 &6898836205632693986
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8449356714705148869}
+  - component: {fileID: 6198021762540093815}
+  m_Layer: 0
+  m_Name: FootstepAudio
+  m_TagString: AudioSource
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8449356714705148869
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6898836205632693986}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 134517076462748213}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6198021762540093815
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6898836205632693986}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: 2012319529
+      Data2: 1245209043
+      Data3: 1343535755
+      Data4: -1518592492
+    Path: event:/SFX/Enemy/Footstep
+  Event: 
+  EventPlayTrigger: 0
+  EventStopTrigger: 0
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params: []
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20
 --- !u!1 &9001294352327786838
 GameObject:
   m_ObjectHideFlags: 0

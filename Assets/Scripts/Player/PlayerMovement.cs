@@ -176,16 +176,20 @@ public class PlayerMovement : MonoBehaviour
         if (move.x == 0 && move.y == 0)
         {
             //steppingSound.GetComponent<>
-            animator.SetBool("Walking", false);
             walkingSound.Stop();
             crouchingSound.Stop();
+
+            if (animator == null) { return; }
+            animator.SetBool("Walking", true);
         }
         else
         {
-            animator.SetBool("Walking", true);
             if (walkingSound.IsPlaying() || crouchingSound.IsPlaying()) { return; }
             if (sneaking) { crouchingSound.Play(); return; }
             walkingSound.Play();
+
+            if (animator == null) { return; }
+            animator.SetBool("Walking", true);
         }
     }
 
