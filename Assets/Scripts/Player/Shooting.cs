@@ -12,6 +12,7 @@
 *
 ***************************************************************************************************************/
 
+using FMODUnity;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -23,6 +24,11 @@ public class Shooting : MonoBehaviour
     [SerializeField] float shootDelay;
     float shootTime;
     AmmoDisplay ammoDisplay;
+    PlayerTakedown playerTakedown;
+
+    [SerializeField] Animator animator;
+    [SerializeField] StudioEventEmitter reloadSound;
+    [SerializeField] StudioEventEmitter shootSound;
 
     private void Start()
     {
@@ -31,15 +37,29 @@ public class Shooting : MonoBehaviour
         ammoDisplay = GameObject.Find("AmmoDisplay").GetComponent<AmmoDisplay>();
         //weapon = inventory.GetWeapon();
         //ammoDisplay.UpdatDisplay(weapon.Ammo(), weapon.Rounds());
+        playerTakedown = GetComponent<PlayerTakedown>(); // get reference
     }
 
     public void OnAttack()
     {
-        if (GetComponent<UIInteractions>().MenuOpen() || GetComponent<UIInteractions>() == null) { return; }
+        if (GetComponent<UIInteractions>().MenuOpen() || GetComponent<UIInteractions>() == null || Time.timeScale == 0f) { return; }
         if (shootTime +  shootDelay > Time.time) { return; }
         //get gun details from inventroy;
         weapon = inventory.GetWeapon();
         if (weapon == null ) { Debug.Log("weapon null"); return; }
+
+        // Try takedown first if melee weapon
+        if (weapon.name == "Melee" && playerTakedown != null)
+        {
+            Debug.Log("Attempting takedown");
+            bool takedownDone = playerTakedown.TryTakedown();
+            Debug.Log("Takedown result: " + takedownDone);
+            if (takedownDone)
+            {
+                Debug.Log("Takedown performed, skipping normal attack");
+                return;
+            }
+        }
 
         if (weapon.name == "Melee")
         {
@@ -59,6 +79,8 @@ public class Shooting : MonoBehaviour
         }
         weapon.Ammo(weapon.Ammo()-1);
         Debug.Log("Shoot");
+        animator.SetTrigger("Shoot");
+        shootSound.Play();
         //raycast from player
         if (Physics.Raycast(transform.position, camera.transform.forward, out RaycastHit hit))
         {
@@ -73,11 +95,17 @@ public class Shooting : MonoBehaviour
     }
     public void OnReload()
     {
+        if (weapon.Ammo() == weapon.MaxAmmo()) { return; }
         if (weapon.Rounds() <= 0)
         {
             Debug.Log("No Rounds");
             return;
         }
+
+
+        animator.SetTrigger("Reload");
+        reloadSound.Play();
+        GameObject.Find("EnemyManager").GetComponent<EnemyAlertManager>().PlayerFiredGun();
         if (weapon.MaxAmmo() > weapon.Rounds())
         {
             weapon.Ammo(weapon.Ammo() + weapon.Rounds());

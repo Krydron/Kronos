@@ -28,10 +28,13 @@ public class Inventory : MonoBehaviour
     [SerializeField] public List<Key> keys;
     [SerializeField] public Weapon[] weapons;
     [SerializeField] public Weapon[] items;
+    [SerializeField] private List<Item> collectedItems = new List<Item>();
     public uint weaponPointer;
     private CashDisplay cashDisplay;
 
     private AmmoDisplay ammoDisplay;
+
+    [SerializeField] GameObject gunUI;
 
     public void ActivateKeyType(Doors.DoorType type)
     {
@@ -94,11 +97,13 @@ public class Inventory : MonoBehaviour
     {
         weaponPointer = 0;
         UpdateAmmoDisplay();
+        gunUI.SetActive(true);
     }
     public void OnChangeWeapon2()
     {
         weaponPointer = 1;
         UpdateAmmoDisplay();
+        gunUI.SetActive(false);
     }
 
     private void UpdateAmmoDisplay()
@@ -110,13 +115,14 @@ public class Inventory : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        weapons = Resources.FindObjectsOfTypeAll<Weapon>();
+        //weapons = Resources.FindObjectsOfTypeAll<Weapon>();
         foreach (Weapon weapon in weapons)
         {
-            weapon.InInventory(false);
+            weapon.InInventory(true);
+            weapon.ResetAmmo(); 
         }
         weaponPointer = 0;
-        money = 0;
+        //money = 0;
         //ammoDisplay = GameObject.Find("AmmoDisplay").GetComponent<AmmoDisplay>();
         //cashDisplay = GameObject.Find("CashDisplay").GetComponent<CashDisplay>();
         //cashDisplay.UpdateCashDisplay(100);
@@ -124,7 +130,28 @@ public class Inventory : MonoBehaviour
         //UpdateAmmoDisplay();
     }
 
-    
+    public void AddItemToInventory(Item item)
+    {
+        if (!collectedItems.Contains(item))
+        {
+            collectedItems.Add(item);
+            Debug.Log($"Item '{item.itemName}' added to inventory.");
+        }
+    }
+
+    public bool HasItem(Item item)
+    {
+        return collectedItems.Contains(item);
+    }
+
+    public void RemoveItem(Item item)
+    {
+        if (collectedItems.Contains(item))
+        {
+            collectedItems.Remove(item);
+            Debug.Log($"Item '{item.itemName}' removed from inventory.");
+        }
+    }
 
     // Update is called once per frame
     void Update()

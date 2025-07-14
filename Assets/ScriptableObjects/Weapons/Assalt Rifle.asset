@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f48a4f650459a94fa5f6f415457b725, type: 3}
   m_Name: Assalt Rifle
   m_EditorClassIdentifier: 
-  damage: 10
+  damage: 40
   ammo: 10
   maxAmmo: 10
   rounds: 200

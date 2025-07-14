@@ -16,13 +16,19 @@ public class Weapon : ScriptableObject
     public int Ammo() { return ammo; }
     public int MaxAmmo() { return maxAmmo; }
     public int Rounds() { return rounds; }
-    public float MaxRounds() { return maxRounds; }
+    public int MaxRounds() { return maxRounds; }
 
     public bool InInventory() { return inInventory; }
 
     public void InInventory(bool value) { inInventory = value; }
 
-    public void Rounds(int value) { rounds = value; }
+    public void Rounds(int value) { rounds = Mathf.Clamp(value,0,maxRounds); }
 
-    public void Ammo(int value) { ammo = value; }
+    public void Ammo(int value) { ammo = Mathf.Clamp(value, 0, maxAmmo); }
+
+    public void ResetAmmo()
+    {
+        ammo = maxAmmo;
+        rounds = maxRounds;
+    }
 }

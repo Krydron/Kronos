@@ -1,5 +1,131 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &2563772132965721616
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4686264983686846088}
+  - component: {fileID: 9069621977211321263}
+  m_Layer: 3
+  m_Name: CroutchSound
+  m_TagString: AudioSource
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4686264983686846088
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2563772132965721616}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8480532155893375362}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &9069621977211321263
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2563772132965721616}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: -1648748303
+      Data2: 1166784079
+      Data3: 2110537860
+      Data4: 386694113
+    Path: event:/SFX/Player/Crouched
+  Event: 
+  EventPlayTrigger: 0
+  EventStopTrigger: 0
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params: []
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20
+--- !u!1 &3836378820146910451
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 307023340563221970}
+  - component: {fileID: 6418517604443944924}
+  m_Layer: 3
+  m_Name: WalkingSound
+  m_TagString: AudioSource
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &307023340563221970
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3836378820146910451}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8480532155893375362}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6418517604443944924
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3836378820146910451}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: 1751744277
+      Data2: 1162213252
+      Data3: 1660168075
+      Data4: -704604337
+    Path: event:/SFX/Player/Footsteps
+  Event: 
+  EventPlayTrigger: 0
+  EventStopTrigger: 0
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params: []
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20
 --- !u!1 &4405403554042559979
 GameObject:
   m_ObjectHideFlags: 0
@@ -18,6 +144,7 @@ GameObject:
   - component: {fileID: 7438934884513925036}
   - component: {fileID: 7883426963325819718}
   - component: {fileID: 2255673058471272106}
+  - component: {fileID: 8826525382249243597}
   m_Layer: 3
   m_Name: Player
   m_TagString: Player
@@ -37,7 +164,11 @@ Transform:
   m_LocalPosition: {x: 0, y: 2, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 5726402012112463715}
+  - {fileID: 5277452717909282692}
+  - {fileID: 307023340563221970}
+  - {fileID: 4686264983686846088}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!54 &5103700228995587333
@@ -47,10 +178,10 @@ Rigidbody:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4405403554042559979}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Mass: 100
-  m_Drag: 0
-  m_AngularDrag: 0.05
+  m_LinearDamping: 5
+  m_AngularDamping: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
   m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
@@ -132,14 +263,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75b3717028ed56646af633aab14a55d6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerSpeed: 500
+  playerSpeed: 80
   mouseSensitivityX: 20
   mouseSensitivityY: 20
-  sneakSpeed: 250
+  sneakDivider: 2
+  steppingSound: {fileID: 0}
   normalDetectionRange: 15
   sneakDetectionRange: 7
   normalDetectionTime: 2
   sneakDetectionTime: 4
+  maxAngle: 45
+  animator: {fileID: 0}
+  walkingSound: {fileID: 6418517604443944924}
+  crouchingSound: {fileID: 9069621977211321263}
 --- !u!114 &5297129526156172632
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -152,14 +288,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c46049f82bbd0a44d9c80bd1ad633008, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  money: 0
+  money: -1
   keys:
   - type: 1
     have: 0
   - type: 2
     have: 0
-  weapons: []
+  - type: 3
+    have: 0
+  weapons:
+  - {fileID: 11400000, guid: 23cce52d64643304d92d261f675d3af1, type: 2}
+  - {fileID: 11400000, guid: 0b3747cf5bc718247ad06fff3cf17c1e, type: 2}
   items: []
+  collectedItems: []
   weaponPointer: 0
 --- !u!114 &8863089894577011506
 MonoBehaviour:
@@ -174,7 +315,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   health: 200
-  healthBar: {fileID: 0}
 --- !u!114 &7438934884513925036
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -187,7 +327,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5973ce885e44b244f9ba6d8322f91786, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shootDelay: 1
+  shootDelay: 0.3
+  animator: {fileID: 0}
+  reloadSound: {fileID: 9114205840511041889}
+  shootSound: {fileID: 8421298906597843841}
 --- !u!114 &7883426963325819718
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -200,6 +343,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ea548e924fb6474f9037ca80f47e946, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  interactDistance: 2
 --- !u!114 &2255673058471272106
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -212,3 +356,150 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04d95daf00e2c0a43b13d18eb51dbc7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  menues:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+--- !u!114 &8826525382249243597
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4405403554042559979}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7ce451545728f6d45bc0a34805dd16ad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  interactRange: 5
+  rayHeightOffset: 0
+--- !u!1 &6805281791693398953
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5277452717909282692}
+  - component: {fileID: 9114205840511041889}
+  m_Layer: 3
+  m_Name: ReloadingSound
+  m_TagString: AudioSource
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5277452717909282692
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6805281791693398953}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8480532155893375362}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &9114205840511041889
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6805281791693398953}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: -150296353
+      Data2: 1223863604
+      Data3: 1308973473
+      Data4: -389039068
+    Path: event:/SFX/Player/Reload
+  Event: 
+  EventPlayTrigger: 0
+  EventStopTrigger: 0
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params: []
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20
+--- !u!1 &7947416052004832370
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5726402012112463715}
+  - component: {fileID: 8421298906597843841}
+  m_Layer: 3
+  m_Name: ShootingSound
+  m_TagString: AudioSource
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5726402012112463715
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7947416052004832370}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8480532155893375362}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8421298906597843841
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7947416052004832370}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: 1777977973
+      Data2: 1189173789
+      Data3: 755461537
+      Data4: -1747968674
+    Path: event:/SFX/Player/Shoot
+  Event: 
+  EventPlayTrigger: 0
+  EventStopTrigger: 0
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params: []
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20

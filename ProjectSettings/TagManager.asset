@@ -10,8 +10,7 @@ TagManager:
   - PauseMenu
   - AudioSource
   - Eyes
-  - Explosive
-  - exploding wall
+  - NPC
   layers:
   - Default
   - TransparentFX
@@ -22,7 +21,7 @@ TagManager:
   - Door
   - Interactable
   - AudioSource
-  - 
+  - NPC
   - 
   - 
   - 

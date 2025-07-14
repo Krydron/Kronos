@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class Doors : MonoBehaviour
@@ -7,10 +8,31 @@ public class Doors : MonoBehaviour
         Default,
         Red,
         Blue,
-        Yellow
+        Yellow,
+        Disabled
     }
     private Animator animator;
     public DoorType type;
+
+    IEnumerator HoldDoorE(float seconds)
+    {
+        OpenDoor();
+        yield return new WaitForSeconds(seconds);
+        CloseDoor();
+    }
+
+    public void HoldDoor(float seconds)
+    {
+        OpenDoor();
+        type = DoorType.Default;
+        //StartCoroutine(HoldDoorE(seconds));
+    }
+    
+    public void LockDoor()
+    {
+        type = DoorType.Disabled;
+        CloseDoor();
+    }
 
     private void Start()
     {
