@@ -115,13 +115,14 @@ public class Inventory : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        weapons = Resources.FindObjectsOfTypeAll<Weapon>();
+        //weapons = Resources.FindObjectsOfTypeAll<Weapon>();
         foreach (Weapon weapon in weapons)
         {
-            weapon.InInventory(false);
+            weapon.InInventory(true);
+            weapon.ResetAmmo(); 
         }
         weaponPointer = 0;
-        money = 0;
+        //money = 0;
         //ammoDisplay = GameObject.Find("AmmoDisplay").GetComponent<AmmoDisplay>();
         //cashDisplay = GameObject.Find("CashDisplay").GetComponent<CashDisplay>();
         //cashDisplay.UpdateCashDisplay(100);

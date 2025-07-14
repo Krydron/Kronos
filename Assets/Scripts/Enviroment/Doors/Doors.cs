@@ -50,4 +50,9 @@ public class Doors : MonoBehaviour
         if (animator == null) { Debug.Log("Doors are null"); return; }
         animator.SetBool("OpenDoor", false);
     }
+
+    public void SetLock(bool _newLockType)
+    {
+        throw new System.NotImplementedException("SetLock method is not implemented yet");
+    }
 }

@@ -287,11 +287,11 @@ MonoBehaviour:
   spotlightInnerAngleFactor: 0.6
   footstepEvent:
     Guid:
-      Data1: 2012319529
-      Data2: 1245209043
-      Data3: 1343535755
-      Data4: -1518592492
-    Path: event:/SFX/Enemy/Footstep
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
   footstepInterval: 2
   takeDamageEvent:
     Guid:

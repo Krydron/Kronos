@@ -95,14 +95,17 @@ public class Shooting : MonoBehaviour
     }
     public void OnReload()
     {
-        animator.SetTrigger("Reload");
-        reloadSound.Play();
-        GameObject.Find("EnemyManager").GetComponent<EnemyAlertManager>().PlayerFiredGun();
+        if (weapon.Ammo() == weapon.MaxAmmo()) { return; }
         if (weapon.Rounds() <= 0)
         {
             Debug.Log("No Rounds");
             return;
         }
+
+
+        animator.SetTrigger("Reload");
+        reloadSound.Play();
+        GameObject.Find("EnemyManager").GetComponent<EnemyAlertManager>().PlayerFiredGun();
         if (weapon.MaxAmmo() > weapon.Rounds())
         {
             weapon.Ammo(weapon.Ammo() + weapon.Rounds());
