@@ -1,8 +1,4 @@
 using System;
-using System.Collections;
-using System.Runtime.CompilerServices;
-using Unity.VisualScripting;
-using UnityEditor;
 using UnityEngine;
 
 public class explosives : MonoBehaviour
@@ -25,7 +21,7 @@ public class explosives : MonoBehaviour
         //Decrement bombs
         //Show bomb model
         Destroy(gameObject,time);
-    })
+    }
 
 
 
