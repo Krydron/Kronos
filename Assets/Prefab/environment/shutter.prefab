@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 5174119486134354515}
   - component: {fileID: 8643056805642144096}
   - component: {fileID: 574254180431676948}
+  - component: {fileID: 7028609838973675495}
   m_Layer: 0
   m_Name: shutter
   m_TagString: Untagged
@@ -108,3 +109,23 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &7028609838973675495
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3538638414178243306}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 90dc696810cd9f14d88c7eee9e487490, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  openTrigger: 0
+  closeTrigger: 0
+  animator: {fileID: 0}
+  alarmLight: {fileID: 0}
+  lockdownLight: {fileID: 0}
+  flickerSpeed: 1
+  timer: 0
+  flickerDelay: 0.1
