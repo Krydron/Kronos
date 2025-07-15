@@ -180,7 +180,7 @@ public class PlayerMovement : MonoBehaviour
             crouchingSound.Stop();
 
             if (animator == null) { return; }
-            animator.SetBool("Walking", true);
+            animator.SetBool("Walking", false);
         }
         else
         {
