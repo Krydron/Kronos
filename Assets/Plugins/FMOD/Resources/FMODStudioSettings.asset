@@ -461,10 +461,10 @@ MonoBehaviour:
   m_Name: FMODStudioSettings
   m_EditorClassIdentifier: 
   switchSettingsMigration: 1
-  HasSourceProject: 1
-  HasPlatforms: 1
+  HasSourceProject: 0
+  HasPlatforms: 0
   sourceProjectPath: ../../../FMOD/FMOD Projects/Kronos/Kronos.fspro
-  sourceBankPath: ../../../FMOD/FMOD Projects/Kronos/Build
+  sourceBankPath: Assets/Sound
   sourceBankPathUnformatted: 
   BankRefreshCooldown: 1
   ShowBankRefreshWindow: 1
@@ -486,11 +486,11 @@ MonoBehaviour:
   RealChannelSettings: []
   Plugins: []
   MasterBanks:
-  - Master
+  - Desktop/Master
   Banks:
-  - Background
-  - Dialogue
-  - SFX
+  - Desktop/Background
+  - Desktop/Dialogue
+  - Desktop/SFX
   BanksToLoad: []
   LiveUpdatePort: 9264
   EnableMemoryTracking: 0
