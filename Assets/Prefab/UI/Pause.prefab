@@ -1078,7 +1078,7 @@ GameObject:
   - component: {fileID: 8255336750073782243}
   - component: {fileID: 8664951523118437970}
   m_Layer: 5
-  m_Name: Image
+  m_Name: Title
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1936,11 +1936,11 @@ RectTransform:
   m_Children:
   - {fileID: 4919874878119190712}
   - {fileID: 355522033318969586}
+  - {fileID: 5680695567351501075}
   - {fileID: 6844275193153425668}
   - {fileID: 1075596986798918901}
   - {fileID: 996973832403319890}
   - {fileID: 9143861701011001807}
-  - {fileID: 5680695567351501075}
   m_Father: {fileID: 3124275244430689224}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}

@@ -25,12 +25,15 @@
 ***************************************************************************************************************/
 
 using UnityEngine;
+using FMODUnity;
 
 public class Vents : Interactable
 {
     [SerializeField] Transform destination;
     [SerializeField] float interactionDistance;
     private GameObject player;
+
+    [SerializeField] StudioEventEmitter sound;
 
     private void Start()
     {
@@ -42,6 +45,7 @@ public class Vents : Interactable
         if (Vector3.Distance(transform.position, player.transform.position) <= interactionDistance)
         {
             player.transform.position = destination.position;
+            sound.Play();
             return true;
         }
         return false;

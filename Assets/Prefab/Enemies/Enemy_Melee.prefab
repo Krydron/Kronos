@@ -237,6 +237,7 @@ MonoBehaviour:
   - {fileID: 0}
   patrolWaitTime: 2
   patrolSpeed: 4.5
+  chaseSpeed: 5.5
   player: {fileID: 0}
   sightRange: 15
   fieldOfView: 210
@@ -287,26 +288,25 @@ MonoBehaviour:
   spotlightInnerAngleFactor: 0.6
   footstepEvent:
     Guid:
-      Data1: 0
-      Data2: 0
-      Data3: 0
-      Data4: 0
-    Path: 
-  footstepInterval: 2
+      Data1: 2012319529
+      Data2: 1245209043
+      Data3: 1343535755
+      Data4: -1518592492
+    Path: event:/SFX/Enemy/Footstep
   takeDamageEvent:
     Guid:
-      Data1: 0
-      Data2: 0
-      Data3: 0
-      Data4: 0
-    Path: 
+      Data1: -305508811
+      Data2: 1152538134
+      Data3: 153898372
+      Data4: -1873081045
+    Path: event:/SFX/Enemy/Hurt
   deathEvent:
     Guid:
-      Data1: 0
-      Data2: 0
-      Data3: 0
-      Data4: 0
-    Path: 
+      Data1: 194281188
+      Data2: 1298032442
+      Data3: -1955134558
+      Data4: 816638418
+    Path: event:/SFX/Enemy/Death
   patrolRotationSpeed: 2
   spottedRotationSpeed: 5
   chaseRotationSpeed: 20
@@ -477,7 +477,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ff770f31fd35a64e9420cea2378b334, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animations: 0
+  animations: 4
 --- !u!114 &8610765404673866005
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -491,6 +491,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 0}
+  lookAtPlayer: 1
+  lockX: 1
 --- !u!1 &6122662226482112743
 GameObject:
   m_ObjectHideFlags: 0
