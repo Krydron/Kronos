@@ -742,6 +742,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   shootDelay: 1
+  animator: {fileID: 0}
+  reloadSound: {fileID: 0}
+  shootSound: {fileID: 0}
 --- !u!114 &1026528490
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -777,6 +780,7 @@ MonoBehaviour:
   items: []
   collectedItems: []
   weaponPointer: 0
+  gunUI: {fileID: 0}
 --- !u!114 &1026528492
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -799,6 +803,9 @@ MonoBehaviour:
   normalDetectionTime: 2
   sneakDetectionTime: 4
   maxAngle: 0
+  animator: {fileID: 0}
+  walkingSound: {fileID: 0}
+  crouchingSound: {fileID: 0}
 --- !u!114 &1026528493
 MonoBehaviour:
   m_ObjectHideFlags: 0
