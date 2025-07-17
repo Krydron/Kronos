@@ -27,6 +27,13 @@ public class EnemyTaskManager : MonoBehaviour
 
         [Header("Conversation Audio")]
         public EventReference conversationAudioEvent;
+
+        [Header("Conversation Subtitles")]
+        [Tooltip("Subtitle lines to display during conversation.")]
+        public List<string> subtitleLines = new List<string>();
+
+        [Tooltip("Duration (in seconds) to display each line.")]
+        public List<float> subtitleDurations = new List<float>();
     }
 
     [Header("Task Queue")]
@@ -52,16 +59,25 @@ public class EnemyTaskManager : MonoBehaviour
 
     private EventInstance conversationInstance;
 
+    [Header("Subtitle Settings")]
+    public float playerSubtitleDistance = 10f;
+
+    private Transform playerTransform;
+
+
     private void Start()
     {
         enemyBase = GetComponent<EnemyBase>();
         agent = GetComponent<NavMeshAgent>();
+
+        playerTransform = GameObject.FindGameObjectWithTag("Player")?.transform;
 
         if (taskQueue.Count > 0)
         {
             StartCoroutine(TaskQueueRoutine());
         }
     }
+
 
     private IEnumerator TaskQueueRoutine()
     {
@@ -218,6 +234,9 @@ public class EnemyTaskManager : MonoBehaviour
 
             PlayConversationAudio(task.conversationAudioEvent);
             conversationPartner.PlayConversationAudio(task.conversationAudioEvent);
+            // Trigger subtitles if player is close
+            TryShowSubtitlesIfPlayerClose(task);
+
 
             yield return new WaitForSeconds(task.taskDuration);
 
@@ -241,6 +260,21 @@ public class EnemyTaskManager : MonoBehaviour
             }
         }
     }
+
+    private void TryShowSubtitlesIfPlayerClose(TaskData task)
+    {
+        if (playerTransform == null) return;
+
+        float distanceToPlayer = Vector3.Distance(transform.position, playerTransform.position);
+        if (distanceToPlayer <= playerSubtitleDistance)
+        {
+            if (task.subtitleLines != null && task.subtitleLines.Count > 0 && SubtitleManager.Instance != null)
+            {
+                SubtitleManager.Instance.PlaySubtitles(task.subtitleLines, task.subtitleDurations);
+            }
+        }
+    }
+
 
     private void PlayConversationAudio(EventReference audioEvent)
     {
