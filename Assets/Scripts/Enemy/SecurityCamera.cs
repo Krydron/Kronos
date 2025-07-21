@@ -4,17 +4,18 @@ using UnityEngine;
 public class SecurityCamera : MonoBehaviour
 {
     [Header("Camera Settings")]
-    public float fieldOfView = 45f;
-    public float viewDistance = 10f;
+    [Range(1f, 179f)] public float fieldOfView = 45f;        // Cone half-angle in degrees
+    public float viewDistance = 10f;                          // Cone length
+    [Range(0f, 90f)] public float downwardTiltAngle = 60f;   // Tilt cone downward (degrees)
+
     public float detectionTime = 2f;
     public float rotationSpeed = 30f;
     public float rotationAngle = 45f;
     public float rotationDelay = 2f;
 
-    [Header("Spotlight Settings")]
-    public Light spotlight;
-    public Color idleColor = new Color(1f, 1f, 0f, 1f); // Yellow
-    public Color alertColor = new Color(1f, 0f, 0f, 1f); // Red
+    [Header("FOV Cone Settings")]
+    public Material idleFOVMaterial;
+    public Material alertFOVMaterial;
 
     [Header("Lockdown Settings")]
     public bool canTriggerLockdown = false;
@@ -27,17 +28,18 @@ public class SecurityCamera : MonoBehaviour
     private float startRotationY;
     private bool canRotate = true;
 
+    private CameraFOVCone fovCone;
+
     private void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player")?.transform;
         startRotationY = transform.eulerAngles.y;
 
-        if (spotlight != null)
+        fovCone = GetComponentInChildren<CameraFOVCone>();
+        if (fovCone != null)
         {
-            // Initialize spotlight to match FOV and distance
-            spotlight.spotAngle = fieldOfView;
-            spotlight.range = viewDistance;
-            spotlight.color = idleColor;
+            fovCone.SetMaterials(idleFOVMaterial, alertFOVMaterial);
+            fovCone.SetAlert(false);
         }
     }
 
@@ -51,36 +53,20 @@ public class SecurityCamera : MonoBehaviour
         if (PlayerInView())
         {
             detectionTimer += Time.deltaTime;
-
-            if (spotlight != null)
-                spotlight.color = alertColor;
+            fovCone?.SetAlert(true);
 
             if (detectionTimer >= detectionTime)
             {
                 if (canTriggerLockdown)
-                {
                     TriggerLockdown();
-                }
+
                 AlertEnemies();
             }
         }
         else
         {
-            detectionTimer = 0;
-
-            if (spotlight != null)
-                spotlight.color = idleColor;
-        }
-
-        UpdateSpotlightSettings();
-    }
-
-    private void UpdateSpotlightSettings()
-    {
-        if (spotlight != null)
-        {
-            spotlight.spotAngle = fieldOfView;
-            spotlight.range = viewDistance;
+            detectionTimer = 0f;
+            fovCone?.SetAlert(false);
         }
     }
 
@@ -93,11 +79,10 @@ public class SecurityCamera : MonoBehaviour
         if (currentRotationY > 180f)
             currentRotationY -= 360f;
 
-        float target = targetRotationY;
         if (targetRotationY > 180f)
             targetRotationY -= 360f;
 
-        float angleDifference = Mathf.DeltaAngle(currentRotationY, target);
+        float angleDifference = Mathf.DeltaAngle(currentRotationY, targetRotationY);
 
         transform.rotation = Quaternion.RotateTowards(
             transform.rotation,
@@ -128,8 +113,7 @@ public class SecurityCamera : MonoBehaviour
 
         if (angle < fieldOfView / 2)
         {
-            RaycastHit hit;
-            if (Physics.Raycast(transform.position, directionToPlayer, out hit, viewDistance))
+            if (Physics.Raycast(transform.position, directionToPlayer, out RaycastHit hit, viewDistance))
             {
                 Debug.DrawRay(transform.position, directionToPlayer * viewDistance, Color.red);
 
@@ -147,7 +131,6 @@ public class SecurityCamera : MonoBehaviour
     {
         Debug.Log("Lockdown triggered by camera!");
         // Your global lockdown logic here
-        //DoorManager.lockdownTriggered = true;
     }
 
     private void AlertEnemies()
