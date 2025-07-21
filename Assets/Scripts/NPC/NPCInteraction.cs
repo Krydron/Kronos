@@ -1,5 +1,6 @@
 using UnityEngine;
 using FMODUnity;
+using System.Collections.Generic;
 
 public class NPCInteraction : MonoBehaviour
 {
@@ -12,6 +13,13 @@ public class NPCInteraction : MonoBehaviour
     public EventReference beforeItemEvent;
     public EventReference afterItemEvent;
 
+    [Header("Subtitles")]
+    [TextArea] public List<string> beforeItemSubtitles;
+    public List<float> beforeItemDurations = new List<float>();
+
+    [TextArea] public List<string> afterItemSubtitles;
+    public List<float> afterItemDurations = new List<float>();
+
     private bool itemGiven = false;
 
     public void Interact(Inventory playerInventory)
@@ -19,6 +27,7 @@ public class NPCInteraction : MonoBehaviour
         if (itemGiven)
         {
             PlayVoice(afterItemEvent, "after");
+            ShowSubtitles(afterItemSubtitles, afterItemDurations);
             return;
         }
 
@@ -29,10 +38,12 @@ public class NPCInteraction : MonoBehaviour
                 itemGiven = true;
                 playerInventory.RemoveItem(requiredItem);
                 PlayVoice(afterItemEvent, "after");
+                ShowSubtitles(afterItemSubtitles, afterItemDurations);
             }
             else
             {
                 PlayVoice(beforeItemEvent, "before");
+                ShowSubtitles(beforeItemSubtitles, beforeItemDurations);
             }
         }
         else
@@ -40,10 +51,12 @@ public class NPCInteraction : MonoBehaviour
             if (itemGiven)
             {
                 PlayVoice(afterItemEvent, "after");
+                ShowSubtitles(afterItemSubtitles, afterItemDurations);
             }
             else
             {
                 PlayVoice(beforeItemEvent, "before");
+                ShowSubtitles(beforeItemSubtitles, beforeItemDurations);
             }
         }
     }
@@ -52,19 +65,19 @@ public class NPCInteraction : MonoBehaviour
     {
         if (eventRef.IsNull)
         {
-            if (context == "before")
-            {
-                Debug.LogWarning($"[NPCInteraction] BEFORE voice event is missing for NPC '{gameObject.name}'.");
-            }
-            else if (context == "after")
-            {
-                Debug.LogWarning($"[NPCInteraction] AFTER voice event is missing for NPC '{gameObject.name}'.");
-            }
+            Debug.LogWarning($"[NPCInteraction] {context.ToUpper()} voice event missing for NPC '{gameObject.name}'.");
             return;
         }
 
         RuntimeManager.PlayOneShot(eventRef, transform.position);
-        //Debug.Log($"[NPCInteraction] Played {context.ToUpper()} FMOD event on '{gameObject.name}': {eventRef.Path}");
+    }
+
+    private void ShowSubtitles(List<string> lines, List<float> durations)
+    {
+        if (lines != null && lines.Count > 0)
+        {
+            SubtitleManager.Instance.PlaySubtitles(lines, durations);
+        }
     }
 
     public bool HasReceivedItem() => itemGiven;
