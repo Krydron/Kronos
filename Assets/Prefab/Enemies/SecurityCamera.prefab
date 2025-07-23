@@ -450,3 +450,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   resolution: 50
+  obstacleMask:
+    serializedVersion: 2
+    m_Bits: 2113

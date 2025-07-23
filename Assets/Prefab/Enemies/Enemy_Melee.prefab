@@ -719,6 +719,9 @@ MonoBehaviour:
   viewAngle: 90
   height: 2
   segments: 30
+  obstacleMask:
+    serializedVersion: 2
+    m_Bits: 3137
 --- !u!1 &9001294352327786838
 GameObject:
   m_ObjectHideFlags: 0

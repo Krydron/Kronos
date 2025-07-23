@@ -13,6 +13,7 @@ Shader "Unlit/UnlitColourAlpha"
         {
             Blend SrcAlpha OneMinusSrcAlpha
             ZWrite Off
+            ZTest LEqual      // <-- This is the key line
             Cull Off
             Lighting Off
 

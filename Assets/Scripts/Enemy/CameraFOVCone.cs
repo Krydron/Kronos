@@ -4,17 +4,16 @@ using UnityEngine;
 public class CameraFOVCone : MonoBehaviour
 {
     [Range(3, 100)] public int resolution = 50;
+    public LayerMask obstacleMask;
 
     private Mesh mesh;
     private MeshRenderer meshRenderer;
 
     private Material idleMaterial;
     private Material alertMaterial;
-
     private bool isAlert = false;
 
-    private float downwardTiltAngle = 60f; // default tilt, set from SecurityCamera
-
+    private float downwardTiltAngle = 60f;
     private SecurityCamera securityCamera;
 
     private void Awake()
@@ -23,11 +22,8 @@ public class CameraFOVCone : MonoBehaviour
         GetComponent<MeshFilter>().mesh = mesh;
 
         meshRenderer = GetComponent<MeshRenderer>();
-
-        // Force reset the material to avoid editor overrides
-        meshRenderer.material = null;
+        meshRenderer.material = null; // Reset to prevent override
     }
-
 
     private void Start()
     {
@@ -38,6 +34,7 @@ public class CameraFOVCone : MonoBehaviour
             enabled = false;
             return;
         }
+
         downwardTiltAngle = securityCamera.downwardTiltAngle;
         SetMaterials(idleMaterial, alertMaterial);
     }
@@ -45,6 +42,10 @@ public class CameraFOVCone : MonoBehaviour
     private void LateUpdate()
     {
         if (securityCamera == null) return;
+
+        // Sync position and rotation with camera
+        transform.position = securityCamera.transform.position;
+        transform.rotation = securityCamera.transform.rotation;
 
         downwardTiltAngle = securityCamera.downwardTiltAngle;
 
@@ -59,6 +60,7 @@ public class CameraFOVCone : MonoBehaviour
     {
         idleMaterial = idleMat;
         alertMaterial = alertMat;
+
         if (meshRenderer != null)
             meshRenderer.material = isAlert ? alertMaterial : idleMaterial;
     }
@@ -69,32 +71,24 @@ public class CameraFOVCone : MonoBehaviour
 
         isAlert = alert;
         if (meshRenderer != null)
-        {
             meshRenderer.material = isAlert ? alertMaterial : idleMaterial;
-        }
     }
 
     private void DrawFOVCone(float viewAngle, float viewRadius, float tiltAngle)
     {
         mesh.Clear();
 
-        viewAngle = Mathf.Clamp(viewAngle, 1f, 179f);
-        viewRadius = Mathf.Max(viewRadius, 0.1f);
-
-        // Calculate base radius of the cone's circular base
         float halfAngleRad = (viewAngle / 2f) * Mathf.Deg2Rad;
         float baseRadius = Mathf.Tan(halfAngleRad) * viewRadius;
 
         Vector3[] vertices = new Vector3[resolution + 2];
         int[] triangles = new int[resolution * 3];
 
-        // Apex vertex at origin
-        vertices[0] = Vector3.zero;
+        vertices[0] = Vector3.zero; // apex of the cone
 
         float angleStep = 360f / resolution;
-
-        // Rotate the entire cone downward by tiltAngle degrees around X axis
         Quaternion tiltRotation = Quaternion.Euler(tiltAngle, 0f, 0f);
+        Vector3 origin = transform.position;
 
         for (int i = 0; i <= resolution; i++)
         {
@@ -102,11 +96,21 @@ public class CameraFOVCone : MonoBehaviour
             float x = baseRadius * Mathf.Cos(currentAngle * Mathf.Deg2Rad);
             float y = baseRadius * Mathf.Sin(currentAngle * Mathf.Deg2Rad);
 
-            // Vertex on base circle, initially pointing forward (z)
-            Vector3 vertexPos = new Vector3(x, y, viewRadius);
+            Vector3 localDirection = new Vector3(x, y, viewRadius).normalized;
+            Vector3 worldDirection = tiltRotation * localDirection;
 
-            // Apply tilt so cone points downward by tiltAngle degrees
-            vertices[i + 1] = tiltRotation * vertexPos;
+            Vector3 endPoint = origin + transform.rotation * worldDirection * viewRadius;
+
+            if (Physics.Raycast(origin, transform.rotation * worldDirection, out RaycastHit hit, viewRadius, obstacleMask))
+            {
+                endPoint = hit.point;
+            }
+
+            // Convert world point to local space relative to the FOV GameObject
+            vertices[i + 1] = transform.InverseTransformPoint(endPoint);
+
+            // Optional debug
+            Debug.DrawLine(origin, endPoint, isAlert ? Color.red : Color.green, 0.05f);
         }
 
         for (int i = 0; i < resolution; i++)
