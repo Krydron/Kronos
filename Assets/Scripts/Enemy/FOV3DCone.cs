@@ -4,46 +4,61 @@ using UnityEngine;
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
 public class FOV3DCone : MonoBehaviour
 {
+    [Header("FOV Settings")]
     public float viewRadius = 5f;
     [Range(0, 360)]
     public float viewAngle = 90f;
     public float height = 2f;
     public int segments = 30;
 
+    [Header("Obstacle Detection")]
+    public LayerMask obstacleMask;
+
     private Mesh mesh;
 
     void Start()
+    {
+        mesh = new Mesh();
+        GetComponent<MeshFilter>().mesh = mesh;
+    }
+
+    void LateUpdate()
     {
         GenerateConeMesh();
     }
 
     void GenerateConeMesh()
     {
-        mesh = new Mesh();
-        GetComponent<MeshFilter>().mesh = mesh;
+        mesh.Clear();
 
         List<Vector3> vertices = new List<Vector3>();
         List<int> triangles = new List<int>();
 
-        // Tip of the cone (apex)
         Vector3 apex = Vector3.zero;
-        vertices.Add(apex);
+        vertices.Add(apex); // index 0
 
         float angleStep = viewAngle / segments;
 
-        // Base circle of the cone (in an arc, not full circle)
+        // Generate cone arc via raycasts
         for (int i = 0; i <= segments; i++)
         {
             float angle = -viewAngle / 2 + angleStep * i;
-            float rad = Mathf.Deg2Rad * angle;
+            Vector3 dir = Quaternion.Euler(0, angle, 0) * transform.forward;
+            Vector3 origin = transform.position;
 
-            float x = Mathf.Sin(rad) * viewRadius;
-            float z = Mathf.Cos(rad) * viewRadius;
+            Vector3 endPoint = origin + dir * viewRadius;
 
-            vertices.Add(new Vector3(x, -height, z)); // push down to form sloped sides
+            if (Physics.Raycast(origin, dir, out RaycastHit hit, viewRadius, obstacleMask))
+            {
+                endPoint = hit.point;
+            }
+
+            Vector3 localPoint = transform.InverseTransformPoint(endPoint);
+            localPoint.y = -height; // push down to make sloped sides
+            vertices.Add(localPoint);
         }
 
-        // Triangles (sides)
+        // Side triangles (from apex to each arc segment)
         for (int i = 1; i <= segments; i++)
         {
             triangles.Add(0);       // apex
@@ -51,20 +66,20 @@ public class FOV3DCone : MonoBehaviour
             triangles.Add(i + 1);   // next
         }
 
-        // Optionally add base cap
-        int baseStartIndex = vertices.Count;
+        // Optional base cap
+        int baseCenterIndex = vertices.Count;
         vertices.Add(Vector3.down * height); // center of base
 
         for (int i = 1; i <= segments; i++)
         {
-            vertices.Add(vertices[i + 0]); // duplicate rim vertices for base
+            vertices.Add(vertices[i]); // reuse rim vertices
         }
 
         for (int i = 0; i < segments; i++)
         {
-            int center = baseStartIndex;
-            int current = baseStartIndex + 1 + i;
-            int next = baseStartIndex + 1 + (i + 1) % segments;
+            int center = baseCenterIndex;
+            int current = baseCenterIndex + 1 + i;
+            int next = baseCenterIndex + 1 + (i + 1) % segments;
 
             triangles.Add(center);
             triangles.Add(next);
