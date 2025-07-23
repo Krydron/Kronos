@@ -15,6 +15,7 @@ using FMOD.Studio;
 using FMODUnity;
 using UnityEngine;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 
 public class Pause : MonoBehaviour
 {
@@ -79,13 +80,26 @@ public class Pause : MonoBehaviour
         blur.SetActive(paused);
     }
 
-    public void OnPause()
+    public void SetPause(bool value)
     {
-        //hide menus
+        if (paused == value) return;
+        PauseToggle();
+        ToggleBlur();
+    }
+
+    public void CloseMenues()
+    {
         foreach (GameObject m in menues)
         {
             m.SetActive(false);
         }
+        SetPause(false);
+    }
+
+    public void OnPause()
+    {
+        //hide menus
+        
 
         //Display menu
         //menu.SetActive(!paused);
@@ -94,6 +108,10 @@ public class Pause : MonoBehaviour
         if (uIInteractions.MenuOpen())
         {
             uIInteractions.OnMap();
+        }
+        else if (!menu.activeSelf)
+        {
+            CloseMenues();
         }
         PauseToggle();
         menu.SetActive(paused);

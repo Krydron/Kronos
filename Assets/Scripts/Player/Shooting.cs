@@ -34,7 +34,7 @@ public class Shooting : MonoBehaviour
     {
         inventory = GetComponent<Inventory>();
         camera = GameObject.Find("Main Camera");
-        ammoDisplay = GameObject.Find("AmmoDisplay").GetComponent<AmmoDisplay>();
+        ammoDisplay = GameObject.Find("AmmoDisplay")?.GetComponent<AmmoDisplay>();
         //weapon = inventory.GetWeapon();
         //ammoDisplay.UpdatDisplay(weapon.Ammo(), weapon.Rounds());
         playerTakedown = GetComponent<PlayerTakedown>(); // get reference

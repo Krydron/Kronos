@@ -9,6 +9,7 @@ public class PauseMenu : MonoBehaviour
     }
     private void OnEnable()
     {
+        if (menu == null) { return; }
         menu.SetActive(true);
     }
 }

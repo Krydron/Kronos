@@ -17,6 +17,7 @@ using FMODUnity;
 
 public class PlayerMovement : MonoBehaviour
 {
+    [Header("Movement Variables")]
     [SerializeField] float playerSpeed;
     [SerializeField] float mouseSensitivityX;
     [SerializeField] float mouseSensitivityY;
@@ -25,34 +26,37 @@ public class PlayerMovement : MonoBehaviour
     Rigidbody rigidbody;
     Vector2 move;
     Vector2 look;
+    private Vector3 moveDirection;
 
+    //Camera to update position and manage rotation
+    GameObject camera;
+
+    [Header("Sneak Variables")]
     private bool sneaking;
     [SerializeField] float sneakDivider;
 
-    Vector3 moveDirection;
-
-    [SerializeField] GameObject steppingSound;
 
     //Added by Kry
-    [Header("Detection Modifiers")]
-    public float normalDetectionRange = 15f;
-    public float sneakDetectionRange = 7f;  // Reduced detection range while sneaking
-    public float normalDetectionTime = 2f;
-    public float sneakDetectionTime = 4f;  // Increased time to be detected
+    //[Header("Detection Modifiers")]
+    //public float normalDetectionRange = 15f;
+    //public float sneakDetectionRange = 7f;  // Reduced detection range while sneaking
+    //public float normalDetectionTime = 2f;
+    //public float sneakDetectionTime = 4f;  // Increased time to be detected
 
-    public float DetectionRange { get; private set; }
-    public float DetectionTimeModifier { get; private set; }
+    //public float DetectionRange { get; private set; }
+    //public float DetectionTimeModifier { get; private set; }
 
-    GameObject camera;
-
+    [Header("Slope Movement")]
     //For slope code
     RaycastHit hit;
     float angle;
     [SerializeField] float maxAngle;
 
-    //Animation
+    [Header("Gun UI")]
     [SerializeField] Animator animator;
 
+    [Header("Sounds")]
+    [SerializeField] GameObject steppingSound;
     [SerializeField] StudioEventEmitter walkingSound;
     [SerializeField] StudioEventEmitter crouchingSound;
 
@@ -66,8 +70,8 @@ public class PlayerMovement : MonoBehaviour
         Cursor.visible = false;
 
         // Set default detection values
-        DetectionRange = normalDetectionRange;
-        DetectionTimeModifier = normalDetectionTime;
+        //DetectionRange = normalDetectionRange;
+        //DetectionTimeModifier = normalDetectionTime;
     }
 
     public void OnMove(InputValue value)
@@ -102,7 +106,7 @@ public class PlayerMovement : MonoBehaviour
 
         Debug.Log("Sneaking: " + sneaking);
 
-        if (sneaking)
+        /*if (sneaking)
         {
             DetectionRange = sneakDetectionRange;
             DetectionTimeModifier = sneakDetectionTime;
@@ -111,7 +115,7 @@ public class PlayerMovement : MonoBehaviour
         {
             DetectionRange = normalDetectionRange;
             DetectionTimeModifier = normalDetectionTime;
-        }
+        }*/
     }
 
     public bool IsSneaking()
@@ -131,9 +135,9 @@ public class PlayerMovement : MonoBehaviour
         }*/
 
         moveDirection.y = rigidbody.linearVelocity.y;
-        //rigidbody.linearVelocity = moveDirection;
+        rigidbody.linearVelocity = moveDirection;
         //rigidbody.linearVelocity
-        rigidbody.AddForce(moveDirection, ForceMode.Acceleration);
+        //rigidbody.AddForce(moveDirection, ForceMode.Acceleration);
 
         rigidbody.rotation = Quaternion.Euler(0, rotationY, 0);
         camera.transform.position = new Vector3(transform.position.x, transform.position.y+1, transform.position.z);
@@ -151,6 +155,14 @@ public class PlayerMovement : MonoBehaviour
         return false;
     }
 
+    public void MouseSensitivityX(float x)
+    {
+        mouseSensitivityX = x;
+    }
+    public void MouseSensitivityY(float x)
+    {
+        mouseSensitivityY = x;
+    }
 
     void Update()
     {

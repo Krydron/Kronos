@@ -79,8 +79,11 @@ public class UIInteractions : MonoBehaviour
         {
             pause.OnPause();
         }
-        pause.PauseToggle();
-        pause.ToggleBlur();
+        else
+        {
+            pause.CloseMenues();
+        }
+        pause.SetPause(!map.activeSelf);
         map.SetActive(!map.activeSelf);
         /*if (Cursor.lockState == CursorLockMode.Locked)
         {

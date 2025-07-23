@@ -16,9 +16,12 @@ public class VaultUI : MonoBehaviour
     Slider slider;
     float value;
     TextMeshProUGUI text;
+    //[SerializeField] float delay;
+    bool lockedMechanism;
 
     Pause pause;
 
+    [Header("Sound")]
     [SerializeField] GameObject turn;
     [SerializeField] GameObject click;
 
@@ -26,6 +29,7 @@ public class VaultUI : MonoBehaviour
     private void OnEnable()
     {
         pause.PauseToggle();
+        lockedMechanism = false;
     }
 
     private void OnDisable()
@@ -54,17 +58,41 @@ public class VaultUI : MonoBehaviour
         if (value == 1)
         {
             sequencePointer = 0;
+            lockedMechanism = false;
             yield break;
         }
 
-        Debug.Log(value.ToString());
-        Debug.Log(sequence[sequencePointer]);
+        
+
+        Debug.Log("Value: "+value.ToString()+"\nSequence Value"+sequence[sequencePointer]);
+
+
+        Debug.Log(sequencePointer % 2);
+        if (sequencePointer != 0)
+        {
+            if ((sequencePointer % 2) == 1)
+            {
+                if (value > sequence[sequencePointer - 1])
+                {
+                    Debug.Log("Jam");
+                    lockedMechanism = true;
+                }
+            }
+            else
+            {
+                if (value < sequence[sequencePointer - 1])
+                {
+                    lockedMechanism = true;
+                }
+            }
+        }
 
         //checking sequence
         if (value != sequence[sequencePointer]) { turn.GetComponent<StudioEventEmitter>().Play(); yield break; }
+        if (lockedMechanism) { yield break; }
         click.GetComponent<StudioEventEmitter>().Play();
-        yield return new WaitForSecondsRealtime(1);
-        if (value != sequence[sequencePointer]) { yield break; }
+        //yield return new WaitForSecondsRealtime(1);
+        //if (value != sequence[sequencePointer]) { yield break; }
         sequencePointer++;
         Debug.Log("Click");
         if (sequencePointer < sequence.Count) { yield break; }

@@ -263,17 +263,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75b3717028ed56646af633aab14a55d6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerSpeed: 80
+  playerSpeed: 20
   mouseSensitivityX: 20
   mouseSensitivityY: 20
   sneakDivider: 2
-  steppingSound: {fileID: 0}
-  normalDetectionRange: 15
-  sneakDetectionRange: 7
-  normalDetectionTime: 2
-  sneakDetectionTime: 4
   maxAngle: 45
   animator: {fileID: 0}
+  steppingSound: {fileID: 0}
   walkingSound: {fileID: 6418517604443944924}
   crouchingSound: {fileID: 9069621977211321263}
 --- !u!114 &5297129526156172632
@@ -302,6 +298,7 @@ MonoBehaviour:
   items: []
   collectedItems: []
   weaponPointer: 0
+  gunUI: {fileID: 0}
 --- !u!114 &8863089894577011506
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -27,7 +27,7 @@ public class PlayerHealth : MonoBehaviour
         dead = false;
         fullHealth = (int)health;
         healthBar = GameObject.Find("HealthBar");
-        healthBarScript = healthBar.GetComponent<Healthbar>();
+        healthBarScript = healthBar?.GetComponent<Healthbar>();
     }
 
     public void Health(float value)
