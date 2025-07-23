@@ -585,9 +585,10 @@ public class EnemyBase : MonoBehaviour
 
     public void TurnAroundForSeconds(float duration, float delayAfterTurn)
     {
-        if (!isTurningAround)
+        // Only allow turning around while patrolling and not already turning
+        if (!isTurningAround && currentState == EnemyState.Patrolling)
         {
-            StartCoroutine(TurnAroundCoroutine(duration, delayAfterTurn));
+            turnAroundCoroutine = StartCoroutine(TurnAroundCoroutine(duration, delayAfterTurn));
         }
     }
 
@@ -609,7 +610,11 @@ public class EnemyBase : MonoBehaviour
 
         yield return new WaitForSeconds(alertDelayAfterTurn);
 
-        BecomeAlerted();
+        // Confirm still patrolling before alerting — optional safety check
+        if (currentState == EnemyState.Patrolling)
+        {
+            BecomeAlerted();
+        }
 
         yield return new WaitForSeconds(1f);
 
@@ -624,6 +629,7 @@ public class EnemyBase : MonoBehaviour
 
         isTurningAround = false;
     }
+
 
     private void OnDrawGizmos()
     {
