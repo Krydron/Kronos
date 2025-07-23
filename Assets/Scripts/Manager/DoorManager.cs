@@ -26,8 +26,8 @@ public class DoorManager : MonoBehaviour
 
     IEnumerator CheckDoors()
     {
-        if (doors == null) { yield return null; }
-        if (inventory == null) { yield return null; }
+        if (doors == null) { yield break; }
+        if (inventory == null) { yield break; }
         while (true)
         {
             foreach (GameObject door in doors)

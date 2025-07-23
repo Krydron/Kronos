@@ -18,6 +18,7 @@ GameObject:
   - component: {fileID: 7406683613313818336}
   - component: {fileID: 7950492628626057732}
   - component: {fileID: 4817106559662381053}
+  - component: {fileID: 9089961577500162279}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -155,3 +156,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxTime: 0
   elapsedTime: 0
+--- !u!114 &9089961577500162279
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8954437595019992886}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67857f1a2fd42384eb1a124954025d5d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  masterVolume: 1
+  musicVolume: 1
+  sfxVolume: 1
+  dialogueVolume: 1
+  mouseSensitivityX: 80
+  mouseSensitivityY: 80
+  cameraFOV: 60

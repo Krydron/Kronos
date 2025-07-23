@@ -28,7 +28,7 @@ public class Eyes : MonoBehaviour
     [SerializeField] float speed;
     [SerializeField] float animationFrameDelay;
 
-    IEnumerator OpenEyes()
+    /*IEnumerator OpenEyes()
     {
         eyelidUp.transform.position = new Vector3(960, startUpY , 0);
         eyelidDown.transform.position = new Vector3(960, startDownY, 0);
@@ -53,7 +53,7 @@ public class Eyes : MonoBehaviour
             eyelidDown.transform.position = new Vector3(960, Mathf.Lerp(endDownY, startDownY, timer), 0);
             yield return new WaitForSeconds(animationFrameDelay);
         }
-    }
+    }*/
 
     public void ShutEyes()
     {
@@ -64,8 +64,8 @@ public class Eyes : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        eyelidUp = transform.Find("Eyelid_Up").gameObject;
-        eyelidDown = transform.Find("Eyelid_Down").gameObject;
+        //eyelidUp = transform.Find("Eyelid_Up").gameObject;
+        //eyelidDown = transform.Find("Eyelid_Down").gameObject;
         //StartCoroutine(OpenEyes());
     }
 
