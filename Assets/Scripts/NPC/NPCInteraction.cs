@@ -1,6 +1,5 @@
 using UnityEngine;
 using FMODUnity;
-using System.Collections.Generic;
 
 public class NPCInteraction : MonoBehaviour
 {
@@ -13,21 +12,18 @@ public class NPCInteraction : MonoBehaviour
     public EventReference beforeItemEvent;
     public EventReference afterItemEvent;
 
-    [Header("Subtitles")]
-    [TextArea] public List<string> beforeItemSubtitles;
-    public List<float> beforeItemDurations = new List<float>();
-
-    [TextArea] public List<string> afterItemSubtitles;
-    public List<float> afterItemDurations = new List<float>();
-
     private bool itemGiven = false;
+
+    [Header("Subtitles")]
+    public SubtitleTrigger beforeItemSubtitleTrigger;
+    public SubtitleTrigger afterItemSubtitleTrigger;
 
     public void Interact(Inventory playerInventory)
     {
         if (itemGiven)
         {
             PlayVoice(afterItemEvent, "after");
-            ShowSubtitles(afterItemSubtitles, afterItemDurations);
+            PlaySubtitles(afterItemSubtitleTrigger);
             return;
         }
 
@@ -38,12 +34,12 @@ public class NPCInteraction : MonoBehaviour
                 itemGiven = true;
                 playerInventory.RemoveItem(requiredItem);
                 PlayVoice(afterItemEvent, "after");
-                ShowSubtitles(afterItemSubtitles, afterItemDurations);
+                PlaySubtitles(afterItemSubtitleTrigger);
             }
             else
             {
                 PlayVoice(beforeItemEvent, "before");
-                ShowSubtitles(beforeItemSubtitles, beforeItemDurations);
+                PlaySubtitles(beforeItemSubtitleTrigger);
             }
         }
         else
@@ -51,12 +47,12 @@ public class NPCInteraction : MonoBehaviour
             if (itemGiven)
             {
                 PlayVoice(afterItemEvent, "after");
-                ShowSubtitles(afterItemSubtitles, afterItemDurations);
+                PlaySubtitles(afterItemSubtitleTrigger);
             }
             else
             {
                 PlayVoice(beforeItemEvent, "before");
-                ShowSubtitles(beforeItemSubtitles, beforeItemDurations);
+                PlaySubtitles(beforeItemSubtitleTrigger);
             }
         }
     }
@@ -72,11 +68,15 @@ public class NPCInteraction : MonoBehaviour
         RuntimeManager.PlayOneShot(eventRef, transform.position);
     }
 
-    private void ShowSubtitles(List<string> lines, List<float> durations)
+    private void PlaySubtitles(SubtitleTrigger trigger)
     {
-        if (lines != null && lines.Count > 0)
+        if (trigger != null)
         {
-            SubtitleManager.Instance.PlaySubtitles(lines, durations);
+            trigger.PlaySubtitles();
+        }
+        else
+        {
+            Debug.LogWarning($"[NPCInteraction] Missing SubtitleTrigger reference on {gameObject.name}.");
         }
     }
 

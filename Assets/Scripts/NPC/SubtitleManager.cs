@@ -8,10 +8,28 @@ public class SubtitleManager : MonoBehaviour
     public static SubtitleManager Instance { get; private set; }
 
     [Header("UI References")]
-    public GameObject subtitlePanel;
     public TextMeshProUGUI subtitleText;
+    public Canvas subtitleCanvas;
 
+    [Header("Settings")]
+    public float fadeDuration = 0.25f;
+
+    private Queue<SubtitleEntry> subtitleQueue = new Queue<SubtitleEntry>();
     private Coroutine currentRoutine;
+
+    [System.Serializable]
+    public class SubtitleEntry
+    {
+        [TextArea]
+        public string text;
+        public float duration = 2f;
+
+        public SubtitleEntry(string text, float duration)
+        {
+            this.text = text;
+            this.duration = duration;
+        }
+    }
 
     private void Awake()
     {
@@ -20,61 +38,67 @@ public class SubtitleManager : MonoBehaviour
             Destroy(gameObject);
             return;
         }
+
         Instance = this;
 
-        subtitleText.text = "";
-        if (subtitlePanel != null)
-        {
-            subtitlePanel.SetActive(false);
-        }
-    }
-
-    /// <summary>
-    /// Plays the given lines with the matching timing.
-    /// </summary>
-    /// <param name="lines">List of subtitle lines.</param>
-    /// <param name="lineDurations">How long to show each line (seconds).</param>
-    public void PlaySubtitles(List<string> lines, List<float> lineDurations)
-    {
-        if (currentRoutine != null)
-        {
-            StopCoroutine(currentRoutine);
-        }
-
-        if (subtitlePanel != null)
-        {
-            subtitlePanel.SetActive(true);
-        }
-
-        currentRoutine = StartCoroutine(SubtitleRoutine(lines, lineDurations));
-    }
-
-    private IEnumerator SubtitleRoutine(List<string> lines, List<float> lineDurations)
-    {
-        for (int i = 0; i < lines.Count; i++)
-        {
-            subtitleText.text = lines[i];
-            float duration = (i < lineDurations.Count) ? lineDurations[i] : 2.5f;
-            yield return new WaitForSeconds(duration);
-        }
+        if (subtitleCanvas != null)
+            subtitleCanvas.enabled = false;
 
         subtitleText.text = "";
-        if (subtitlePanel != null)
-        {
-            subtitlePanel.SetActive(false);
-        }
     }
 
-    public void ClearSubtitles()
+    public void ShowSubtitle(string text, float duration)
     {
-        if (currentRoutine != null)
+        subtitleQueue.Enqueue(new SubtitleEntry(text, duration));
+
+        if (currentRoutine == null)
+            currentRoutine = StartCoroutine(ProcessQueue());
+    }
+
+    public void ShowSubtitle(SubtitleEntry entry)
+    {
+        subtitleQueue.Enqueue(entry);
+
+        if (currentRoutine == null)
+            currentRoutine = StartCoroutine(ProcessQueue());
+    }
+
+    private IEnumerator ProcessQueue()
+    {
+        if (subtitleCanvas != null)
+            subtitleCanvas.enabled = true;
+
+        while (subtitleQueue.Count > 0)
         {
-            StopCoroutine(currentRoutine);
+            SubtitleEntry current = subtitleQueue.Dequeue();
+
+            subtitleText.alpha = 0f;
+            subtitleText.text = current.text;
+
+            float t = 0;
+            while (t < fadeDuration)
+            {
+                t += Time.deltaTime;
+                subtitleText.alpha = Mathf.Lerp(0, 1, t / fadeDuration);
+                yield return null;
+            }
+
+            yield return new WaitForSeconds(current.duration);
+
+            t = 0;
+            while (t < fadeDuration)
+            {
+                t += Time.deltaTime;
+                subtitleText.alpha = Mathf.Lerp(1, 0, t / fadeDuration);
+                yield return null;
+            }
+
+            subtitleText.text = "";
         }
-        subtitleText.text = "";
-        if (subtitlePanel != null)
-        {
-            subtitlePanel.SetActive(false);
-        }
+
+        if (subtitleCanvas != null)
+            subtitleCanvas.enabled = false;
+
+        currentRoutine = null;
     }
 }
