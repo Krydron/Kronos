@@ -1430,6 +1430,11 @@ MonoBehaviour:
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
   m_SoftShadowQuality: 1
+--- !u!1 &421996747 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5756213452282658361, guid: a3f46eddec26da64faabc44973d551fe, type: 3}
+  m_PrefabInstance: {fileID: 1953552897}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &446155008
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2674,12 +2679,27 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 908641045916651545, guid: a3f46eddec26da64faabc44973d551fe, type: 3}
   m_PrefabInstance: {fileID: 1953552897}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 421996747}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6f2dfdb14b33f4b47b4807456373f80a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1226972339
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 421996747}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8db432ee0d3cf1143984d9ec08e6a3fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lines:
+  - text: hello test new subtitles
+    duration: 5
 --- !u!1 &1235921223
 GameObject:
   m_ObjectHideFlags: 0
@@ -3115,6 +3135,8 @@ GameObject:
   - component: {fileID: 1357274865}
   - component: {fileID: 1357274864}
   - component: {fileID: 1357274863}
+  - component: {fileID: 1357274869}
+  - component: {fileID: 1357274868}
   m_Layer: 9
   m_Name: C9
   m_TagString: NPC
@@ -3150,6 +3172,8 @@ MonoBehaviour:
       Data3: 0
       Data4: 0
     Path: 
+  beforeItemSubtitleTrigger: {fileID: 1357274869}
+  afterItemSubtitleTrigger: {fileID: 1357274868}
 --- !u!136 &1357274864
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -3241,6 +3265,36 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1357274868
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1357274862}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8db432ee0d3cf1143984d9ec08e6a3fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lines:
+  - text: after
+    duration: 5
+--- !u!114 &1357274869
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1357274862}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8db432ee0d3cf1143984d9ec08e6a3fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lines:
+  - text: before
+    duration: 5
 --- !u!1001 &1364637089
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4266,7 +4320,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 5756213452282658361, guid: a3f46eddec26da64faabc44973d551fe, type: 3}
+      insertIndex: 6
+      addedObject: {fileID: 1226972339}
   m_SourcePrefab: {fileID: 100100000, guid: a3f46eddec26da64faabc44973d551fe, type: 3}
 --- !u!1 &2028243196
 GameObject:
@@ -4706,6 +4763,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5756977171018977124, guid: 2bc8b8180c8f4ef48834db4d24f5a30f, type: 3}
+      propertyPath: subtitleCanvas
+      value: 
+      objectReference: {fileID: 1894904749}
     - target: {fileID: 8102013145853090527, guid: 2bc8b8180c8f4ef48834db4d24f5a30f, type: 3}
       propertyPath: m_Name
       value: Subtitles
