@@ -21,16 +21,9 @@ public class FMODSubtitlesTrigger : MonoBehaviour
             hasPlayedSubtitles = true;
 
             if (subtitleTrigger != null)
-            {
                 subtitleTrigger.PlaySubtitles();
-            }
-            else
-            {
-                Debug.LogWarning($"[FMODSubtitlesTrigger] No SubtitleTrigger assigned on {gameObject.name}");
-            }
         }
 
-        // Reset if emitter stops, so it can be triggered again
         if (hasPlayedSubtitles && !emitter.IsPlaying())
         {
             hasPlayedSubtitles = false;

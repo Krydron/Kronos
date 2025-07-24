@@ -49,18 +49,13 @@ public class SubtitleManager : MonoBehaviour
 
     public void ShowSubtitle(string text, float duration)
     {
+        subtitleQueue.Clear(); // <-- clear any active subtitle
         subtitleQueue.Enqueue(new SubtitleEntry(text, duration));
 
-        if (currentRoutine == null)
-            currentRoutine = StartCoroutine(ProcessQueue());
-    }
+        if (currentRoutine != null)
+            StopCoroutine(currentRoutine);
 
-    public void ShowSubtitle(SubtitleEntry entry)
-    {
-        subtitleQueue.Enqueue(entry);
-
-        if (currentRoutine == null)
-            currentRoutine = StartCoroutine(ProcessQueue());
+        currentRoutine = StartCoroutine(ProcessQueue());
     }
 
     private IEnumerator ProcessQueue()
