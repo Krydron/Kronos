@@ -30,7 +30,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5192813677818994996}
-  - {fileID: 6141513575711178628}
   m_Father: {fileID: 134517076462748213}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3695015823627302528
@@ -135,6 +134,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 6141513575711178628}
   - {fileID: 1527567573471528911}
   - {fileID: 1157838177455602419}
   - {fileID: 7626598306428207436}
@@ -384,11 +384,11 @@ Transform:
   m_GameObject: {fileID: 5819187483893586585}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.28699845, z: 0}
+  m_LocalPosition: {x: 0, y: 0.40000153, z: 0}
   m_LocalScale: {x: 0.4, y: 0.4, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1527567573471528911}
+  m_Father: {fileID: 134517076462748213}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &639499925956285147
 SpriteRenderer:
@@ -715,7 +715,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc1a7032a6413514b9ab20da79b80293, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  viewRadius: 5
+  viewRadius: 15
   viewAngle: 90
   height: 2
   segments: 30

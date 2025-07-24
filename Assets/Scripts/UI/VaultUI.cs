@@ -52,14 +52,14 @@ public class VaultUI : MonoBehaviour
         //text = transform.Find("Text").gameObject.GetComponent<TextMeshProUGUI>();
     }
 
-    IEnumerator CheckSequence()
+    private void CheckSequence()
     {
         //reset check
         if (value == 1)
         {
             sequencePointer = 0;
             lockedMechanism = false;
-            yield break;
+            return;
         }
 
         
@@ -88,14 +88,14 @@ public class VaultUI : MonoBehaviour
         }
 
         //checking sequence
-        if (value != sequence[sequencePointer]) { turn.GetComponent<StudioEventEmitter>().Play(); yield break; }
-        if (lockedMechanism) { yield break; }
+        if (value != sequence[sequencePointer]) { turn.GetComponent<StudioEventEmitter>().Play(); return; }
+        if (lockedMechanism) { return; }
         click.GetComponent<StudioEventEmitter>().Play();
         //yield return new WaitForSecondsRealtime(1);
         //if (value != sequence[sequencePointer]) { yield break; }
         sequencePointer++;
         Debug.Log("Click");
-        if (sequencePointer < sequence.Count) { yield break; }
+        if (sequencePointer < sequence.Count) { return; }
         //Win condition
         Debug.Log("Win");
         pause.PauseToggle();
@@ -112,6 +112,7 @@ public class VaultUI : MonoBehaviour
         transform.Find("Text").gameObject.GetComponent<TextMeshProUGUI>().text = value.ToString();
         dial.transform.eulerAngles = new Vector3(0, 0, rotation);
 
-        StartCoroutine(CheckSequence());
+        //StartCoroutine(CheckSequence());
+        CheckSequence();
     }
 }

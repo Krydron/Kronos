@@ -55,6 +55,9 @@ public class PlayerMovement : MonoBehaviour
     [Header("Gun UI")]
     [SerializeField] Animator animator;
 
+    [Header("Crowbar UI")]
+    [SerializeField] Animator animatorCrowbar;
+
     [Header("Sounds")]
     [SerializeField] GameObject steppingSound;
     [SerializeField] StudioEventEmitter walkingSound;
@@ -193,6 +196,7 @@ public class PlayerMovement : MonoBehaviour
 
             if (animator == null) { return; }
             animator.SetBool("Walking", false);
+            animatorCrowbar.SetBool("Walking",false);
         }
         else
         {
@@ -202,6 +206,7 @@ public class PlayerMovement : MonoBehaviour
 
             if (animator == null) { return; }
             animator.SetBool("Walking", true);
+            animatorCrowbar.SetBool("Walking", true);
         }
     }
 

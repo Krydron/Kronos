@@ -97,7 +97,7 @@ PrefabInstance:
     - target: {fileID: -7511558181221131132, guid: 032ac7faac96a3e43973f084814098a4, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: 153bb4ac85c97bd4c986edc74516995d, type: 2}
+      objectReference: {fileID: 2100000, guid: 77b71e7e6674e124488932bba384d3cb, type: 2}
     - target: {fileID: 919132149155446097, guid: 032ac7faac96a3e43973f084814098a4, type: 3}
       propertyPath: m_Name
       value: L_SHAPED_BEND
@@ -175,7 +175,7 @@ PrefabInstance:
     - target: {fileID: -7511558181221131132, guid: 925198bf28a98d94da4260d10852c0ec, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: 153bb4ac85c97bd4c986edc74516995d, type: 2}
+      objectReference: {fileID: 2100000, guid: 77b71e7e6674e124488932bba384d3cb, type: 2}
     - target: {fileID: 919132149155446097, guid: 925198bf28a98d94da4260d10852c0ec, type: 3}
       propertyPath: m_Name
       value: STRAIGHT_PIPE (1)
@@ -284,7 +284,7 @@ PrefabInstance:
     - target: {fileID: -7511558181221131132, guid: 925198bf28a98d94da4260d10852c0ec, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: 153bb4ac85c97bd4c986edc74516995d, type: 2}
+      objectReference: {fileID: 2100000, guid: 77b71e7e6674e124488932bba384d3cb, type: 2}
     - target: {fileID: 919132149155446097, guid: 925198bf28a98d94da4260d10852c0ec, type: 3}
       propertyPath: m_Name
       value: STRAIGHT_PIPE

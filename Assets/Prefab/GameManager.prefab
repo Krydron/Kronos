@@ -54,7 +54,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   openDistance: 5
-  doorUpdateSpeed: 2
+  doorUpdateSpeed: 1
 --- !u!114 &8555897567925192400
 MonoBehaviour:
   m_ObjectHideFlags: 0

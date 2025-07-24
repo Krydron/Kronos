@@ -26,10 +26,13 @@ public class Shooting : MonoBehaviour
     AmmoDisplay ammoDisplay;
     PlayerTakedown playerTakedown;
 
+    [Header("Gun")]
     [SerializeField] Animator animator;
     [SerializeField] StudioEventEmitter reloadSound;
     [SerializeField] StudioEventEmitter shootSound;
 
+    [Header("Crowbar")]
+    [SerializeField] Animator animatorCrowbar;
     private void Start()
     {
         inventory = GetComponent<Inventory>();
@@ -64,6 +67,7 @@ public class Shooting : MonoBehaviour
         if (weapon.name == "Melee")
         {
             Debug.Log("Punch");
+            animatorCrowbar.SetTrigger("Shoot");
             //raycast from player
             if (Physics.Raycast(transform.position, camera.transform.forward, out RaycastHit meleeHit, 2))
             {
@@ -87,6 +91,7 @@ public class Shooting : MonoBehaviour
             OnHit(hit);
         }
         shootTime = Time.time;
+        ammoDisplay = GameObject.Find("AmmoDisplay")?.GetComponent<AmmoDisplay>();
         if (ammoDisplay != null)
         {
             ammoDisplay.UpdatDisplay(weapon.Ammo(),weapon.Rounds());
@@ -105,7 +110,7 @@ public class Shooting : MonoBehaviour
 
         animator.SetTrigger("Reload");
         reloadSound.Play();
-        GameObject.Find("EnemyManager").GetComponent<EnemyAlertManager>().PlayerFiredGun();
+        GameObject.Find("EnemyManager")?.GetComponent<EnemyAlertManager>().PlayerFiredGun();
         if (weapon.MaxAmmo() > weapon.Rounds())
         {
             weapon.Ammo(weapon.Ammo() + weapon.Rounds());

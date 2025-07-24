@@ -35,6 +35,7 @@ public class Inventory : MonoBehaviour
     private AmmoDisplay ammoDisplay;
 
     [SerializeField] GameObject gunUI;
+    [SerializeField] GameObject crowbarUI;
 
     public void ActivateKeyType(Doors.DoorType type)
     {
@@ -85,31 +86,42 @@ public class Inventory : MonoBehaviour
         }
     }
 
-    public Weapon GetWeapon() { 
+    public Weapon GetWeapon() {
         if (weaponPointer > weapons.Length) {
             Debug.Log(weaponPointer + " " + weapons.Length);
-            return null; 
+            return null;
         }
-        return weapons[weaponPointer]; 
+        return weapons[weaponPointer];
+    }
+
+    private void ShowGun()
+    {
+        gunUI.SetActive(true);
+        crowbarUI.SetActive(false);
+        UpdateAmmoDisplay();
+    }
+
+    private void ShowCrowbar()
+    {
+        gunUI.SetActive(false);
+        crowbarUI.SetActive(true);
     }
 
     public void OnChangeWeapon1()
     {
         weaponPointer = 0;
-        UpdateAmmoDisplay();
-        gunUI.SetActive(true);
+        ShowCrowbar();
     }
     public void OnChangeWeapon2()
     {
         weaponPointer = 1;
-        UpdateAmmoDisplay();
-        gunUI.SetActive(false);
+        ShowGun();
     }
 
     private void UpdateAmmoDisplay()
     {
-        ammoDisplay = GameObject.Find("AmmoDisplay").GetComponent<AmmoDisplay>();
-        ammoDisplay.UpdatDisplay(weapons[weaponPointer].Ammo(), weapons[weaponPointer].Rounds());
+        ammoDisplay = GameObject.Find("AmmoDisplay")?.GetComponent<AmmoDisplay>();
+        ammoDisplay?.UpdatDisplay(weapons[weaponPointer].Ammo(), weapons[weaponPointer].Rounds());
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
