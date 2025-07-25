@@ -57,7 +57,7 @@ public class SubtitleTrigger : MonoBehaviour
             }
 
             worldSubtitleDisplay.transform.position = transform.position + worldOffset;
-            worldSubtitleDisplay.SetTarget(Camera.main.transform);
+
             worldSubtitleDisplay.PlaySubtitles(texts, durations);
         }
     }

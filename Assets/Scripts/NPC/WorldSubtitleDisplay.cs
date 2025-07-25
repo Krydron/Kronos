@@ -59,13 +59,14 @@ public class WorldSubtitleDisplay : MonoBehaviour
         subtitleText.alpha = 0f;
     }
 
-    private void Update()
-    {
-        if (lookAtTarget != null)
-        {
-            Vector3 direction = transform.position - lookAtTarget.position;
-            direction.y = 0; // keep upright
-            transform.forward = direction;
-        }
-    }
+    //private void Update()
+    //{
+    //   if (lookAtTarget != null)
+    //  {
+    //     Vector3 direction = transform.position - lookAtTarget.position;
+    //     direction.y = 0; // keep upright
+    //     transform.forward = direction;
+    //  }
+    //}
+
 }
