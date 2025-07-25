@@ -20,7 +20,7 @@ public class SubtitleTrigger : MonoBehaviour
     public List<SubtitleLine> lines = new List<SubtitleLine>();
 
     [Header("World Space Options")]
-    public WorldSubtitleDisplay worldSubtitlePrefab;
+    public WorldSubtitleDisplay worldSubtitleDisplay; // No longer a prefab
     public Vector3 worldOffset = Vector3.up * 2f;
 
     public void PlaySubtitles()
@@ -50,15 +50,15 @@ public class SubtitleTrigger : MonoBehaviour
         }
         else if (subtitleMode == SubtitleMode.WorldSpace)
         {
-            if (worldSubtitlePrefab == null)
+            if (worldSubtitleDisplay == null)
             {
-                Debug.LogWarning("WorldSubtitlePrefab not assigned.");
+                Debug.LogWarning("WorldSubtitleDisplay not assigned.");
                 return;
             }
 
-            WorldSubtitleDisplay display = Instantiate(worldSubtitlePrefab, transform.position + worldOffset, Quaternion.identity);
-            display.SetTarget(Camera.main.transform);
-            display.PlaySubtitles(texts, durations);
+            worldSubtitleDisplay.transform.position = transform.position + worldOffset;
+            worldSubtitleDisplay.SetTarget(Camera.main.transform);
+            worldSubtitleDisplay.PlaySubtitles(texts, durations);
         }
     }
 }

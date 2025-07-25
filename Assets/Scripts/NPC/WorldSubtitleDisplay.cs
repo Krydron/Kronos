@@ -54,18 +54,18 @@ public class WorldSubtitleDisplay : MonoBehaviour
             subtitleText.text = "";
         }
 
-        Destroy(gameObject);
+        // No longer destroying the object — just hide it
+        subtitleText.text = "";
+        subtitleText.alpha = 0f;
     }
 
     private void Update()
     {
         if (lookAtTarget != null)
         {
-            // Make the subtitle face the camera directly, but stay upright
             Vector3 direction = transform.position - lookAtTarget.position;
-            direction.y = 0; // keep it upright
+            direction.y = 0; // keep upright
             transform.forward = direction;
         }
     }
-
 }
