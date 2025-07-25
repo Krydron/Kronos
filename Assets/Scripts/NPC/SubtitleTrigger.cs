@@ -20,8 +20,7 @@ public class SubtitleTrigger : MonoBehaviour
     public List<SubtitleLine> lines = new List<SubtitleLine>();
 
     [Header("World Space Options")]
-    public WorldSubtitleDisplay worldSubtitleDisplay; // No longer a prefab
-    public Vector3 worldOffset = Vector3.up * 2f;
+    public WorldSubtitleDisplay worldSubtitleDisplay; // Assign in inspector
 
     public void PlaySubtitles()
     {
@@ -56,7 +55,8 @@ public class SubtitleTrigger : MonoBehaviour
                 return;
             }
 
-            worldSubtitleDisplay.transform.position = transform.position + worldOffset;
+            // Use SubtitleTrigger's own position — no offset needed
+            worldSubtitleDisplay.transform.position = transform.position;
 
             worldSubtitleDisplay.PlaySubtitles(texts, durations);
         }

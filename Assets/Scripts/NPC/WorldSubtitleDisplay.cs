@@ -9,11 +9,36 @@ public class WorldSubtitleDisplay : MonoBehaviour
     public float fadeDuration = 0.25f;
 
     private Coroutine currentRoutine;
-    private Transform lookAtTarget;
 
-    public void SetTarget(Transform target)
+    // Set placeholder text in editor
+    void Reset()
     {
-        lookAtTarget = target;
+        if (subtitleText != null)
+        {
+            subtitleText.text = "Lorem Ipsum";
+            subtitleText.alpha = 1f;
+        }
+    }
+
+    // Keep placeholder visible in editor when properties change
+    void OnValidate()
+    {
+        if (subtitleText != null)
+        {
+            if (string.IsNullOrEmpty(subtitleText.text))
+                subtitleText.text = "Lorem Ipsum";
+            subtitleText.alpha = 1f;
+        }
+    }
+
+    // Clear placeholder at runtime start
+    void Awake()
+    {
+        if (Application.isPlaying)
+        {
+            subtitleText.text = "";
+            subtitleText.alpha = 0f;
+        }
     }
 
     public void PlaySubtitles(List<string> lines, List<float> durations)
@@ -54,19 +79,7 @@ public class WorldSubtitleDisplay : MonoBehaviour
             subtitleText.text = "";
         }
 
-        // No longer destroying the object — just hide it
         subtitleText.text = "";
         subtitleText.alpha = 0f;
     }
-
-    //private void Update()
-    //{
-    //   if (lookAtTarget != null)
-    //  {
-    //     Vector3 direction = transform.position - lookAtTarget.position;
-    //     direction.y = 0; // keep upright
-    //     transform.forward = direction;
-    //  }
-    //}
-
 }
