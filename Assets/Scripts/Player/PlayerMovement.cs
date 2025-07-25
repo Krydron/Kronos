@@ -194,7 +194,7 @@ public class PlayerMovement : MonoBehaviour
             walkingSound.Stop();
             crouchingSound.Stop();
 
-            if (animator == null) { return; }
+            if (animator == null || !animator.gameObject.activeSelf) { return; }
             animator.SetBool("Walking", false);
             animatorCrowbar.SetBool("Walking",false);
         }
@@ -204,7 +204,7 @@ public class PlayerMovement : MonoBehaviour
             if (sneaking) { crouchingSound.Play(); return; }
             walkingSound.Play();
 
-            if (animator == null) { return; }
+            if (animator == null || !animator.gameObject.activeSelf) { return; }
             animator.SetBool("Walking", true);
             animatorCrowbar.SetBool("Walking", true);
         }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 public class NoteSave : MonoBehaviour
 {
-    private List<bool> list = new List<bool>();
+    private bool[] list;
     GameObject tablet;
     NoteList notes;
     int numNotes;
@@ -28,16 +28,27 @@ public class NoteSave : MonoBehaviour
         //list = new List<bool>();
         //GameObject tabletNotes = GameObject.Find("TabletNotes");
         //int numNotes = tabletNotes.GetComponent<NoteList>().NotesCount();
-        for (int i = 0; i < numNotes; i++)
+        list = new bool[numNotes];
+        for (int i = 0; i < list.Length; i++)
         {
-            list.Add(false);
+            list[i] = false;
         }
     }
 
-    public List<bool> LoadList()
+    public bool[] LoadList()
     {
        // if (list == null) { GenerateList(); }
        return list;
+    }
+
+    public void SetList(bool[] list)
+    {
+        this.list = list;
+    }
+
+    public void ResetValues()
+    {
+        for (int i = 0; i < list.Length;i++) { list[i] = false; }
     }
 
     public void Activate(int value)
