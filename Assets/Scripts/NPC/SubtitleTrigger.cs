@@ -55,10 +55,8 @@ public class SubtitleTrigger : MonoBehaviour
                 return;
             }
 
-            // Use SubtitleTrigger's own position — no offset needed
-            worldSubtitleDisplay.transform.position = transform.position;
-
             worldSubtitleDisplay.PlaySubtitles(texts, durations);
         }
+
     }
 }
