@@ -27,13 +27,6 @@ public class EnemyTaskManager : MonoBehaviour
 
         [Header("Conversation Audio")]
         public EventReference conversationAudioEvent;
-
-        [Header("Conversation Subtitles")]
-        [Tooltip("Subtitle lines to display during conversation.")]
-        public List<string> subtitleLines = new List<string>();
-
-        [Tooltip("Duration (in seconds) to display each line.")]
-        public List<float> subtitleDurations = new List<float>();
     }
 
     [Header("Task Queue")]
@@ -46,12 +39,10 @@ public class EnemyTaskManager : MonoBehaviour
     [Tooltip("Delay in seconds before repeating the entire task queue")]
     public float repeatDelay = 5f;
 
-
     private EnemyBase enemyBase;
     private NavMeshAgent agent;
-
     private bool isPerformingTask = false;
-    private bool isConversationLeader = false; // NEW: leader flag to control conversation sequence
+    private bool isConversationLeader = false;
     private int currentTaskIndex = 0;
 
     private static List<EnemyTaskManager> availableForConversation = new List<EnemyTaskManager>();
@@ -64,12 +55,10 @@ public class EnemyTaskManager : MonoBehaviour
 
     private Transform playerTransform;
 
-
     private void Start()
     {
         enemyBase = GetComponent<EnemyBase>();
         agent = GetComponent<NavMeshAgent>();
-
         playerTransform = GameObject.FindGameObjectWithTag("Player")?.transform;
 
         if (taskQueue.Count > 0)
@@ -77,7 +66,6 @@ public class EnemyTaskManager : MonoBehaviour
             StartCoroutine(TaskQueueRoutine());
         }
     }
-
 
     private IEnumerator TaskQueueRoutine()
     {
@@ -87,11 +75,9 @@ public class EnemyTaskManager : MonoBehaviour
             {
                 var task = taskQueue[currentTaskIndex];
 
-                // Wait until global elapsed time reaches this task's start time
                 while (TimeTracker.Instance == null || TimeTracker.Instance.elapsedTime < task.taskStartTime)
                     yield return null;
 
-                // Perform task based on its type
                 yield return PerformTask(task);
             }
 
@@ -103,7 +89,6 @@ public class EnemyTaskManager : MonoBehaviour
 
         } while (repeatTasks);
     }
-
 
     private IEnumerator PerformTask(TaskData task)
     {
@@ -150,14 +135,12 @@ public class EnemyTaskManager : MonoBehaviour
 
     private IEnumerator PerformConversation(TaskData task)
     {
-        // Add self to available list if not already present
         if (!availableForConversation.Contains(this))
         {
             availableForConversation.Add(this);
             Debug.Log($"{gameObject.name} added to availableForConversation.");
         }
 
-        // Wait until partner assigned
         while (conversationPartner == null)
         {
             FindConversationPartner();
@@ -178,7 +161,6 @@ public class EnemyTaskManager : MonoBehaviour
             yield break;
         }
 
-        // Assign conversation leader if neither has it yet
         if (!isConversationLeader && !conversationPartner.isConversationLeader)
         {
             isConversationLeader = true;
@@ -191,7 +173,6 @@ public class EnemyTaskManager : MonoBehaviour
 
             float timeout = 10f;
             float timer = 0f;
-
             bool thisArrived = false;
             bool partnerArrived = false;
 
@@ -199,26 +180,23 @@ public class EnemyTaskManager : MonoBehaviour
             {
                 timer += Time.deltaTime;
 
-                // Keep updating destination every frame
                 agent.SetDestination(midpoint);
                 conversationPartner.agent.SetDestination(midpoint);
 
                 if (!agent.pathPending)
                 {
-                    Debug.Log($"{gameObject.name} distance to midpoint: {agent.remainingDistance}");
-                    if (agent.remainingDistance <= task.conversationDistance)
+                    if (agent.remainingDistance <= task.conversationDistance ||
+                        agent.pathStatus == NavMeshPathStatus.PathInvalid ||
+                        agent.pathStatus == NavMeshPathStatus.PathPartial)
                         thisArrived = true;
-                    else if (agent.pathStatus == NavMeshPathStatus.PathInvalid || agent.pathStatus == NavMeshPathStatus.PathPartial)
-                        thisArrived = true; // Treat as arrived to prevent deadlock
                 }
 
                 if (!conversationPartner.agent.pathPending)
                 {
-                    Debug.Log($"{conversationPartner.gameObject.name} distance to midpoint: {conversationPartner.agent.remainingDistance}");
-                    if (conversationPartner.agent.remainingDistance <= task.conversationDistance)
+                    if (conversationPartner.agent.remainingDistance <= task.conversationDistance ||
+                        conversationPartner.agent.pathStatus == NavMeshPathStatus.PathInvalid ||
+                        conversationPartner.agent.pathStatus == NavMeshPathStatus.PathPartial)
                         partnerArrived = true;
-                    else if (conversationPartner.agent.pathStatus == NavMeshPathStatus.PathInvalid || conversationPartner.agent.pathStatus == NavMeshPathStatus.PathPartial)
-                        partnerArrived = true; // Treat as arrived to prevent deadlock
                 }
 
                 yield return null;
@@ -234,9 +212,8 @@ public class EnemyTaskManager : MonoBehaviour
 
             PlayConversationAudio(task.conversationAudioEvent);
             conversationPartner.PlayConversationAudio(task.conversationAudioEvent);
-            // Trigger subtitles if player is close
-            TryShowSubtitlesIfPlayerClose(task);
 
+            TryTriggerSubtitleIfPlayerClose();
 
             yield return new WaitForSeconds(task.taskDuration);
 
@@ -245,7 +222,6 @@ public class EnemyTaskManager : MonoBehaviour
 
             Debug.Log($"{gameObject.name} and {conversationPartner.gameObject.name} finished talking.");
 
-            // Cleanup
             EndConversation();
             conversationPartner.EndConversation();
 
@@ -253,28 +229,25 @@ public class EnemyTaskManager : MonoBehaviour
         }
         else
         {
-            // Wait for the leader to finish conversation
             while (isConversationLeader || conversationPartner.isConversationLeader)
-            {
                 yield return null;
-            }
         }
     }
 
-    private void TryShowSubtitlesIfPlayerClose(TaskData task)
+    private void TryTriggerSubtitleIfPlayerClose()
     {
         if (playerTransform == null) return;
 
         float distanceToPlayer = Vector3.Distance(transform.position, playerTransform.position);
         if (distanceToPlayer <= playerSubtitleDistance)
         {
-            if (task.subtitleLines != null && task.subtitleLines.Count > 0 && SubtitleManager.Instance != null)
+            SubtitleTrigger trigger = GetComponent<SubtitleTrigger>();
+            if (trigger != null)
             {
-                SubtitleManager.Instance.PlaySubtitles(task.subtitleLines, task.subtitleDurations);
+                trigger.PlaySubtitles();
             }
         }
     }
-
 
     private void PlayConversationAudio(EventReference audioEvent)
     {

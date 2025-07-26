@@ -8,10 +8,28 @@ public class SubtitleManager : MonoBehaviour
     public static SubtitleManager Instance { get; private set; }
 
     [Header("UI References")]
-    public GameObject subtitlePanel;
     public TextMeshProUGUI subtitleText;
+    public Canvas subtitleCanvas;
 
+    [Header("Settings")]
+    public float fadeDuration = 0.25f;
+
+    private Queue<SubtitleEntry> subtitleQueue = new Queue<SubtitleEntry>();
     private Coroutine currentRoutine;
+
+    [System.Serializable]
+    public class SubtitleEntry
+    {
+        [TextArea]
+        public string text;
+        public float duration = 2f;
+
+        public SubtitleEntry(string text, float duration)
+        {
+            this.text = text;
+            this.duration = duration;
+        }
+    }
 
     private void Awake()
     {
@@ -20,61 +38,62 @@ public class SubtitleManager : MonoBehaviour
             Destroy(gameObject);
             return;
         }
+
         Instance = this;
 
+        if (subtitleCanvas != null)
+            subtitleCanvas.enabled = false;
+
         subtitleText.text = "";
-        if (subtitlePanel != null)
-        {
-            subtitlePanel.SetActive(false);
-        }
     }
 
-    /// <summary>
-    /// Plays the given lines with the matching timing.
-    /// </summary>
-    /// <param name="lines">List of subtitle lines.</param>
-    /// <param name="lineDurations">How long to show each line (seconds).</param>
-    public void PlaySubtitles(List<string> lines, List<float> lineDurations)
+    public void ShowSubtitle(string text, float duration)
     {
+        subtitleQueue.Clear(); // <-- clear any active subtitle
+        subtitleQueue.Enqueue(new SubtitleEntry(text, duration));
+
         if (currentRoutine != null)
-        {
             StopCoroutine(currentRoutine);
-        }
 
-        if (subtitlePanel != null)
-        {
-            subtitlePanel.SetActive(true);
-        }
-
-        currentRoutine = StartCoroutine(SubtitleRoutine(lines, lineDurations));
+        currentRoutine = StartCoroutine(ProcessQueue());
     }
 
-    private IEnumerator SubtitleRoutine(List<string> lines, List<float> lineDurations)
+    private IEnumerator ProcessQueue()
     {
-        for (int i = 0; i < lines.Count; i++)
+        if (subtitleCanvas != null)
+            subtitleCanvas.enabled = true;
+
+        while (subtitleQueue.Count > 0)
         {
-            subtitleText.text = lines[i];
-            float duration = (i < lineDurations.Count) ? lineDurations[i] : 2.5f;
-            yield return new WaitForSeconds(duration);
+            SubtitleEntry current = subtitleQueue.Dequeue();
+
+            subtitleText.alpha = 0f;
+            subtitleText.text = current.text;
+
+            float t = 0;
+            while (t < fadeDuration)
+            {
+                t += Time.deltaTime;
+                subtitleText.alpha = Mathf.Lerp(0, 1, t / fadeDuration);
+                yield return null;
+            }
+
+            yield return new WaitForSeconds(current.duration);
+
+            t = 0;
+            while (t < fadeDuration)
+            {
+                t += Time.deltaTime;
+                subtitleText.alpha = Mathf.Lerp(1, 0, t / fadeDuration);
+                yield return null;
+            }
+
+            subtitleText.text = "";
         }
 
-        subtitleText.text = "";
-        if (subtitlePanel != null)
-        {
-            subtitlePanel.SetActive(false);
-        }
-    }
+        if (subtitleCanvas != null)
+            subtitleCanvas.enabled = false;
 
-    public void ClearSubtitles()
-    {
-        if (currentRoutine != null)
-        {
-            StopCoroutine(currentRoutine);
-        }
-        subtitleText.text = "";
-        if (subtitlePanel != null)
-        {
-            subtitlePanel.SetActive(false);
-        }
+        currentRoutine = null;
     }
 }
