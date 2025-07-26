@@ -110,9 +110,27 @@ public class EnemyBase : MonoBehaviour
 
         currentHealth = maxHealth;
 
-        if (patrolPoints.Length > 0)
+        // Filter out any null entries in patrolPoints
+        if (patrolPoints != null && patrolPoints.Length > 0)
+        {
+            List<Transform> validPoints = new List<Transform>();
+            foreach (var point in patrolPoints)
+            {
+                if (point != null)
+                    validPoints.Add(point);
+            }
+
+            patrolPoints = validPoints.ToArray();
+        }
+
+        //Only go to waypoint if there are valid patrol points
+        if (patrolPoints != null && patrolPoints.Length > 0)
         {
             GoToNextWaypoint();
+        }
+        else
+        {
+            Debug.LogWarning($"{gameObject.name} has no valid patrol points assigned. Patrolling will be skipped.", this);
         }
 
         isWaiting = false;
@@ -127,15 +145,17 @@ public class EnemyBase : MonoBehaviour
             fovSpotlight.intensity = spotlightIntensity;
         }
 
-        // Create the looping footstep sound instance
+        // Setup footstep audio
         if (!footstepEvent.IsNull)
         {
             footstepInstance = RuntimeManager.CreateInstance(footstepEvent);
             footstepInstance.set3DAttributes(RuntimeUtils.To3DAttributes(gameObject));
             footstepInstance.start();
-            footstepInstance.setPaused(true); // start paused
+            footstepInstance.setPaused(true);
         }
     }
+
+
 
     private void Update()
     {
