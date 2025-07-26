@@ -61,5 +61,7 @@ public class LoopTracker : MonoBehaviour
 
     }
 
-    public uint CurrentLoop() { return loop; }
+    public int CurrentLoop() { return loop; }
+
+    public void SetLoop(int loop) { this.loop = (ushort)loop; }
 }

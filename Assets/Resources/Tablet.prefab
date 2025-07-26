@@ -671,12 +671,12 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 6417179829429717017}
         m_TargetAssemblyTypeName: Map, Assembly-CSharp
-        m_MethodName: Map3
-        m_Mode: 1
+        m_MethodName: MapLoad
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 3
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -1582,7 +1582,6 @@ GameObject:
   - component: {fileID: 1701352447911823330}
   - component: {fileID: 3207948228408174298}
   - component: {fileID: 3939088151409031362}
-  - component: {fileID: 1036489227801113148}
   - component: {fileID: 3951376892276561361}
   m_Layer: 5
   m_Name: Map1
@@ -1620,19 +1619,6 @@ CanvasRenderer:
   m_GameObject: {fileID: 3332871728600066248}
   m_CullTransparentMesh: 1
 --- !u!114 &3939088151409031362
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3332871728600066248}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8a31fcbce0fdf104186216ac9099d635, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  map: 0
---- !u!114 &1036489227801113148
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1874,6 +1860,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4470194019144883669}
   - component: {fileID: 1717710052916514484}
+  - component: {fileID: 2953892957770725898}
   m_Layer: 5
   m_Name: Tablet
   m_TagString: Untagged
@@ -1913,6 +1900,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4130437930359005941}
   m_CullTransparentMesh: 1
+--- !u!114 &2953892957770725898
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4130437930359005941}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 43723c664174832448a8bcd1fa5c4f00, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  item: {fileID: 11400000, guid: 7e5b5f646bb2fb24e870a0d708bb0050, type: 2}
 --- !u!1 &4197063518430870163
 GameObject:
   m_ObjectHideFlags: 0
@@ -3823,12 +3823,12 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 6417179829429717017}
         m_TargetAssemblyTypeName: Map, Assembly-CSharp
-        m_MethodName: Map2
-        m_Mode: 1
+        m_MethodName: MapLoad
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 2
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -4682,12 +4682,12 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 6417179829429717017}
         m_TargetAssemblyTypeName: Map, Assembly-CSharp
-        m_MethodName: Map1
-        m_Mode: 1
+        m_MethodName: MapLoad
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 1
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0

@@ -15,23 +15,17 @@ using UnityEngine;
 
 public class InteractableMaps : Interactable
 {
-    Map map;
+    [SerializeField] Map map;
     [SerializeField] private int mapType;
 
     private void Start()
     {
-        //player = GameObject.FindGameObjectWithTag("Player");
         //map = GameObject.Find("Map").GetComponent<Map>();
-    }
-
-    private void OnLevelWasLoaded(int level)
-    {
-        map = GameObject.Find("Map").GetComponent<Map>();
     }
 
     public override bool Interact()
     {
-        if (map == null) { return false; }
+        if (map == null) { Debug.LogError("Map is null"); return false; }
         Debug.Log("Saving Map");
         switch (mapType)
         {

@@ -4,7 +4,7 @@ using UnityEngine;
 public class Map : MonoBehaviour
 {
     GameObject map1,map2,map3, button1, button2, button3;
-    List<GameObject> buttons = new List<GameObject>();
+    //List<GameObject> buttons = new List<GameObject>();
     MapSave mapSave;
 
     private void Awake()
@@ -12,9 +12,9 @@ public class Map : MonoBehaviour
         map1 = transform.Find("Map1").gameObject;
         map2 = transform.Find("Map2").gameObject;
         map3 = transform.Find("Map3").gameObject;
-        map1.SetActive(false);
-        map2.SetActive(false);
-        map3.SetActive(false);
+        //map1.SetActive(false);
+        //map2.SetActive(false);
+        //map3.SetActive(false);
 
         button1 = transform.Find("1").gameObject;
         button2 = transform.Find("2").gameObject;
@@ -23,7 +23,8 @@ public class Map : MonoBehaviour
 
     private void OnEnable()
     {
-        mapSave = GameObject.Find("GameManager").GetComponent<MapSave>();
+        mapSave = GameObject.Find("GameManager")?.GetComponent<MapSave>();
+        if (mapSave == null ) { return; }
         for (int i = 1; i < 4; i++)
         {
             switch(i)
@@ -49,41 +50,40 @@ public class Map : MonoBehaviour
         map3.SetActive(false);
     }
 
-    public void Map1()
+    public void MapLoad(int num)
     {
         HideAll();
-        map1.SetActive(true);
-    }
-
-    public void Map2()
-    {
-        HideAll();
-        map2.SetActive(true);
-    }
-
-    public void Map3()
-    {
-        HideAll();
-        mapSave.MSave(3, true);
-        map3.SetActive(true);
+        switch (num) {
+            case 1:
+                map1.SetActive(true);
+                break;
+            case 2:
+                map2.SetActive(true);
+                break;
+            case 3:
+                map3.SetActive(true);
+                break;
+            default: break;
+        }
+        
     }
 
     public void Button1() 
     {
         mapSave.MSave(1, true);
-        button1.SetActive(true);
+        //button1.SetActive(true);
         Debug.Log("Map1 Added");
     }
     public void Button2() 
     {
         mapSave.MSave(2, true);
-        button2.SetActive(true);
+        //button2.SetActive(true);
         Debug.Log("Map2 Added");
     }
     public void Button3() 
     {
         mapSave.MSave(3, true);
-        button3.SetActive(true);
+        //button3.SetActive(true);
         Debug.Log("Map3 Added");
     }
 }

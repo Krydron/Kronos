@@ -31,20 +31,15 @@ public class FlashbackSwitch
 
 public class SceneLoader : MonoBehaviour
 {
-    List<FlashbackSwitch> FlashbackSwitches = new List<FlashbackSwitch>();
-    int numOfFlashbacks = 1;
-
+    FlashbackSwitch[] FlashbackSwitches;
+    int numOfFlashbacks = 0;
     
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        for (int i = 1; i < numOfFlashbacks + 1; i++)
-        {
-            FlashbackSwitches.Add(new FlashbackSwitch(i));
-            Debug.Log("Initialized Flashback Trigger " + i);
-        }
+        FlashbackSwitches = new FlashbackSwitch[numOfFlashbacks];
     }
 
     private void OnLevelWasLoaded(int level)
@@ -82,7 +77,7 @@ public class SceneLoader : MonoBehaviour
 
     public void ReloadScene()
     {
-        for (int i = 0;i < FlashbackSwitches.Count;i++)
+        for (int i = 0; i < FlashbackSwitches.Length; i++)
         {
             Debug.Log("Flashback: " + i + " Tracker: "+ FlashbackSwitches[i].tracker);
             if (FlashbackSwitches[i].tracker) {
@@ -92,21 +87,63 @@ public class SceneLoader : MonoBehaviour
         SceneManager.LoadScene(1);
     }
 
-    public void Play()
+    public void Play(bool fromLastSave)
     {
-        SceneManager.LoadScene(2);
-        //ReloadScene();
+        GameObject gameManager = GameObject.Find("GameManager");
+        int currentLoop = 1;
+
+        SaveData data = SaveSystem.LoadSave();
+        if (fromLastSave && data != null)
+        {
+            currentLoop = data.currentLoop;
+            bool[] mapsSaved = data.mapsSaved;
+            Vector3[][][] lineList = new Vector3[data.lineList.Length][][];
+            for (int map = 0; map < data.lineList.Length; map++)
+            {
+                lineList[map] = new Vector3[data.lineList[map].Length][];
+                for (int line = 0; line < data.lineList[map].Length; line++)
+                {
+                    lineList[map][line] = new Vector3[data.lineList[map][line].Length];
+                    for (int point = 0; point < data.lineList[map][line].Length; point++)
+                    {
+                        Debug.Log("Line value:\n X: " + data.lineList[map][line][point][0] + "\n Y: " + data.lineList[map][line][point][1] + "\n Z: " + data.lineList[map][line][point][2]);
+                        lineList[map][line][point].x = data.lineList[map][line][point][0];
+                        lineList[map][line][point].y = data.lineList[map][line][point][1];
+                        lineList[map][line][point].z = data.lineList[map][line][point][2];
+                    }
+                }
+            }
+            bool[] noteList = data.noteList;
+
+            gameManager.GetComponent<MapSave>().MSave(mapsSaved);
+            gameManager.GetComponent<MapSave>().list = lineList;
+            gameManager.GetComponent<NoteSave>().SetList(noteList);
+            gameManager.GetComponent<LoopTracker>().SetLoop(currentLoop);
+            SceneManager.LoadScene(1);
+        }
+        else
+        {
+            gameManager.GetComponent<MapSave>().ResetValues();
+            gameManager.GetComponent<NoteSave>().ResetValues();
+            gameManager.GetComponent<LoopTracker>().SetLoop(currentLoop);
+            SceneManager.LoadScene(2);
+        }
+
+        
+        
     }
 
     public void ReturnToMainMenu()
     {
         //GameObject.Find("Player").GetComponent<Pause>().PauseToggle();
         //GameObject.Find("Player").GetComponent<Pause>().ToggleCursor();
+        SaveSystem.NewSaveSlot(GameObject.Find("GameManager"));
         SceneManager.LoadScene(0);
     }
     public void Quit()
     {
         Debug.Log("Quit");
+        SaveSystem.NewSaveSlot(GameObject.Find("GameManager"));
         Application.Quit();
     }
 

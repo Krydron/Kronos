@@ -4,25 +4,29 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Runtime.Serialization;
 public static class SaveSystem
 {
-    public static void NewSaveSlot()
+    public static void NewSaveSlot(GameObject gameManager)
     {
         BinaryFormatter binaryFormatter = new BinaryFormatter();
-        string path = Application.dataPath + "/Kronos/save.save";
+        string path = Application.dataPath + "/save.save";
         FileStream stream = new FileStream(path, FileMode.Create);
 
-        SaveData data = new SaveData();
+        SaveData data = new SaveData(gameManager.GetComponent<LoopTracker>(), gameManager.GetComponent<MapSave>(), gameManager.GetComponent<SceneLoader>(), gameManager.GetComponent<NoteSave>());
 
         binaryFormatter.Serialize(stream, data);
         stream.Close();
     }
 
-    public static void LoadSave()
+    public static SaveData LoadSave()
     {
+        string path = Application.dataPath + "/save.save";
+        if (!File.Exists(path)) { Debug.LogError("Save not found: "+path); return null; }
+
         BinaryFormatter binaryFormatter = new BinaryFormatter();
-        string path = Application.dataPath + "/Kronos/save.save";
         FileStream stream = new FileStream(path, FileMode.Open);
 
         SaveData data = binaryFormatter.Deserialize(stream) as SaveData;
         stream.Close();
+
+        return data;
     }
 }

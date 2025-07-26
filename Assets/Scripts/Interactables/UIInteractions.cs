@@ -62,7 +62,7 @@ public class UIInteractions : MonoBehaviour
         player = GameObject.FindGameObjectWithTag("Player");
         interactables = GameObject.FindGameObjectsWithTag("Interactable");
         map = GameObject.Find("Tablet");
-        if (map != null) { map.SetActive(false); }
+        map?.SetActive(false);
         menuOpen = false;
         pause = GetComponent<Pause>();
         /*canInteract = true;

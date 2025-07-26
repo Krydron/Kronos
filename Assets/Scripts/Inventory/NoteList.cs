@@ -20,10 +20,10 @@ public class NoteList : MonoBehaviour
         //gameObject.SetActive(false);
     }*/
 
-    public void LoadList(List<bool> list)
+    public void LoadList(bool[] list)
     {
-        //if (list == null) { Debug.Log("List is null"); }
-        for (int i = 0; i < list.Count; i++)
+        if (list == null) { Debug.Log("List is null"); return; }
+        for (int i = 0; i < list.Length; i++)
         {
             Debug.Log(i + " is " + list[i].ToString());
             noteButtons[i].SetActive(list[i]);
