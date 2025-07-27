@@ -51,6 +51,7 @@ public class CameraFOVCone : MonoBehaviour
 
         DrawFOVCone(
             securityCamera.fieldOfView,
+            securityCamera.verticalFieldOfView,
             securityCamera.viewDistance,
             downwardTiltAngle
         );
@@ -74,54 +75,79 @@ public class CameraFOVCone : MonoBehaviour
             meshRenderer.material = isAlert ? alertMaterial : idleMaterial;
     }
 
-    private void DrawFOVCone(float viewAngle, float viewRadius, float tiltAngle)
+    private void DrawFOVCone(float horizontalViewAngle, float verticalViewAngle, float viewRadius, float tiltAngle)
     {
         mesh.Clear();
 
-        float halfAngleRad = (viewAngle / 2f) * Mathf.Deg2Rad;
-        float baseRadius = Mathf.Tan(halfAngleRad) * viewRadius;
+        int segments = resolution;
+        float halfHorizontalRad = (horizontalViewAngle / 2f) * Mathf.Deg2Rad;
+        float halfVerticalRad = (verticalViewAngle / 2f) * Mathf.Deg2Rad;
 
-        Vector3[] vertices = new Vector3[resolution + 2];
-        int[] triangles = new int[resolution * 3];
+        // Vertices count:
+        // 1 apex + (segments+1) horizontal ring points + (segments+1) vertical ring points (for simplicity, we create a cone with horizontal segments)
+        // For a cone, we’ll create a circular base but to represent vertical FOV properly, we use elliptical base scaling
 
-        vertices[0] = Vector3.zero; // apex of the cone
+        // Total vertices: apex + base ring + base center
+        Vector3[] vertices = new Vector3[segments + 3];
+        int[] triangles = new int[segments * 6]; // sides + base
 
-        float angleStep = 360f / resolution;
+        // Apex vertex
+        vertices[0] = Vector3.zero; // cone apex at origin
+
+        // Base center vertex (placed at local forward * viewRadius with tilt)
         Quaternion tiltRotation = Quaternion.Euler(tiltAngle, 0f, 0f);
-        Vector3 origin = transform.position;
+        Vector3 baseCenterLocal = tiltRotation * (Vector3.forward * viewRadius);
+        vertices[segments + 2] = baseCenterLocal;
 
-        for (int i = 0; i <= resolution; i++)
+        // Calculate base ring vertices (with tilt and obstacle raycast)
+        float baseRadiusX = Mathf.Tan(horizontalViewAngle * 0.5f * Mathf.Deg2Rad) * viewRadius;
+        float baseRadiusY = Mathf.Tan(verticalViewAngle * 0.5f * Mathf.Deg2Rad) * viewRadius;
+
+        for (int i = 0; i <= segments; i++)
         {
-            float currentAngle = i * angleStep;
-            float x = baseRadius * Mathf.Cos(currentAngle * Mathf.Deg2Rad);
-            float y = baseRadius * Mathf.Sin(currentAngle * Mathf.Deg2Rad);
+            float angle = (i / (float)segments) * Mathf.PI * 2f;
+            float x = baseRadiusX * Mathf.Cos(angle);
+            float y = baseRadiusY * Mathf.Sin(angle);
+            Vector3 localPos = new Vector3(x, y, viewRadius);
 
-            Vector3 localDirection = new Vector3(x, y, viewRadius).normalized;
-            Vector3 worldDirection = tiltRotation * localDirection;
+            localPos = tiltRotation * localPos;
 
-            Vector3 endPoint = origin + transform.rotation * worldDirection * viewRadius;
+            Vector3 worldDir = transform.rotation * localPos.normalized;
+            Vector3 origin = transform.position;
+            Vector3 endPoint = origin + worldDir * viewRadius;
 
-            if (Physics.Raycast(origin, transform.rotation * worldDirection, out RaycastHit hit, viewRadius, obstacleMask))
+            if (Physics.Raycast(origin, worldDir, out RaycastHit hit, viewRadius, obstacleMask))
             {
                 endPoint = hit.point;
             }
 
-            // Convert world point to local space relative to the FOV GameObject
             vertices[i + 1] = transform.InverseTransformPoint(endPoint);
-
-            // Optional debug
-            Debug.DrawLine(origin, endPoint, isAlert ? Color.red : Color.green, 0.05f);
         }
 
-        for (int i = 0; i < resolution; i++)
+        // --- Build triangles ---
+
+        // Sides (apex to base ring)
+        for (int i = 0; i < segments; i++)
         {
-            triangles[i * 3] = 0;
-            triangles[i * 3 + 1] = i + 1;
-            triangles[i * 3 + 2] = i + 2;
+            triangles[i * 3] = 0;           // apex
+            triangles[i * 3 + 1] = i + 1;   // current base vertex
+            triangles[i * 3 + 2] = i + 2;   // next base vertex
+        }
+
+        // Base (base center to base ring), winding order reversed to face outward
+        int baseIndexOffset = segments * 3;
+        int baseCenterIndex = segments + 2;
+
+        for (int i = 0; i < segments; i++)
+        {
+            triangles[baseIndexOffset + i * 3] = baseCenterIndex;          // base center vertex
+            triangles[baseIndexOffset + i * 3 + 1] = i + 2;                // next base vertex
+            triangles[baseIndexOffset + i * 3 + 2] = i + 1;                // current base vertex
         }
 
         mesh.vertices = vertices;
         mesh.triangles = triangles;
         mesh.RecalculateNormals();
+
     }
 }
