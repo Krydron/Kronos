@@ -24,7 +24,7 @@ public class TempFlashbackTrigger : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        gameManager.GetComponent<SceneLoader>().FlashbackTrigger(1);
+        //gameManager.GetComponent<SceneLoader>().FlashbackTrigger(1);
         Destroy(gameObject);
     }
 }

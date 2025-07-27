@@ -19,9 +19,9 @@ public class FlashbackSwitch
 {
     public bool tracker;
     public bool played;
-    public int scene;
+    public string scene;
 
-    public FlashbackSwitch(int scene)
+    public FlashbackSwitch(string scene)
     {
         tracker = false;
         played = false;
@@ -31,15 +31,12 @@ public class FlashbackSwitch
 
 public class SceneLoader : MonoBehaviour
 {
-    FlashbackSwitch[] FlashbackSwitches;
-    int numOfFlashbacks = 0;
-    
-
+    static FlashbackSwitch[] FlashbackSwitches;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        FlashbackSwitches = new FlashbackSwitch[numOfFlashbacks];
+        InitializeFlashbackList();
     }
 
     private void OnLevelWasLoaded(int level)
@@ -47,10 +44,10 @@ public class SceneLoader : MonoBehaviour
         Time.timeScale = 1.0f;
     }
 
-    public void FlashbackTrigger(int num)
+    public void FlashbackTrigger(Flashback flashback)
     {
-        if (FlashbackSwitches[num-1].played) { return; }
-        FlashbackSwitches[num-1].tracker = true;
+        if (FlashbackSwitches[(int)flashback].played) { return; }
+        FlashbackSwitches[(int)flashback].tracker = true;
     }
 
     // Update is called once per frame
@@ -59,7 +56,17 @@ public class SceneLoader : MonoBehaviour
         
     }
 
-    public void Flashback()
+    private void InitializeFlashbackList()
+    {
+        if (FlashbackSwitches != null) { return; }
+        FlashbackSwitches = new FlashbackSwitch[(int)Flashback.Length];
+        for (int i = 0; i < FlashbackSwitches.Length; i++)
+        {
+            FlashbackSwitches[i] = new FlashbackSwitch(((Flashback)i).ToString());
+        }
+    }
+
+    public void JudgeFlashback()
     {
         SceneManager.LoadScene(1);
     }
@@ -80,14 +87,21 @@ public class SceneLoader : MonoBehaviour
         for (int i = 0; i < FlashbackSwitches.Length; i++)
         {
             Debug.Log("Flashback: " + i + " Tracker: "+ FlashbackSwitches[i].tracker);
-            if (FlashbackSwitches[i].tracker) {
-                SceneManager.LoadScene(FlashbackSwitches[i].scene+1); 
-                return; }
+            if (!FlashbackSwitches[i].tracker) { return; }
+            SceneManager.LoadScene(FlashbackSwitches[i].scene); 
+            return;
         }
         SceneManager.LoadScene(1);
     }
 
     public void Play(bool fromLastSave)
+    {
+        //Attempt to load last save if you can not reset values and load first cutscene
+        if (LoadSave(fromLastSave)) { SceneManager.LoadScene("Ship"); return; }
+        SceneManager.LoadScene("Courtroom");
+    }
+
+    private bool LoadSave(bool fromLastSave)
     {
         GameObject gameManager = GameObject.Find("GameManager");
         int currentLoop = 1;
@@ -95,8 +109,11 @@ public class SceneLoader : MonoBehaviour
         SaveData data = SaveSystem.LoadSave();
         if (fromLastSave && data != null)
         {
+            //Save data found and successfully loaded
             currentLoop = data.currentLoop;
             bool[] mapsSaved = data.mapsSaved;
+
+            //Returning data to vector3 format
             Vector3[][][] lineList = new Vector3[data.lineList.Length][][];
             for (int map = 0; map < data.lineList.Length; map++)
             {
@@ -119,18 +136,16 @@ public class SceneLoader : MonoBehaviour
             gameManager.GetComponent<MapSave>().list = lineList;
             gameManager.GetComponent<NoteSave>().SetList(noteList);
             gameManager.GetComponent<LoopTracker>().SetLoop(currentLoop);
-            SceneManager.LoadScene(1);
+            return true;
         }
         else
         {
+            //Failed to find and load save data
             gameManager.GetComponent<MapSave>().ResetValues();
             gameManager.GetComponent<NoteSave>().ResetValues();
             gameManager.GetComponent<LoopTracker>().SetLoop(currentLoop);
-            SceneManager.LoadScene(2);
+            return false;
         }
-
-        
-        
     }
 
     public void ReturnToMainMenu()
@@ -138,7 +153,7 @@ public class SceneLoader : MonoBehaviour
         //GameObject.Find("Player").GetComponent<Pause>().PauseToggle();
         //GameObject.Find("Player").GetComponent<Pause>().ToggleCursor();
         SaveSystem.NewSaveSlot(GameObject.Find("GameManager"));
-        SceneManager.LoadScene(0);
+        SceneManager.LoadScene("MainMenu");
     }
     public void Quit()
     {
@@ -152,6 +167,6 @@ public class SceneLoader : MonoBehaviour
         Time.timeScale = 1.0f;
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-        SceneManager.LoadScene(3);
+        SceneManager.LoadScene("Win");
     }
 }

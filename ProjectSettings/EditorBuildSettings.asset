@@ -23,6 +23,18 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Win.unity
     guid: 760459972d282e1429e502fe360c440d
+  - enabled: 1
+    path: Assets/Scenes/Office.unity
+    guid: bc645518d231fa045be91834e8e82948
+  - enabled: 1
+    path: Assets/Scenes/Birthday.unity
+    guid: 17357c6546c1db44a91845a4db8eed0b
+  - enabled: 1
+    path: Assets/Scenes/Warehouse.unity
+    guid: 7f92b2e83f6e79f40af442b8ce019783
+  - enabled: 1
+    path: Assets/Scenes/Vault.unity
+    guid: 1c2aeeef15aaf194fa3f499af7a673f6
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0
