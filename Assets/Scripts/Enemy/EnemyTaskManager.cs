@@ -16,10 +16,10 @@ public class EnemyTaskManager : MonoBehaviour
 
         [Header("Coffee Break Settings")]
         public Transform coffeeBreakLocation;
-        public float taskDuration = 5f;
 
         [Header("Conversation Settings")]
         public float conversationDistance = 2f;
+        public float taskDuration = 5f; // Shared for both task types
 
         [Header("Task Timing")]
         [Tooltip("Time in seconds after which this task should start")]
@@ -30,13 +30,8 @@ public class EnemyTaskManager : MonoBehaviour
     }
 
     [Header("Task Queue")]
-    [Tooltip("Sequence of tasks for this enemy to perform")]
     public List<TaskData> taskQueue = new List<TaskData>();
-
-    [Tooltip("Should the task queue repeat endlessly?")]
     public bool repeatTasks = false;
-
-    [Tooltip("Delay in seconds before repeating the entire task queue")]
     public float repeatDelay = 5f;
 
     private EnemyBase enemyBase;
@@ -52,7 +47,6 @@ public class EnemyTaskManager : MonoBehaviour
 
     [Header("Subtitle Settings")]
     public float playerSubtitleDistance = 10f;
-
     private Transform playerTransform;
 
     private void Start()
@@ -136,40 +130,40 @@ public class EnemyTaskManager : MonoBehaviour
     private IEnumerator PerformConversation(TaskData task)
     {
         if (!availableForConversation.Contains(this))
-        {
             availableForConversation.Add(this);
-            Debug.Log($"{gameObject.name} added to availableForConversation.");
-        }
 
-        while (conversationPartner == null)
+        // Wait to find a partner
+        float waitTime = 5f;
+        float waitTimer = 0f;
+        while (conversationPartner == null && waitTimer < waitTime)
         {
             FindConversationPartner();
-
-            if (conversationPartner != null)
-            {
-                Debug.Log($"{gameObject.name} found partner {conversationPartner.gameObject.name}.");
-                break;
-            }
-
+            waitTimer += Time.deltaTime;
             yield return null;
         }
 
-        if (conversationPartner == null)
+        if (conversationPartner == null || conversationPartner.agent == null)
         {
-            Debug.LogWarning($"{gameObject.name} could not find a conversation partner.");
+            Debug.LogWarning($"{gameObject.name} could not find a valid conversation partner.");
             availableForConversation.Remove(this);
             yield break;
         }
 
         if (!isConversationLeader && !conversationPartner.isConversationLeader)
-        {
             isConversationLeader = true;
-        }
 
         if (isConversationLeader)
         {
-            Vector3 midpoint = (transform.position + conversationPartner.transform.position) * 0.5f;
-            Debug.Log($"{gameObject.name} and {conversationPartner.gameObject.name} moving to midpoint {midpoint}.");
+            // Use safe midpoint
+            Vector3 rawMidpoint = (transform.position + conversationPartner.transform.position) * 0.5f;
+            Vector3 midpoint = FindSafeMidpointOnNavMesh(rawMidpoint, 2f, 12);
+
+            // Validate partner again
+            if (conversationPartner == null || conversationPartner.agent == null)
+            {
+                Debug.LogWarning("Conversation partner became invalid during midpoint calc.");
+                yield break;
+            }
 
             float timeout = 10f;
             float timer = 0f;
@@ -180,58 +174,91 @@ public class EnemyTaskManager : MonoBehaviour
             {
                 timer += Time.deltaTime;
 
-                agent.SetDestination(midpoint);
-                conversationPartner.agent.SetDestination(midpoint);
+                if (agent != null && agent.isOnNavMesh)
+                    agent.SetDestination(midpoint);
+
+                if (conversationPartner.agent != null && conversationPartner.agent.isOnNavMesh)
+                    conversationPartner.agent.SetDestination(midpoint);
 
                 if (!agent.pathPending)
-                {
-                    if (agent.remainingDistance <= task.conversationDistance ||
-                        agent.pathStatus == NavMeshPathStatus.PathInvalid ||
-                        agent.pathStatus == NavMeshPathStatus.PathPartial)
-                        thisArrived = true;
-                }
+                    thisArrived = agent.remainingDistance <= task.conversationDistance ||
+                                  agent.pathStatus == NavMeshPathStatus.PathPartial ||
+                                  agent.pathStatus == NavMeshPathStatus.PathInvalid;
 
                 if (!conversationPartner.agent.pathPending)
-                {
-                    if (conversationPartner.agent.remainingDistance <= task.conversationDistance ||
-                        conversationPartner.agent.pathStatus == NavMeshPathStatus.PathInvalid ||
-                        conversationPartner.agent.pathStatus == NavMeshPathStatus.PathPartial)
-                        partnerArrived = true;
-                }
+                    partnerArrived = conversationPartner.agent.remainingDistance <= task.conversationDistance ||
+                                     conversationPartner.agent.pathStatus == NavMeshPathStatus.PathPartial ||
+                                     conversationPartner.agent.pathStatus == NavMeshPathStatus.PathInvalid;
 
                 yield return null;
             }
 
             if (timer >= timeout)
-                Debug.LogWarning($"{gameObject.name} and {conversationPartner.gameObject.name} conversation move timed out.");
+                Debug.LogWarning("Conversation move timed out.");
 
-            agent.isStopped = true;
-            conversationPartner.agent.isStopped = true;
-
-            Debug.Log($"{gameObject.name} and {conversationPartner.gameObject.name} started talking.");
+            if (agent != null) agent.isStopped = true;
+            if (conversationPartner.agent != null) conversationPartner.agent.isStopped = true;
 
             PlayConversationAudio(task.conversationAudioEvent);
             conversationPartner.PlayConversationAudio(task.conversationAudioEvent);
-
             TryTriggerSubtitleIfPlayerClose();
 
             yield return new WaitForSeconds(task.taskDuration);
 
-            agent.isStopped = false;
-            conversationPartner.agent.isStopped = false;
-
-            Debug.Log($"{gameObject.name} and {conversationPartner.gameObject.name} finished talking.");
+            if (agent != null) agent.isStopped = false;
+            if (conversationPartner.agent != null) conversationPartner.agent.isStopped = false;
 
             EndConversation();
-            conversationPartner.EndConversation();
+            if (conversationPartner != null)
+                conversationPartner.EndConversation();
 
             isConversationLeader = false;
         }
         else
         {
-            while (isConversationLeader || conversationPartner.isConversationLeader)
+            while (conversationPartner != null && (isConversationLeader || conversationPartner.isConversationLeader))
                 yield return null;
         }
+    }
+
+
+    private Vector3 FindSafeMidpointOnNavMesh(Vector3 midpoint, float radius = 2f, int sampleCount = 8)
+    {
+        List<Vector3> candidates = new List<Vector3>();
+        List<float> distances = new List<float>();
+
+        for (int i = 0; i < sampleCount; i++)
+        {
+            float angle = (360f / sampleCount) * i;
+            Vector3 offset = new Vector3(Mathf.Cos(angle * Mathf.Deg2Rad), 0, Mathf.Sin(angle * Mathf.Deg2Rad)) * radius;
+            Vector3 samplePoint = midpoint + offset;
+
+            if (NavMesh.SamplePosition(samplePoint, out NavMeshHit hit, 1f, NavMesh.AllAreas))
+            {
+                candidates.Add(hit.position);
+                distances.Add(Vector3.Distance(midpoint, hit.position));
+            }
+        }
+
+        if (candidates.Count == 0)
+        {
+            Debug.LogWarning("No valid NavMesh candidates near midpoint. Falling back.");
+            return midpoint;
+        }
+
+        float bestDist = float.MaxValue;
+        Vector3 bestPoint = candidates[0];
+
+        for (int i = 0; i < candidates.Count; i++)
+        {
+            if (distances[i] < bestDist)
+            {
+                bestDist = distances[i];
+                bestPoint = candidates[i];
+            }
+        }
+
+        return bestPoint;
     }
 
     private void TryTriggerSubtitleIfPlayerClose()
