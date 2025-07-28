@@ -4,9 +4,10 @@ using UnityEngine;
 public class SecurityCamera : MonoBehaviour
 {
     [Header("Camera Settings")]
-    [Range(1f, 179f)] public float fieldOfView = 45f;        // Cone half-angle in degrees
-    public float viewDistance = 10f;                          // Cone length
-    [Range(0f, 90f)] public float downwardTiltAngle = 60f;   // Tilt cone downward (degrees)
+    [Range(1f, 179f)] public float fieldOfView = 45f;            // Horizontal FOV (cone half-angle in degrees)
+    [Range(1f, 179f)] public float verticalFieldOfView = 45f;    // Vertical FOV (cone half-angle in degrees)
+    public float viewDistance = 10f;                             // Cone length
+    [Range(0f, 90f)] public float downwardTiltAngle = 60f;       // Tilt cone downward (degrees)
 
     public float detectionTime = 2f;
     public float rotationSpeed = 30f;
@@ -109,9 +110,17 @@ public class SecurityCamera : MonoBehaviour
         if (player == null) return false;
 
         Vector3 directionToPlayer = (player.position - transform.position).normalized;
-        float angle = Vector3.Angle(transform.forward, directionToPlayer);
 
-        if (angle < fieldOfView / 2)
+        // Horizontal angle between camera forward and player, ignoring vertical component
+        Vector3 forwardHorizontal = new Vector3(transform.forward.x, 0f, transform.forward.z).normalized;
+        Vector3 dirHorizontal = new Vector3(directionToPlayer.x, 0f, directionToPlayer.z).normalized;
+
+        float horizontalAngle = Vector3.Angle(forwardHorizontal, dirHorizontal);
+
+        // Vertical angle between camera forward and player
+        float verticalAngle = Vector3.Angle(transform.forward, directionToPlayer) - horizontalAngle;
+
+        if (horizontalAngle < fieldOfView / 2f && Mathf.Abs(verticalAngle) < verticalFieldOfView / 2f)
         {
             if (Physics.Raycast(transform.position, directionToPlayer, out RaycastHit hit, viewDistance))
             {
