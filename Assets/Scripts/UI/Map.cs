@@ -12,9 +12,9 @@ public class Map : MonoBehaviour
         map1 = transform.Find("Map1").gameObject;
         map2 = transform.Find("Map2").gameObject;
         map3 = transform.Find("Map3").gameObject;
-        //map1.SetActive(false);
-        //map2.SetActive(false);
-        //map3.SetActive(false);
+        map1.SetActive(false);
+        map2.SetActive(false);
+        map3.SetActive(false);
 
         button1 = transform.Find("1").gameObject;
         button2 = transform.Find("2").gameObject;
