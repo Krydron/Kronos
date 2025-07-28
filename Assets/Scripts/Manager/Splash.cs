@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Splash : MonoBehaviour
 {
@@ -8,14 +9,16 @@ public class Splash : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        SceneManager.sceneLoaded += OnSceneLoaded;
         isActive = true;
         splash = GameObject.Find("Splash");
         if (splash == null) { return; }
         splash.SetActive(isActive);
     }
 
-    private void OnLevelWasLoaded(int level)
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
+        if (scene.name != "MainMenu") { return; }
         splash = GameObject.Find("Splash");
         SplashUpdate();
     }

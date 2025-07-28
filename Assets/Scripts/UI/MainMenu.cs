@@ -2,15 +2,20 @@ using UnityEngine;
 
 public class MainMenu : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    SceneLoader sceneLoader;
+    Pause pause;
+
+    private void Start()
     {
-        
+        sceneLoader = GameObject.Find("GameManager").GetComponent<SceneLoader>();
+        pause = GameObject.FindGameObjectWithTag("Player")?.GetComponent<Pause>();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    public void Play(bool fromLastSave) { sceneLoader.Play(fromLastSave); }
+
+    public void Quit() { sceneLoader.Quit(); } 
+
+    public void ReturnToMainMenu() { sceneLoader.ReturnToMainMenu(); }
+
+    public void Pause() { pause.OnPause(); }
 }

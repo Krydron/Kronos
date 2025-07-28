@@ -17,15 +17,16 @@ using UnityEngine;
 
 public class JudgeFlashback : MonoBehaviour
 {
+    [SerializeField, Range(0, 120)] float delay;
     GameObject gameManager;
     GameObject eyes;
 
     IEnumerator NextLevel()
     {
-        yield return new WaitForSeconds(55);
+        yield return new WaitForSeconds(delay);
         eyes.GetComponent<Eyes>().ShutEyes();
         yield return new WaitForSeconds(2);
-        gameManager.GetComponent<SceneLoader>().EndFlashback(0);
+        gameManager.GetComponent<SceneLoader>().EndFlashback();
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created

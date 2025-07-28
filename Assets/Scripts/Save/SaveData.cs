@@ -42,7 +42,7 @@ public class SaveData
                 }
             }
         }
-        //flashbackSwitches = sceneLoader
+        flashbackSwitches = sceneLoader.FlashbackSwitches();
         noteList = noteSave.LoadList();
     }
 }

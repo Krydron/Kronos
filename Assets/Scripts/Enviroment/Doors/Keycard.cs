@@ -18,6 +18,7 @@ public class Keycard : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         inventory.ActivateKeyType(keyType);
+        if (keyType == Doors.DoorType.Blue) { GetComponent<FlashbackTrigger>().Trigger(); }
         Destroy(gameObject);
     }
 }

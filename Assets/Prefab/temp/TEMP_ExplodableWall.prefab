@@ -123,7 +123,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bomb: {fileID: 7352175505362553407}
+  bombItem: {fileID: 11400000, guid: 9b47fa1cc4c7fd047bd4abec8d1389bb, type: 2}
   time: 5
+  inventory: {fileID: 0}
 --- !u!1 &7352175505362553407
 GameObject:
   m_ObjectHideFlags: 0

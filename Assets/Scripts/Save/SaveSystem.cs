@@ -29,4 +29,29 @@ public static class SaveSystem
 
         return data;
     }
+
+    public static void SettingsSave(GameObject gameManager)
+    {
+        BinaryFormatter binaryFormatter = new BinaryFormatter();
+        string path = Application.dataPath + "/settings.save";
+        FileStream stream = new FileStream(path, FileMode.Create);
+
+        SettingsData data = new SettingsData(gameManager.GetComponent<SettimgsTracker>());
+
+        binaryFormatter.Serialize(stream, data);
+        stream.Close();
+    }
+    public static SettingsData SettingsLoad()
+    {
+        string path = Application.dataPath + "/settings.save";
+        if (!File.Exists(path)) { Debug.LogError("Save not found: " + path); return null; }
+
+        BinaryFormatter binaryFormatter = new BinaryFormatter();
+        FileStream stream = new FileStream(path, FileMode.Open);
+
+        SettingsData data = binaryFormatter.Deserialize(stream) as SettingsData;
+        stream.Close();
+
+        return data;
+    }
 }

@@ -9,7 +9,7 @@ EditorBuildSettings:
     path: Assets/Scenes/SampleScene.unity
     guid: 99c9720ab356a0642a771bea13969a05
   - enabled: 0
-    path: Assets/Scenes/Dev_Owen.unity
+    path: Assets/Scenes/DevScenes/Dev_Owen.unity
     guid: 9ddecd9e34c395148b54d2015549410e
   - enabled: 1
     path: Assets/Scenes/MainMenu.unity
@@ -18,22 +18,22 @@ EditorBuildSettings:
     path: Assets/Scenes/Ship.unity
     guid: ea86340d0f10c95428f2fade55856f2e
   - enabled: 1
-    path: Assets/Scenes/Courtroom.unity
+    path: Assets/Scenes/F'ashbacks/Courtroom.unity
     guid: e205882d652b37c4fae8492e83101cb4
   - enabled: 1
     path: Assets/Scenes/Win.unity
     guid: 760459972d282e1429e502fe360c440d
   - enabled: 1
-    path: Assets/Scenes/Office.unity
+    path: Assets/Scenes/F'ashbacks/Office.unity
     guid: bc645518d231fa045be91834e8e82948
   - enabled: 1
-    path: Assets/Scenes/Birthday.unity
+    path: Assets/Scenes/F'ashbacks/Birthday.unity
     guid: 17357c6546c1db44a91845a4db8eed0b
   - enabled: 1
-    path: Assets/Scenes/Warehouse.unity
+    path: Assets/Scenes/F'ashbacks/Warehouse.unity
     guid: 7f92b2e83f6e79f40af442b8ce019783
   - enabled: 1
-    path: Assets/Scenes/Vault.unity
+    path: Assets/Scenes/F'ashbacks/Vault.unity
     guid: 1c2aeeef15aaf194fa3f499af7a673f6
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}

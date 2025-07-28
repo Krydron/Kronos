@@ -23,5 +23,6 @@ public class FlashbackTrigger : MonoBehaviour
     public void Trigger()
     {
         gameManager.GetComponent<SceneLoader>().FlashbackTrigger(flashback);
+        Debug.Log(flashback + " flashback is true");
     }
 }

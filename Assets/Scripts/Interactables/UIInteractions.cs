@@ -12,17 +12,22 @@
 ***************************************************************************************************************/
 
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class UIInteractions : MonoBehaviour
 {
     private GameObject[] interactables;
+    private GameObject[] explodableWalls;
+    private GameObject[] secrets;
+    [SerializeField] Item bomb;
+    private Inventory Inventory;
 
     private GameObject player;
     [SerializeField, Range(0,10)] float interactDistance;
 
     GameObject map;
-    bool menuOpen;
+    //bool menuOpen;
     Pause pause;
 
     GameObject canInteractUI;
@@ -54,6 +59,22 @@ public class UIInteractions : MonoBehaviour
                 canInteractUI.SetActive(true);
                 break;
             }
+            if (Inventory.HasItem(bomb))
+            {
+                foreach (GameObject explodableWall in explodableWalls)
+                {
+                    if (Vector3.Distance(player.transform.position, explodableWall.transform.position) > interactDistance)
+                    {
+                        //hide ui
+                        canInteractUI.SetActive(false);
+
+                        continue;
+                    }
+                    //show ui
+                    canInteractUI.SetActive(true);
+                    break;
+                }
+            }
         }
     }
 
@@ -61,9 +82,12 @@ public class UIInteractions : MonoBehaviour
     {
         player = GameObject.FindGameObjectWithTag("Player");
         interactables = GameObject.FindGameObjectsWithTag("Interactable");
+        explodableWalls = GameObject.FindGameObjectsWithTag("ExplodableWall");
+        secrets = GameObject.FindGameObjectsWithTag("Secret Interactable");
+        Inventory = GameObject.FindGameObjectWithTag("Player").GetComponent<Inventory>();
         map = GameObject.Find("Tablet");
         map?.SetActive(false);
-        menuOpen = false;
+        //menuOpen = false;
         pause = GetComponent<Pause>();
         /*canInteract = true;
         StartCoroutine(interactTimer());*/
@@ -75,6 +99,7 @@ public class UIInteractions : MonoBehaviour
 
     public void OnMap()
     {
+        if (map == null) { return; }
         if (pause.isPaused())
         {
             pause.OnPause();
@@ -149,6 +174,19 @@ public class UIInteractions : MonoBehaviour
             {
                if (interactable.GetComponent<NoteInteract>().Interact()) { break; }
             }*/
+        }
+        
+        foreach (GameObject interactable in explodableWalls)
+        {
+            if (Vector3.Distance(player.transform.position, interactable.transform.position) > interactDistance) { continue; }
+            if (interactable.GetComponent<Interactable>().Interact()) { break; }
+            Debug.Log(interactable.name);
+        }
+        foreach (GameObject interactable in secrets)
+        {
+            if (Vector3.Distance(player.transform.position, interactable.transform.position) > interactDistance) { continue; }
+            if (interactable.GetComponent<Interactable>().Interact()) { break; }
+            Debug.Log(interactable.name);
         }
     }
 }

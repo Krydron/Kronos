@@ -98,6 +98,7 @@ public class VaultUI : MonoBehaviour
         if (sequencePointer < sequence.Count) { return; }
         //Win condition
         Debug.Log("Win");
+        GetComponent<FlashbackTrigger>().Trigger();
         pause.PauseToggle();
         sequencePointer = 0;
         gameObject.SetActive(false);

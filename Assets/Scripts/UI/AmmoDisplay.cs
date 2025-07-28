@@ -25,6 +25,7 @@ public class AmmoDisplay : MonoBehaviour
 
     public void UpdatDisplay(int ammo, int rounds)
     {
+        if (text == null) { return; }
         text.text = (ammo + " / " + rounds);
     }
 }

@@ -70,6 +70,11 @@ public class DoorManager : MonoBehaviour
         //StartCoroutine(CheckDoors());
     }
 
+    private void OnDestroy()
+    {
+        StopAllCoroutines();
+    }
+
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         if (scene.name != "Ship") { return; }

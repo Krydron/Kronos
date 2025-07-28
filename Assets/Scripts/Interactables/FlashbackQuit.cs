@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class FlashbackQuit : Interactable
 {
@@ -6,7 +7,7 @@ public class FlashbackQuit : Interactable
     GameObject gameManager;
     [SerializeField] float distance;
 
-    private void OnLevelWasLoaded(int level)
+    private void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player");
         gameManager = GameObject.Find("GameManager");
@@ -19,7 +20,7 @@ public class FlashbackQuit : Interactable
         if (Vector3.Distance(transform.position, player.transform.position) <= distance)
         {
             //End flashback
-            gameManager.GetComponent<SceneLoader>().EndFlashback(0);
+            gameManager.GetComponent<SceneLoader>().EndFlashback();
             return true;
         }
         return false;

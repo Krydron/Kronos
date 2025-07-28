@@ -45,7 +45,7 @@ public class Shooting : MonoBehaviour
 
     public void OnAttack()
     {
-        if (GetComponent<UIInteractions>().MenuOpen() || GetComponent<UIInteractions>() == null || Time.timeScale == 0f) { return; }
+        if (GetComponent<UIInteractions>().MenuOpen() || GetComponent<UIInteractions>() == null || Time.timeScale == 0f || animator == null || animatorCrowbar == null) { return; }
         if (shootTime +  shootDelay > Time.time) { return; }
         //get gun details from inventroy;
         weapon = inventory.GetWeapon();

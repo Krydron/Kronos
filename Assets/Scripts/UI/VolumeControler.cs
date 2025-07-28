@@ -23,7 +23,7 @@ public class VolumeControler : MonoBehaviour
     [SerializeField] Slider dialogueSlider;
 
 
-    private void Start()
+    private void OnEnable()
     {
         gameManager = GameObject.Find("GameManager").GetComponent<SettimgsTracker>();
         FMODUnity.RuntimeManager.GetVCA("vca:/Master").setVolume(gameManager.masterVolume);

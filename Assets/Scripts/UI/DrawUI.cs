@@ -81,7 +81,7 @@ public class DrawUI : MonoBehaviour
         }
         if (list != null)
         {
-            Debug.Log("List not null");
+            //Debug.Log("List not null");
             for (int i = 0; i < list.Length; i++)
             {
                 lineRendererList.Add(Instantiate(lineRenderer, lineRenderer.transform.position, Quaternion.identity, parent));
@@ -92,7 +92,7 @@ public class DrawUI : MonoBehaviour
                     lineRendererList[lineRendererList.Count - 1].GetComponent<LineRenderer>().SetPosition(x, list[i][x]);
                 }
                 //lineRendererList[lineRendererList.Count - 1].GetComponent<LineRenderer>().SetPositions(list[i]);
-                Debug.Log("Added list");
+                //Debug.Log("Added list");
             }
         }
         
@@ -167,7 +167,7 @@ public class DrawUI : MonoBehaviour
 
     public void Clear()
     {
-        Debug.Log(map.ToString()+" Cleared");
+        //Debug.Log(map.ToString()+" Cleared");
         foreach (GameObject line in lineRendererList) { Destroy(line); }
         lineRendererList.Clear();
     }
@@ -195,7 +195,7 @@ public class DrawUI : MonoBehaviour
             if (line == null) continue;
             list[x] = new Vector3[line.GetComponent<LineRenderer>().positionCount];
             line.GetComponent<LineRenderer>().GetPositions(list[x]);
-            Debug.Log(map.ToString() + " " + list.Length + " " + list[x].Length);
+            //Debug.Log(map.ToString() + " " + list.Length + " " + list[x].Length);
         }
         if (mapSave ==  null) { Debug.LogError("Map save is null"); return; }
         mapSave.list[(int)map] = new Vector3[list.Length][];

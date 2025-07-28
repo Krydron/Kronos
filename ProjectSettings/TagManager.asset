@@ -12,6 +12,9 @@ TagManager:
   - Eyes
   - NPC
   - Floor
+  - Secret Interactable
+  - ExplodableWall
+  - Explosive
   layers:
   - Default
   - TransparentFX
@@ -25,7 +28,7 @@ TagManager:
   - NPC
   - Enemy
   - Floor
-  - 
+  - Lights
   - 
   - 
   - 

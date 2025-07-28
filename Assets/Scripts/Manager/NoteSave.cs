@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 
 public class NoteSave : MonoBehaviour
 {
@@ -10,21 +11,22 @@ public class NoteSave : MonoBehaviour
 
     private void Start()
     {
+        SceneManager.sceneLoaded += OnSceneLoaded;
         tablet = Resources.Load<GameObject>("Tablet").transform.Find("TabletNotes").gameObject;
         notes = tablet.GetComponent<NoteList>();
         numNotes = notes.NotesCount();
         GenerateList();
     }
 
-    private void OnLevelWasLoaded(int level)
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        if (level != 1 ) { return; }
+        if (scene.name != "Ship" ) { return; }
         GameObject.Find("Canvas").transform.Find("Tablet").Find("TabletNotes").GetComponent<NoteList>().LoadList(list);
     }
 
     private void GenerateList()
     {
-        Debug.Log("I'm alive!!!");
+        //Debug.Log("I'm alive!!!");
         //list = new List<bool>();
         //GameObject tabletNotes = GameObject.Find("TabletNotes");
         //int numNotes = tabletNotes.GetComponent<NoteList>().NotesCount();

@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class AnyKey : MonoBehaviour
 {
@@ -7,10 +8,12 @@ public class AnyKey : MonoBehaviour
     private void Start()
     {
         splash = true;
+        SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
-    private void OnLevelWasLoaded(int level)
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
+        if (scene.name != "MainMenu") { return; }
         gameObject.SetActive(false);
         splash = false;
     }

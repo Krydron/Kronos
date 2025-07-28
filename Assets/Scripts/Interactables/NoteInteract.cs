@@ -4,6 +4,7 @@ public class NoteInteract : Interactable
 {
     [SerializeField] GameObject note;
     [SerializeField] int notePosition;
+    [SerializeField] bool triggerFlashback;
     NoteList notes;
     Pause pause;
 
@@ -19,6 +20,7 @@ public class NoteInteract : Interactable
         note.SetActive(true);
         pause.PauseToggle();
         pause.ToggleBlur();
+        if (triggerFlashback) { GetComponent<FlashbackTrigger>().Trigger(); }
         return true;
     }
 }

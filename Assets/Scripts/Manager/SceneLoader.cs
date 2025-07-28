@@ -11,10 +11,12 @@
 *
 ***************************************************************************************************************/
 
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+[System.Serializable]
 public class FlashbackSwitch
 {
     public bool tracker;
@@ -31,38 +33,34 @@ public class FlashbackSwitch
 
 public class SceneLoader : MonoBehaviour
 {
-    static FlashbackSwitch[] FlashbackSwitches;
+    static FlashbackSwitch[] flashbackSwitches;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+
+    public FlashbackSwitch[] FlashbackSwitches() { return flashbackSwitches; }
+
+    private void Start()
     {
-        InitializeFlashbackList();
+        SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
-    private void OnLevelWasLoaded(int level)
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         Time.timeScale = 1.0f;
     }
 
     public void FlashbackTrigger(Flashback flashback)
     {
-        if (FlashbackSwitches[(int)flashback].played) { return; }
-        FlashbackSwitches[(int)flashback].tracker = true;
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        if (flashbackSwitches[(int)flashback].played) { return; }
+        flashbackSwitches[(int)flashback].tracker = true;
     }
 
     private void InitializeFlashbackList()
     {
-        if (FlashbackSwitches != null) { return; }
-        FlashbackSwitches = new FlashbackSwitch[(int)Flashback.Length];
-        for (int i = 0; i < FlashbackSwitches.Length; i++)
+        //if (flashbackSwitches != null) { return; }
+        flashbackSwitches = new FlashbackSwitch[(int)Flashback.Length];
+        for (int i = 0; i < flashbackSwitches.Length; i++)
         {
-            FlashbackSwitches[i] = new FlashbackSwitch(((Flashback)i).ToString());
+            flashbackSwitches[i] = new FlashbackSwitch(((Flashback)i).ToString());
         }
     }
 
@@ -71,27 +69,24 @@ public class SceneLoader : MonoBehaviour
         SceneManager.LoadScene(1);
     }
 
-    public void EndFlashback(int i)
+    public void EndFlashback()
     {
-        try
-        {
-            FlashbackSwitches[i].tracker = false;
-            FlashbackSwitches[i].played = true;
-        }
-        catch { Debug.Log("Trigger null"); }
-        ReloadScene();
+        SceneManager.LoadScene("Ship");
     }
 
     public void ReloadScene()
     {
-        for (int i = 0; i < FlashbackSwitches.Length; i++)
+        StopAllCoroutines();
+        for (int i = 0; i < flashbackSwitches.Length; i++)
         {
-            Debug.Log("Flashback: " + i + " Tracker: "+ FlashbackSwitches[i].tracker);
-            if (!FlashbackSwitches[i].tracker) { return; }
-            SceneManager.LoadScene(FlashbackSwitches[i].scene); 
+            Debug.Log("Flashback: " + i + " Tracker: "+ flashbackSwitches[i].tracker);
+            if (!flashbackSwitches[i].tracker) { continue; }
+            SceneManager.LoadScene(flashbackSwitches[i].scene); 
+            flashbackSwitches[i].tracker = false ;
+            flashbackSwitches[i].played = true;
             return;
         }
-        SceneManager.LoadScene(1);
+        SceneManager.LoadScene("Ship");
     }
 
     public void Play(bool fromLastSave)
@@ -123,7 +118,7 @@ public class SceneLoader : MonoBehaviour
                     lineList[map][line] = new Vector3[data.lineList[map][line].Length];
                     for (int point = 0; point < data.lineList[map][line].Length; point++)
                     {
-                        Debug.Log("Line value:\n X: " + data.lineList[map][line][point][0] + "\n Y: " + data.lineList[map][line][point][1] + "\n Z: " + data.lineList[map][line][point][2]);
+                        //Debug.Log("Line value:\n X: " + data.lineList[map][line][point][0] + "\n Y: " + data.lineList[map][line][point][1] + "\n Z: " + data.lineList[map][line][point][2]);
                         lineList[map][line][point].x = data.lineList[map][line][point][0];
                         lineList[map][line][point].y = data.lineList[map][line][point][1];
                         lineList[map][line][point].z = data.lineList[map][line][point][2];
@@ -136,6 +131,7 @@ public class SceneLoader : MonoBehaviour
             gameManager.GetComponent<MapSave>().list = lineList;
             gameManager.GetComponent<NoteSave>().SetList(noteList);
             gameManager.GetComponent<LoopTracker>().SetLoop(currentLoop);
+            flashbackSwitches = data.flashbackSwitches;
             return true;
         }
         else
@@ -144,6 +140,7 @@ public class SceneLoader : MonoBehaviour
             gameManager.GetComponent<MapSave>().ResetValues();
             gameManager.GetComponent<NoteSave>().ResetValues();
             gameManager.GetComponent<LoopTracker>().SetLoop(currentLoop);
+            InitializeFlashbackList();
             return false;
         }
     }
@@ -158,7 +155,9 @@ public class SceneLoader : MonoBehaviour
     public void Quit()
     {
         Debug.Log("Quit");
-        SaveSystem.NewSaveSlot(GameObject.Find("GameManager"));
+        
+        SaveSystem.NewSaveSlot(gameObject);
+        SaveSystem.SettingsSave(gameObject);
         Application.Quit();
     }
 

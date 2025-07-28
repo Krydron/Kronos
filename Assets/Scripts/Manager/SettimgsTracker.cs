@@ -1,6 +1,4 @@
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class SettimgsTracker : MonoBehaviour
 {
@@ -10,6 +8,19 @@ public class SettimgsTracker : MonoBehaviour
 
     private void Start()
     {
+        RestoreSettingsFromFile();
+    }
 
+    private void RestoreSettingsFromFile()
+    {
+        SettingsData data = SaveSystem.SettingsLoad();
+        if (data == null) { return; }
+        masterVolume = data.masterVolume;
+        musicVolume = data.musicVolume;
+        sfxVolume = data.sfxVolume;
+        dialogueVolume = data.dialogueVolume;
+        mouseSensitivityX = data.mouseSensitivityX;
+        mouseSensitivityY = data.mouseSensitivityY;
+        cameraFOV = data.cameraFOV;
     }
 }

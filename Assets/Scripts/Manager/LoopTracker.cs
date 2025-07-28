@@ -15,6 +15,7 @@ using System.Collections;
 using UnityEngine;
 using FMODUnity;
 using FMOD.Studio;
+using UnityEngine.SceneManagement;
 
 public class LoopTracker : MonoBehaviour
 {
@@ -25,9 +26,10 @@ public class LoopTracker : MonoBehaviour
     void Start()
     {
         loop = 1;
+        SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
-    private void OnLevelWasLoaded(int level)
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         if (GameObject.Find("GrandFatherClock") == null) { return; }
         //grandfatherClock = GameObject.Find("GrandFatherClock").GetComponent<AudioSource>();
@@ -43,7 +45,7 @@ public class LoopTracker : MonoBehaviour
             if (grandfatherClock == null) { Debug.Log("No chime"); continue; }
             grandfatherClock.Play();
             //grandfatherClock.EventInstance.start();
-            Debug.Log("Play Audio: " + loop);
+            //Debug.Log("Play Audio: " + loop);
             yield return new WaitForSeconds(3.5f);
         }
     }

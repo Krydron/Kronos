@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class TimeLimit : MonoBehaviour
 {
@@ -10,6 +11,7 @@ public class TimeLimit : MonoBehaviour
 
     private void Start()
     {
+        SceneManager.sceneLoaded += OnSceneLoaded;
         endTime = (minutes * 60) + seconds;
     }
 
@@ -31,10 +33,11 @@ public class TimeLimit : MonoBehaviour
         }
     }
 
-    private void OnLevelWasLoaded(int level)
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        if (level != 1) { return; }
-        Debug.Log("Counter level: " + level);
+        StopAllCoroutines();
+        if (scene.name != "Ship") { return; }
+        //Debug.Log("Counter level: " + level);
         counter = 0;
         StartCoroutine(Counter());
     }

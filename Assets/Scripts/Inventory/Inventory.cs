@@ -96,6 +96,7 @@ public class Inventory : MonoBehaviour
 
     private void ShowGun()
     {
+        if (gunUI == null || crowbarUI == null) { return; }
         gunUI.SetActive(true);
         crowbarUI.SetActive(false);
         UpdateAmmoDisplay();
@@ -103,6 +104,7 @@ public class Inventory : MonoBehaviour
 
     private void ShowCrowbar()
     {
+        if (gunUI == null || crowbarUI == null) { return; }
         gunUI.SetActive(false);
         crowbarUI.SetActive(true);
     }

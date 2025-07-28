@@ -27,6 +27,7 @@ public class PlayerMovement : MonoBehaviour
     Vector2 move;
     Vector2 look;
     private Vector3 moveDirection;
+    private bool walking;
 
     //Camera to update position and manage rotation
     GameObject camera;
@@ -143,7 +144,7 @@ public class PlayerMovement : MonoBehaviour
         //rigidbody.AddForce(moveDirection, ForceMode.Acceleration);
 
         rigidbody.rotation = Quaternion.Euler(0, rotationY, 0);
-        camera.transform.position = new Vector3(transform.position.x, transform.position.y+1, transform.position.z);
+        camera.transform.position = new Vector3(transform.position.x, transform.position.y+0.8f, transform.position.z);
         camera.transform.rotation = Quaternion.Euler(rotationX, rotationY, 0);
     }
 
@@ -188,25 +189,22 @@ public class PlayerMovement : MonoBehaviour
         }
         if (sneaking) { moveDirection.x /= sneakDivider; moveDirection.z /= 2; }
 
+        if (animator == null || animatorCrowbar == null) { return; }
+        if (animator.transform.parent.gameObject.activeSelf) { animator.SetBool("Walking", walking); }
+        if (animatorCrowbar.gameObject.activeSelf) { animatorCrowbar.SetBool("Walking", walking); }
         if (move.x == 0 && move.y == 0)
         {
-            //steppingSound.GetComponent<>
             walkingSound.Stop();
             crouchingSound.Stop();
-
-            if (animator == null || !animator.gameObject.activeSelf) { return; }
-            animator.SetBool("Walking", false);
-            animatorCrowbar.SetBool("Walking",false);
+            walking = false;
+            animatorCrowbar.SetBool("Walking",walking);
         }
         else
         {
             if (walkingSound.IsPlaying() || crouchingSound.IsPlaying()) { return; }
             if (sneaking) { crouchingSound.Play(); return; }
             walkingSound.Play();
-
-            if (animator == null || !animator.gameObject.activeSelf) { return; }
-            animator.SetBool("Walking", true);
-            animatorCrowbar.SetBool("Walking", true);
+            walking = true;
         }
     }
 

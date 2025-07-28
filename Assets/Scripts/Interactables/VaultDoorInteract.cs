@@ -26,7 +26,7 @@ public class VaultDoorInteract : Interactable
 
     public override bool Interact()
     {
-        if (UI == null) { Debug.Log("UI is null"); }
+        if (UI == null) { Debug.LogError("UI is null"); }
         UI.SetActive(true);
         return true;
     }
