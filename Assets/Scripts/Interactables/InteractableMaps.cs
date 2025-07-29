@@ -18,11 +18,6 @@ public class InteractableMaps : Interactable
     [SerializeField] Map map;
     [SerializeField] private int mapType;
 
-    private void Start()
-    {
-        //map = GameObject.Find("Map").GetComponent<Map>();
-    }
-
     public override bool Interact()
     {
         if (map == null) { Debug.LogError("Map is null"); return false; }
