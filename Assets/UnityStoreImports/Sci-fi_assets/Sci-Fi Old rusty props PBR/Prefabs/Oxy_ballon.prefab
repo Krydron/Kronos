@@ -11,8 +11,7 @@ GameObject:
   - component: {fileID: 4057332214047127340}
   - component: {fileID: 4057332214047127343}
   - component: {fileID: 4057332214047127342}
-  - component: {fileID: 4057332214047127341}
-  - component: {fileID: 4057332214047127313}
+  - component: {fileID: -2065492474074144367}
   m_Layer: 26
   m_Name: Oxy_ballon
   m_TagString: Untagged
@@ -88,8 +87,8 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &4057332214047127341
-BoxCollider:
+--- !u!136 &-2065492474074144367
+CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -106,33 +105,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1.6984406, y: 3.993134, z: 1.6984409}
-  m_Center: {x: -0.0000007748604, y: 0, z: 0.0000076293945}
---- !u!54 &4057332214047127313
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4057332214047127339}
-  serializedVersion: 5
-  m_Mass: 0.2
-  m_LinearDamping: 0.2
-  m_AngularDamping: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 0
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
+  serializedVersion: 2
+  m_Radius: 0.8492203
+  m_Height: 3.993133
+  m_Direction: 1
+  m_Center: {x: -0.0000007748604, y: 0, z: 0}
