@@ -1,5 +1,72 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &533412446347412126
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1720665153668466802}
+  - component: {fileID: 6649926898122124098}
+  - component: {fileID: 5947355625963263138}
+  m_Layer: 0
+  m_Name: MeleeHitbox
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1720665153668466802
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 533412446347412126}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.27, z: 0.813}
+  m_LocalScale: {x: 1.8, y: 2.5, z: 1.5}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 134517076462748213}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &6649926898122124098
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 533412446347412126}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &5947355625963263138
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 533412446347412126}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 063e368f3a4761647aacc0ce9a72efa7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damage: 20
 --- !u!1 &1830661327257029485
 GameObject:
   m_ObjectHideFlags: 0
@@ -71,6 +138,7 @@ Transform:
   - {fileID: 1527567573471528911}
   - {fileID: 3232493436339489475}
   - {fileID: 1938195925874908992}
+  - {fileID: 1720665153668466802}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &2312870512908146038
@@ -248,7 +316,7 @@ MonoBehaviour:
   damage: 20
   attackCooldown: 0.75
   attackDistance: 2
-  meleeHitbox: {fileID: 0}
+  meleeHitbox: {fileID: 533412446347412126}
 --- !u!114 &908641045916651545
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -438,7 +506,7 @@ GameObject:
   - component: {fileID: 3232493436339489475}
   - component: {fileID: 6059702032648924445}
   - component: {fileID: 1335160153186863676}
-  - component: {fileID: 5826388894710083906}
+  - component: {fileID: 751850662299639347}
   m_Layer: 0
   m_Name: FOVMesh
   m_TagString: Untagged
@@ -514,7 +582,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &5826388894710083906
+--- !u!114 &751850662299639347
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -523,16 +591,20 @@ MonoBehaviour:
   m_GameObject: {fileID: 6355928904953297952}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fc1a7032a6413514b9ab20da79b80293, type: 3}
+  m_Script: {fileID: 11500000, guid: 992828781a2132743be3617534503e3e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  viewRadius: 15
-  viewAngle: 90
-  height: 2
-  segments: 30
+  sightRange: 10
+  fieldOfView: 90
+  rayCount: 50
   obstacleMask:
     serializedVersion: 2
-    m_Bits: 3137
+    m_Bits: 4294967295
+  normalColor: {r: 0.6509804, g: 0, b: 0, a: 0.15}
+  highlightColor: {r: 1, g: 0, b: 0, a: 0.8}
+  tiltAngle: 0
+  autoTilt: 1
+  eyeHeight: 1.6
 --- !u!1 &9001294352327786838
 GameObject:
   m_ObjectHideFlags: 0
