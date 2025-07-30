@@ -6,7 +6,9 @@ public class TEMP_ExplodableWall : Interactable
     [SerializeField] GameObject bomb;
     [SerializeField] Item bombItem;
     [SerializeField] float time;
-    [SerializeField] Inventory inventory;
+    Inventory inventory;
+    [SerializeField] GameObject explosion;
+    [SerializeField] Transform explosionLocation;
 
     private void Start()
     {
@@ -20,8 +22,9 @@ public class TEMP_ExplodableWall : Interactable
         inventory.RemoveItem(bombItem);
         yield return new WaitForSeconds(time);
         //Destroy(gameObject);
-        gameObject.SetActive(false);
         GetComponent<FlashbackTrigger>().Trigger();
+        Instantiate(explosion,explosionLocation.position, Quaternion.identity);
+        gameObject.SetActive(false);
     }
 
     public override bool Interact()

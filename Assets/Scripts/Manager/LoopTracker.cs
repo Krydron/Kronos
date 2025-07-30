@@ -34,7 +34,8 @@ public class LoopTracker : MonoBehaviour
         if (GameObject.Find("GrandFatherClock") == null) { return; }
         //grandfatherClock = GameObject.Find("GrandFatherClock").GetComponent<AudioSource>();
         grandfatherClock = GameObject.Find("GrandFatherClock").GetComponent<StudioEventEmitter>();
-        StartCoroutine(playChimes());
+        try { StartCoroutine(playChimes()); }
+        catch { return; }
     }
 
     IEnumerator playChimes()

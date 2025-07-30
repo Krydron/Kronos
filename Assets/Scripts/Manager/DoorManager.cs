@@ -22,24 +22,29 @@ public class DoorManager : MonoBehaviour
     GameObject player;
     GameObject[] doors;
     Inventory inventory;
-    Doors doorComponent;
+    //Doors doorComponent;
+    bool scan;
+
 
     IEnumerator CheckDoors()
     {
-        if (doors == null) { yield break; }
-        if (inventory == null) { yield break; }
+        doors = GameObject.FindGameObjectsWithTag("Door");
+        player = GameObject.FindGameObjectWithTag("Player");
+        inventory = player.GetComponent<Inventory>();
         while (true)
         {
             foreach (GameObject door in doors)
             {
+                Doors doorComponent;
                 if (door == null) { continue; }
                 doorComponent = door.GetComponent<Doors>();
+                if (doorComponent == null) { continue; }
                 if (Vector3.Distance(player.transform.position, door.transform.position) > openDistance)
                 {
                     doorComponent.CloseDoor();
                     continue;
                 }
-                if (CheckKey())
+                if (CheckKey(doorComponent))
                 {
                     doorComponent.OpenDoor();
                     continue;
@@ -49,7 +54,7 @@ public class DoorManager : MonoBehaviour
         }
     }
 
-    private bool CheckKey()
+    private bool CheckKey(Doors doorComponent)
     {
         foreach (Key key in inventory.keys)
         {
@@ -70,25 +75,48 @@ public class DoorManager : MonoBehaviour
         //StartCoroutine(CheckDoors());
     }
 
-    private void OnDestroy()
-    {
-        StopAllCoroutines();
-    }
-
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
+        
+        //StopAllCoroutines();
         if (scene.name != "Ship") { return; }
-        player = GameObject.FindGameObjectWithTag("Player");
+        /*player = GameObject.FindGameObjectWithTag("Player");
         if (player == null) { return; }
-        doors = GameObject.FindGameObjectsWithTag("Door");
         inventory = player.GetComponent<Inventory>();
+        doors = GameObject.FindGameObjectsWithTag("Door");
+        if (doors  == null) { return; }
+        if (CheckDoors() == null) { Debug.LogError("Check doors is null"); return; }*/
         StartCoroutine(CheckDoors());
+
     }
 
 
     // Update is called once per frame
     void Update()
     {
-        
+        if (!scan) { return; }
+        doors = GameObject.FindGameObjectsWithTag("Door");
+        player = GameObject.FindGameObjectWithTag("Player");
+        inventory = player.GetComponent<Inventory>();
+        if (doors == null) { return; }
+        if (inventory == null) { return; }
+        if (player == null) { return; }
+        foreach (GameObject door in doors)
+        {
+            Doors doorComponent;
+            if (door == null) { continue; }
+            doorComponent = door.GetComponent<Doors>();
+            if (doorComponent == null) { continue; }
+            if (Vector3.Distance(player.transform.position, door.transform.position) > openDistance)
+            {
+                doorComponent.CloseDoor();
+                continue;
+            }
+            if (CheckKey(doorComponent))
+            {
+                doorComponent.OpenDoor();
+                continue;
+            }
+        }
     }
 }
