@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2791765202070346791}
   m_Layer: 0
-  m_Name: Doorway
+  m_Name: CQKeycardDoorFrame
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -53,18 +53,6 @@ PrefabInstance:
       value: 400
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: cf389fb5e08cc144ca2ffde24c91742c, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 5.3002777
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: cf389fb5e08cc144ca2ffde24c91742c, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0.45835304
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: cf389fb5e08cc144ca2ffde24c91742c, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 8.447502
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: cf389fb5e08cc144ca2ffde24c91742c, type: 3}
       propertyPath: m_LocalRotation.w
       value: 0.7082043
       objectReference: {fileID: 0}
@@ -95,7 +83,7 @@ PrefabInstance:
     - target: {fileID: -7511558181221131132, guid: cf389fb5e08cc144ca2ffde24c91742c, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: 77b71e7e6674e124488932bba384d3cb, type: 2}
+      objectReference: {fileID: 2100000, guid: e0bd58329c7a99a4497a5e0a7c78bd82, type: 2}
     - target: {fileID: 919132149155446097, guid: cf389fb5e08cc144ca2ffde24c91742c, type: 3}
       propertyPath: m_Name
       value: Model
