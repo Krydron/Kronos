@@ -26,9 +26,11 @@ public class SaveData
         lineList = new float[mapsSaved.Length][][][];
         for (int map = 0; map < mapSave.list.Length; map++)
         {
+            if (mapSave.list[map] == null) { continue; }
             lineList[map] = new float[mapSave.list[map].Length][][];
             for (int line = 0; line < mapSave.list[map].Length; line++)
             {
+                if (mapSave.list[map][line] == null) { continue; }
                 lineList[map][line] = new float[mapSave.list[map][line].Length][];
                 for (int point = 0; point < mapSave.list[map][line].Length; point++)
                 {
