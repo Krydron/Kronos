@@ -151,15 +151,22 @@ public class SceneLoader : MonoBehaviour
     {
         //GameObject.Find("Player").GetComponent<Pause>().PauseToggle();
         //GameObject.Find("Player").GetComponent<Pause>().ToggleCursor();
-        SaveSystem.NewSaveSlot(GameObject.Find("GameManager"));
+        try
+        {
+            SaveSystem.NewSaveSlot(gameObject);
+        }
+        catch { }
         SceneManager.LoadScene("MainMenu");
     }
     public void Quit()
     {
         Debug.Log("Quit");
-        
-        SaveSystem.NewSaveSlot(gameObject);
-        SaveSystem.SettingsSave(gameObject);
+        try
+        {
+            SaveSystem.NewSaveSlot(gameObject);
+            SaveSystem.SettingsSave(gameObject);
+        }
+        catch { }
         Application.Quit();
     }
 
