@@ -4407,6 +4407,34 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 751850662299639347, guid: a3f46eddec26da64faabc44973d551fe, type: 3}
+      propertyPath: fovColor.a
+      value: 0.23529412
+      objectReference: {fileID: 0}
+    - target: {fileID: 751850662299639347, guid: a3f46eddec26da64faabc44973d551fe, type: 3}
+      propertyPath: fovColor.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 751850662299639347, guid: a3f46eddec26da64faabc44973d551fe, type: 3}
+      propertyPath: fovColor.g
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 751850662299639347, guid: a3f46eddec26da64faabc44973d551fe, type: 3}
+      propertyPath: fovColor.r
+      value: 0.5849056
+      objectReference: {fileID: 0}
+    - target: {fileID: 751850662299639347, guid: a3f46eddec26da64faabc44973d551fe, type: 3}
+      propertyPath: scanLineColor.a
+      value: 0.47058824
+      objectReference: {fileID: 0}
+    - target: {fileID: 751850662299639347, guid: a3f46eddec26da64faabc44973d551fe, type: 3}
+      propertyPath: groundMask.m_Bits
+      value: 2048
+      objectReference: {fileID: 0}
+    - target: {fileID: 1335160153186863676, guid: a3f46eddec26da64faabc44973d551fe, type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5756213452282658361, guid: a3f46eddec26da64faabc44973d551fe, type: 3}
       propertyPath: m_Name
       value: Enemy_Melee (6)
