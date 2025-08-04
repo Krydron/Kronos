@@ -4,61 +4,102 @@ using UnityEngine;
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
 public class EnemyFOVMesh : MonoBehaviour
 {
-    [Header("FOV Settings (Independent)")]
-    public float sightRange = 10f;     // Max distance for FOV mesh
-    public float fieldOfView = 90f;    // Horizontal angle of the FOV cone
+    [Header("FOV Settings")]
+    public float sightRange = 10f;
+    public float fieldOfView = 90f;
     public int rayCount = 50;
-    public LayerMask obstacleMask;     // Layers considered obstacles
+    public LayerMask obstacleMask;
 
-    [Header("Highlight Settings")]
-    public Color normalColor = new Color(1f, 1f, 1f, 0.15f);     // Base transparent color
-    public Color highlightColor = new Color(1f, 1f, 0f, 0.8f);   // Highlight color at collisions
+    [Header("Colors")]
+    public Color fovColor = new Color(1f, 1f, 0f, 0.15f); // Transparent yellow
+    public Color scanLineColor = new Color(1f, 1f, 0.5f, 0.8f); // Brighter scan line
 
     [Header("Tilt Settings")]
-    public float tiltAngle = 0f; // Manual tilt (deg, negative = down)
-
-    [Header("Auto Tilt Settings")]
     public bool autoTilt = true;
-    public float eyeHeight = 1.6f;  // Height of eyes relative to ground
+    public float eyeHeight = 1.6f;
+    private float tiltAngle = 0f;
+
+    [Header("Scan Line Settings")]
+    public float scanSpeed = 1f; // Speed of scanning line
 
     private Mesh mesh;
-    private Color[] colors;
+    private Material fovMaterial;
+    private Material lineMaterial;
+
+    private float scanPosition = 0f;
+    private int scanDirection = 1; // 1 = right, -1 = left
 
     void Start()
     {
         mesh = new Mesh();
         GetComponent<MeshFilter>().mesh = mesh;
 
-        MeshRenderer mr = GetComponent<MeshRenderer>();
-        mr.material = new Material(Shader.Find("Sprites/Default"));
+        // Assign our transparent shader for stable rendering
+        fovMaterial = new Material(Shader.Find("Custom/FOVTransparent"));
+        fovMaterial.color = fovColor;
+        GetComponent<MeshRenderer>().material = fovMaterial;
+
+        // Create a bright unlit material for the scan line
+        lineMaterial = new Material(Shader.Find("Unlit/Color"));
+        lineMaterial.color = scanLineColor;
+        lineMaterial.renderQueue = 3100; // Always on top of transparent cone
     }
 
     void LateUpdate()
     {
         if (autoTilt)
         {
-            // Calculate tilt so cone points downward, adjusted for fieldOfView width
-            // Wider FOV cones tend to look "flatter" in tilt,
-            // so scale tilt by a factor based on horizontal FOV angle
-            // The more narrow the FOV, the steeper the tilt (up to eyeHeight limit)
-            float fovFactor = Mathf.Clamp01(90f / fieldOfView); // 1 when 90°, >1 if less, <1 if more
+            float fovFactor = Mathf.Clamp01(90f / fieldOfView);
             float baseTilt = Mathf.Atan(eyeHeight / sightRange) * Mathf.Rad2Deg;
             tiltAngle = -baseTilt * fovFactor;
         }
 
         DrawFOV(sightRange, fieldOfView);
+
+        // Update scan position back and forth
+        scanPosition += scanDirection * scanSpeed * Time.deltaTime;
+        if (scanPosition >= 1f) { scanPosition = 1f; scanDirection = -1; }
+        if (scanPosition <= 0f) { scanPosition = 0f; scanDirection = 1; }
+
+        // Update shader _ScanPos for scan line animation
+        if (fovMaterial != null)
+            fovMaterial.SetFloat("_ScanPos", scanPosition);
+    }
+
+    void OnRenderObject()
+    {
+        if (!lineMaterial) return;
+        lineMaterial.SetPass(0);
+
+        GL.PushMatrix();
+        GL.MultMatrix(transform.localToWorldMatrix);  // Use local to world space for GL
+
+        GL.Begin(GL.LINES);
+        GL.Color(scanLineColor);
+
+        Vector3 start = Vector3.zero; // Local space origin
+        float angle = Mathf.Lerp(-fieldOfView / 2f, fieldOfView / 2f, scanPosition);
+        Vector3 dir = DirFromAngles(angle, tiltAngle, true);  // Local direction
+        Vector3 end = start + dir * sightRange;
+
+        GL.Vertex(start);
+        GL.Vertex(end);
+
+        GL.End();
+        GL.PopMatrix();
     }
 
     void DrawFOV(float viewRadius, float viewAngle)
     {
         float angleStep = viewAngle / rayCount;
-        float angle = -viewAngle / 2f;
+        float startAngle = -viewAngle / 2f;
+        float angle = startAngle;
 
         List<Vector3> viewPoints = new List<Vector3>();
-        List<bool> highlightPoints = new List<bool>();
+        List<Vector2> uvs = new List<Vector2>();
 
-        viewPoints.Add(Vector3.zero);
-        highlightPoints.Add(false);
+        viewPoints.Add(Vector3.zero);      // Center vertex at origin (local space)
+        uvs.Add(new Vector2(0.5f, 0));     // Center UV (middle)
 
         Vector3 origin = transform.position;
 
@@ -68,34 +109,37 @@ public class EnemyFOVMesh : MonoBehaviour
 
             RaycastHit hit;
             Vector3 hitPointWorld;
-            bool highlight = false;
 
             if (Physics.Raycast(origin, dir, out hit, viewRadius, obstacleMask))
             {
                 hitPointWorld = hit.point;
-                highlight = true; // Collision detected — highlight vertex
             }
             else
             {
                 hitPointWorld = origin + dir * viewRadius;
             }
 
-            viewPoints.Add(transform.InverseTransformPoint(hitPointWorld));
-            highlightPoints.Add(highlight);
+            Vector3 localPoint = transform.InverseTransformPoint(hitPointWorld);
+            viewPoints.Add(localPoint);
+
+            // UV.x = normalized angle (0 to 1) across the fan
+            float normalizedAngle = (angle - startAngle) / viewAngle;
+            uvs.Add(new Vector2(normalizedAngle, 0));
 
             angle += angleStep;
         }
 
-        CreateMesh(viewPoints, highlightPoints);
+        CreateMesh(viewPoints, uvs);
     }
 
-    void CreateMesh(List<Vector3> points, List<bool> highlightPoints)
+    void CreateMesh(List<Vector3> points, List<Vector2> uvs)
     {
         mesh.Clear();
 
-        Vector3[] vertices = points.ToArray();
+        mesh.vertices = points.ToArray();
+        mesh.uv = uvs.ToArray();
+
         int[] triangles = new int[(points.Count - 2) * 3];
-        colors = new Color[vertices.Length];
 
         for (int i = 0; i < points.Count - 2; i++)
         {
@@ -104,27 +148,10 @@ public class EnemyFOVMesh : MonoBehaviour
             triangles[i * 3 + 2] = i + 2;
         }
 
-        for (int i = 0; i < vertices.Length; i++)
-        {
-            if (highlightPoints[i])
-            {
-                // Brightness increase for collision points
-                // Mix base color with highlightColor, full highlight at collision
-                colors[i] = highlightColor;
-            }
-            else
-            {
-                colors[i] = normalColor;
-            }
-        }
-
-        mesh.vertices = vertices;
         mesh.triangles = triangles;
-        mesh.colors = colors;
         mesh.RecalculateNormals();
     }
 
-    // Direction vector from yaw (horizontal) and pitch (vertical) angles
     Vector3 DirFromAngles(float yawAngleDeg, float pitchAngleDeg, bool global)
     {
         float yawRad = yawAngleDeg * Mathf.Deg2Rad;
