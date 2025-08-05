@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using UnityEngine.Audio;
 using FMODUnity;
 using FMOD.Studio;
+using static UnityEditorInternal.VersionControl.ListControl;
 
 public class EnemyBase : MonoBehaviour
 {
@@ -13,6 +14,8 @@ public class EnemyBase : MonoBehaviour
 
     public Transform head;
     public static List<EnemyBase> AllGuards = new List<EnemyBase>();
+
+    private EnemyState lastState;
 
     [Header("Patrolling / Movement Speeds")]
     public Transform[] patrolPoints;
@@ -160,6 +163,9 @@ public class EnemyBase : MonoBehaviour
             footstepInstance.start();
             footstepInstance.setPaused(true);
         }
+
+        lastState = currentState;    // Initialize lastState to currentState
+        CheckCombatMusic();          // Check combat music on start
     }
 
 
@@ -187,6 +193,12 @@ public class EnemyBase : MonoBehaviour
 
         UpdateSpotlight();
         UpdateMovementAudio();
+
+        if (currentState != lastState)
+        {
+            CheckCombatMusic();
+            lastState = currentState;
+        }
 
         // Update footstepInstance position each frame
         if (footstepInstance.isValid())
@@ -451,8 +463,6 @@ public class EnemyBase : MonoBehaviour
         }
     }
 
-    // (the rest of your methods like Alert, TakeDamage, Die etc. stay the same below)
-
     public void ReceiveCameraAlert(Vector3 alertPosition)
     {
         if (currentState == EnemyState.Patrolling || currentState == EnemyState.Searching)
@@ -655,6 +665,18 @@ public class EnemyBase : MonoBehaviour
         transform.rotation = startRotation;
 
         isTurningAround = false;
+    }
+
+    public void CheckCombatMusic()
+    {
+        if (currentState == EnemyState.Attacking)
+        {
+            // Start combat music
+        }
+        else
+        {
+            // Stop combat music
+        }
     }
 
 
