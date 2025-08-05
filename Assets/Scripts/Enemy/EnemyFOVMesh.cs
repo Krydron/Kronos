@@ -21,6 +21,12 @@ public class EnemyFOVMesh : MonoBehaviour
     [Range(-90f, 90f)]
     public float tiltAngle = -30f;  // Negative = looking down
 
+    [Header("Air Culling Settings")]
+    public bool enableAirCulling = true;
+    public float groundCheckAbove = 0.2f;   // how far above to start the downward check
+    public float groundCheckDistance = 2f;  // how far down to look for ground
+    public float edgePullback = 0.5f;       // pullback distance if over air
+
     private Mesh mesh;
     private Material fovMaterial;
 
@@ -77,8 +83,10 @@ public class EnemyFOVMesh : MonoBehaviour
         float angleStep = fieldOfView / rayCount;
         float startAngle = -fieldOfView / 2f;
 
-        List<Vector3> viewPoints = new List<Vector3> { Vector3.zero };
         Vector3 origin = transform.position + Vector3.up * eyeHeight;
+
+        List<Vector3> viewPoints = new List<Vector3>();
+        List<int> validIndices = new List<int>(); // track valid vertices for mesh
 
         for (int i = 0; i <= rayCount; i++)
         {
@@ -87,31 +95,88 @@ public class EnemyFOVMesh : MonoBehaviour
 
             RaycastHit hit;
             Vector3 point;
-            if (Physics.Raycast(origin, dir, out hit, sightRange, obstacleMask))
-                point = transform.InverseTransformPoint(hit.point);
-            else
-                point = transform.InverseTransformPoint(origin + dir * sightRange);
 
-            viewPoints.Add(point);
+            if (Physics.Raycast(origin, dir, out hit, sightRange, obstacleMask))
+            {
+                point = hit.point;
+            }
+            else
+            {
+                point = origin + dir * sightRange;
+            }
+
+            bool isValid = true;
+
+            if (enableAirCulling)
+            {
+                RaycastHit groundHit;
+                if (Physics.Raycast(point + Vector3.up * groundCheckAbove, Vector3.down,
+                    out groundHit, groundCheckDistance, obstacleMask))
+                {
+                    point = groundHit.point;
+                }
+                else
+                {
+                    // No ground below --- mark invalid to create gap
+                    isValid = false;
+                }
+            }
+
+            if (isValid)
+            {
+                viewPoints.Add(transform.InverseTransformPoint(point));
+                validIndices.Add(viewPoints.Count - 1);
+            }
+            else
+            {
+                // Add a placeholder point to keep indexing consistent
+                viewPoints.Add(Vector3.zero);
+            }
         }
 
-        CreateMesh(viewPoints);
+        CreateMeshWithGaps(viewPoints, validIndices);
     }
 
-    void CreateMesh(List<Vector3> points)
+    void CreateMeshWithGaps(List<Vector3> points, List<int> validIndices)
     {
         mesh.Clear();
-        mesh.vertices = points.ToArray();
 
-        int[] triangles = new int[(points.Count - 2) * 3];
-        for (int i = 0; i < points.Count - 2; i++)
+        // Add origin vertex at index 0
+        List<Vector3> vertices = new List<Vector3> { Vector3.zero };
+
+        // We'll build triangles between origin and consecutive valid points,
+        // skipping any invalid points to create gaps.
+        List<int> triangles = new List<int>();
+
+        // Map original viewPoints indices to new vertices indices (skip invalids)
+        Dictionary<int, int> indexMap = new Dictionary<int, int>();
+
+        // Start from 1 because 0 is origin
+        int newIndex = 1;
+        foreach (int i in validIndices)
         {
-            triangles[i * 3] = 0;
-            triangles[i * 3 + 1] = i + 1;
-            triangles[i * 3 + 2] = i + 2;
+            vertices.Add(points[i]);
+            indexMap[i] = newIndex;
+            newIndex++;
         }
 
-        mesh.triangles = triangles;
+        // Create triangles between origin and pairs of consecutive valid points
+        for (int i = 0; i < validIndices.Count - 1; i++)
+        {
+            int current = validIndices[i];
+            int next = validIndices[i + 1];
+
+            // Only connect if these indices are consecutive in the original list
+            if (next == current + 1)
+            {
+                triangles.Add(0); // origin vertex
+                triangles.Add(indexMap[current]);
+                triangles.Add(indexMap[next]);
+            }
+        }
+
+        mesh.vertices = vertices.ToArray();
+        mesh.triangles = triangles.ToArray();
         mesh.RecalculateNormals();
     }
 
