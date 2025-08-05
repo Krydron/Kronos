@@ -6,158 +6,102 @@ public class EnemyFOVMesh : MonoBehaviour
 {
     [Header("FOV Settings")]
     public float sightRange = 10f;
-    public float fieldOfView = 90f;
+    [Range(10, 360)] public float fieldOfView = 90f;
     public int rayCount = 50;
     public LayerMask obstacleMask;
 
-    [Header("Ground Culling Settings")]
-    public LayerMask groundMask;
-    public float groundCheckDistance = 2f;
+    [Header("Scan Settings")]
+    public float scanSpeed = 30f; // degrees per second
+    public Color baseColor = new Color(1f, 1f, 0f, 0.15f);
+    public Color scanColor = new Color(1f, 0f, 0f, 0.6f);
+    public float scanWidth = 2f; // degrees
 
-    [Header("Colors")]
-    public Color fovColor = new Color(1f, 1f, 0f, 0.15f);
-    public Color scanLineColor = new Color(1f, 1f, 0.5f, 0.8f);
-
-    [Header("Tilt Settings")]
-    public bool autoTilt = true;
+    [Header("Eye Settings")]
     public float eyeHeight = 1.6f;
-    private float tiltAngle = 0f;
-
-    [Header("Scan Line Settings")]
-    public float scanSpeed = 1f;
+    [Range(-90f, 90f)]
+    public float tiltAngle = -30f;  // Negative = looking down
 
     private Mesh mesh;
     private Material fovMaterial;
-    private Material lineMaterial;
 
-    private float scanPosition = 0f;
-    private int scanDirection = 1;
-
-    // Store visible ray endpoints for the scan line
-    private List<Vector3> visibleRayEnds = new List<Vector3>();
+    private float currentAngle;
+    private float scanDirection = 1f; // 1 = right, -1 = left
 
     void Start()
     {
         mesh = new Mesh();
         GetComponent<MeshFilter>().mesh = mesh;
 
-        fovMaterial = new Material(Shader.Find("Custom/FOVTransparent"));
-        fovMaterial.color = fovColor;
+        fovMaterial = new Material(Shader.Find("Custom/RadarFOV"));
         GetComponent<MeshRenderer>().material = fovMaterial;
 
-        lineMaterial = new Material(Shader.Find("Unlit/Color"));
-        lineMaterial.color = scanLineColor;
-        lineMaterial.renderQueue = 3100;
+        fovMaterial.SetFloat("_FOVAngle", fieldOfView);
+        fovMaterial.SetFloat("_Range", sightRange);
+        fovMaterial.SetFloat("_ScanWidth", scanWidth);
+        fovMaterial.SetColor("_BaseColor", baseColor);
+        fovMaterial.SetColor("_ScanColor", scanColor);
+
+        // Start scanning from left side
+        currentAngle = -fieldOfView * 0.5f;
     }
 
     void LateUpdate()
     {
-        if (autoTilt)
+        DrawFOVMesh();
+
+        // Ping-pong scan logic
+        currentAngle += scanDirection * scanSpeed * Time.deltaTime;
+
+        if (currentAngle > fieldOfView * 0.5f)
         {
-            float fovFactor = Mathf.Clamp01(90f / fieldOfView);
-            float baseTilt = Mathf.Atan(eyeHeight / sightRange) * Mathf.Rad2Deg;
-            tiltAngle = -baseTilt * fovFactor;
+            currentAngle = fieldOfView * 0.5f;
+            scanDirection = -1f;
+        }
+        else if (currentAngle < -fieldOfView * 0.5f)
+        {
+            currentAngle = -fieldOfView * 0.5f;
+            scanDirection = 1f;
         }
 
-        DrawFOV(sightRange, fieldOfView);
+        // Calculate tilted forward vector
+        Vector3 tiltedForward = Quaternion.Euler(tiltAngle, 0f, 0f) * transform.forward;
 
-        scanPosition += scanDirection * scanSpeed * Time.deltaTime;
-        if (scanPosition >= 1f) { scanPosition = 1f; scanDirection = -1; }
-        if (scanPosition <= 0f) { scanPosition = 0f; scanDirection = 1; }
-
-        if (fovMaterial != null)
-            fovMaterial.SetFloat("_ScanPos", scanPosition);
+        // Pass dynamic properties to shader
+        fovMaterial.SetVector("_Origin", transform.position + Vector3.up * eyeHeight);
+        fovMaterial.SetVector("_ForwardDir", tiltedForward);
+        fovMaterial.SetFloat("_CurrentAngle", currentAngle);
     }
 
-    void OnRenderObject()
+    void DrawFOVMesh()
     {
-        if (!lineMaterial || visibleRayEnds.Count == 0) return;
-        lineMaterial.SetPass(0);
+        float angleStep = fieldOfView / rayCount;
+        float startAngle = -fieldOfView / 2f;
 
-        GL.PushMatrix();
-        GL.MultMatrix(transform.localToWorldMatrix);
-
-        GL.Begin(GL.LINES);
-        GL.Color(scanLineColor);
-
-        // Determine which ray segment corresponds to the scan position
-        int scanIndex = Mathf.RoundToInt(scanPosition * (rayCount - 1));
-
-        if (scanIndex >= 0 && scanIndex < visibleRayEnds.Count)
-        {
-            Vector3 start = Vector3.zero; // center
-            Vector3 end = visibleRayEnds[scanIndex];
-            if (end != Vector3.zero) // only draw if this segment is visible
-            {
-                GL.Vertex(start);
-                GL.Vertex(end);
-            }
-        }
-
-        GL.End();
-        GL.PopMatrix();
-    }
-
-    void DrawFOV(float viewRadius, float viewAngle)
-    {
-        float angleStep = viewAngle / rayCount;
-        float startAngle = -viewAngle / 2f;
-        float angle = startAngle;
-
-        List<Vector3> viewPoints = new List<Vector3>();
-        List<Vector2> uvs = new List<Vector2>();
-        visibleRayEnds.Clear();
-
-        viewPoints.Add(Vector3.zero);
-        uvs.Add(new Vector2(0.5f, 0));
-
-        Vector3 origin = transform.position;
+        List<Vector3> viewPoints = new List<Vector3> { Vector3.zero };
+        Vector3 origin = transform.position + Vector3.up * eyeHeight;
 
         for (int i = 0; i <= rayCount; i++)
         {
-            Vector3 dir = DirFromAngles(angle, tiltAngle, false);
+            float yawAngle = startAngle + angleStep * i;
+            Vector3 dir = DirFromAngles(yawAngle, tiltAngle);
+
             RaycastHit hit;
-            Vector3 hitPointWorld;
-
-            if (Physics.Raycast(origin, dir, out hit, viewRadius, obstacleMask))
-                hitPointWorld = hit.point;
+            Vector3 point;
+            if (Physics.Raycast(origin, dir, out hit, sightRange, obstacleMask))
+                point = transform.InverseTransformPoint(hit.point);
             else
-                hitPointWorld = origin + dir * viewRadius;
+                point = transform.InverseTransformPoint(origin + dir * sightRange);
 
-            bool hasGround = Physics.Raycast(
-                hitPointWorld + Vector3.up * 0.5f,
-                Vector3.down,
-                groundCheckDistance + 0.5f,
-                groundMask
-            );
-
-            if (!hasGround)
-            {
-                hitPointWorld = origin;
-                visibleRayEnds.Add(Vector3.zero); // mark invisible
-            }
-            else
-            {
-                visibleRayEnds.Add(transform.InverseTransformPoint(hitPointWorld));
-            }
-
-            Vector3 localPoint = transform.InverseTransformPoint(hitPointWorld);
-            viewPoints.Add(localPoint);
-
-            float normalizedAngle = (angle - startAngle) / viewAngle;
-            uvs.Add(new Vector2(normalizedAngle, 0));
-
-            angle += angleStep;
+            viewPoints.Add(point);
         }
 
-        CreateMesh(viewPoints, uvs);
+        CreateMesh(viewPoints);
     }
 
-    void CreateMesh(List<Vector3> points, List<Vector2> uvs)
+    void CreateMesh(List<Vector3> points)
     {
         mesh.Clear();
         mesh.vertices = points.ToArray();
-        mesh.uv = uvs.ToArray();
 
         int[] triangles = new int[(points.Count - 2) * 3];
         for (int i = 0; i < points.Count - 2; i++)
@@ -171,19 +115,9 @@ public class EnemyFOVMesh : MonoBehaviour
         mesh.RecalculateNormals();
     }
 
-    Vector3 DirFromAngles(float yawAngleDeg, float pitchAngleDeg, bool global)
+    Vector3 DirFromAngles(float yawDegrees, float pitchDegrees)
     {
-        float yawRad = yawAngleDeg * Mathf.Deg2Rad;
-        float pitchRad = pitchAngleDeg * Mathf.Deg2Rad;
-
-        float x = Mathf.Sin(yawRad) * Mathf.Cos(pitchRad);
-        float y = Mathf.Sin(pitchRad);
-        float z = Mathf.Cos(yawRad) * Mathf.Cos(pitchRad);
-
-        Vector3 dir = new Vector3(x, y, z);
-        if (!global)
-            dir = Quaternion.Euler(0, transform.eulerAngles.y, 0) * dir;
-
-        return dir.normalized;
+        Quaternion rotation = Quaternion.Euler(pitchDegrees, yawDegrees + transform.eulerAngles.y, 0);
+        return rotation * Vector3.forward;
     }
 }
