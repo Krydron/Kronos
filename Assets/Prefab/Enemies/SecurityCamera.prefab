@@ -47,7 +47,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   fieldOfView: 90
   viewDistance: 10
-  downwardTiltAngle: 60
+  downwardTiltAngle: 30
   detectionTime: 2
   rotationSpeed: 30
   rotationAngle: 45
@@ -331,3 +331,4 @@ MonoBehaviour:
   obstacleMask:
     serializedVersion: 2
     m_Bits: 2113
+  downwardTiltAngle: 60

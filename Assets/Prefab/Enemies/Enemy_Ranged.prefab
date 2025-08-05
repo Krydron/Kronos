@@ -478,7 +478,7 @@ Transform:
   m_GameObject: {fileID: 7872494567948968865}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.8, z: -0.005999565}
+  m_LocalPosition: {x: 0, y: 0.735, z: 0.004}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -549,17 +549,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 992828781a2132743be3617534503e3e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sightRange: 30
+  sightRange: 10
   fieldOfView: 90
   rayCount: 50
   obstacleMask:
     serializedVersion: 2
     m_Bits: 4294967295
-  normalColor: {r: 0.6509804, g: 0, b: 0, a: 0.15}
-  highlightColor: {r: 1, g: 0, b: 0, a: 0.8}
-  tiltAngle: 0
-  autoTilt: 1
-  eyeHeight: 1.6
+  scanSpeed: 100
+  baseColor: {r: 0.62352943, g: 0.015686275, b: 0, a: 0.15}
+  scanColor: {r: 1, g: 0, b: 0, a: 0.6}
+  scanWidth: 2
+  eyeHeight: 0
+  tiltAngle: 20
 --- !u!1 &8559623155472226520
 GameObject:
   m_ObjectHideFlags: 0

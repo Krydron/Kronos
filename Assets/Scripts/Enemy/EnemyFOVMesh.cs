@@ -4,141 +4,185 @@ using UnityEngine;
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
 public class EnemyFOVMesh : MonoBehaviour
 {
-    [Header("FOV Settings (Independent)")]
-    public float sightRange = 10f;     // Max distance for FOV mesh
-    public float fieldOfView = 90f;    // Horizontal angle of the FOV cone
+    [Header("FOV Settings")]
+    public float sightRange = 10f;
+    [Range(10, 360)] public float fieldOfView = 90f;
     public int rayCount = 50;
-    public LayerMask obstacleMask;     // Layers considered obstacles
+    public LayerMask obstacleMask;
 
-    [Header("Highlight Settings")]
-    public Color normalColor = new Color(1f, 1f, 1f, 0.15f);     // Base transparent color
-    public Color highlightColor = new Color(1f, 1f, 0f, 0.8f);   // Highlight color at collisions
+    [Header("Scan Settings")]
+    public float scanSpeed = 30f; // degrees per second
+    public Color baseColor = new Color(1f, 1f, 0f, 0.15f);
+    public Color scanColor = new Color(1f, 0f, 0f, 0.6f);
+    public float scanWidth = 2f; // degrees
 
-    [Header("Tilt Settings")]
-    public float tiltAngle = 0f; // Manual tilt (deg, negative = down)
+    [Header("Eye Settings")]
+    public float eyeHeight = 1.6f;
+    [Range(-90f, 90f)]
+    public float tiltAngle = -30f;  // Negative = looking down
 
-    [Header("Auto Tilt Settings")]
-    public bool autoTilt = true;
-    public float eyeHeight = 1.6f;  // Height of eyes relative to ground
+    [Header("Air Culling Settings")]
+    public bool enableAirCulling = true;
+    public float groundCheckAbove = 0.2f;   // how far above to start the downward check
+    public float groundCheckDistance = 2f;  // how far down to look for ground
+    public float edgePullback = 0.5f;       // pullback distance if over air
 
     private Mesh mesh;
-    private Color[] colors;
+    private Material fovMaterial;
+
+    private float currentAngle;
+    private float scanDirection = 1f; // 1 = right, -1 = left
 
     void Start()
     {
         mesh = new Mesh();
         GetComponent<MeshFilter>().mesh = mesh;
 
-        MeshRenderer mr = GetComponent<MeshRenderer>();
-        mr.material = new Material(Shader.Find("Sprites/Default"));
+        fovMaterial = new Material(Shader.Find("Custom/RadarFOV"));
+        GetComponent<MeshRenderer>().material = fovMaterial;
+
+        fovMaterial.SetFloat("_FOVAngle", fieldOfView);
+        fovMaterial.SetFloat("_Range", sightRange);
+        fovMaterial.SetFloat("_ScanWidth", scanWidth);
+        fovMaterial.SetColor("_BaseColor", baseColor);
+        fovMaterial.SetColor("_ScanColor", scanColor);
+
+        // Start scanning from left side
+        currentAngle = -fieldOfView * 0.5f;
     }
 
     void LateUpdate()
     {
-        if (autoTilt)
+        DrawFOVMesh();
+
+        // Ping-pong scan logic
+        currentAngle += scanDirection * scanSpeed * Time.deltaTime;
+
+        if (currentAngle > fieldOfView * 0.5f)
         {
-            // Calculate tilt so cone points downward, adjusted for fieldOfView width
-            // Wider FOV cones tend to look "flatter" in tilt,
-            // so scale tilt by a factor based on horizontal FOV angle
-            // The more narrow the FOV, the steeper the tilt (up to eyeHeight limit)
-            float fovFactor = Mathf.Clamp01(90f / fieldOfView); // 1 when 90°, >1 if less, <1 if more
-            float baseTilt = Mathf.Atan(eyeHeight / sightRange) * Mathf.Rad2Deg;
-            tiltAngle = -baseTilt * fovFactor;
+            currentAngle = fieldOfView * 0.5f;
+            scanDirection = -1f;
+        }
+        else if (currentAngle < -fieldOfView * 0.5f)
+        {
+            currentAngle = -fieldOfView * 0.5f;
+            scanDirection = 1f;
         }
 
-        DrawFOV(sightRange, fieldOfView);
+        // Calculate tilted forward vector
+        Vector3 tiltedForward = Quaternion.Euler(tiltAngle, 0f, 0f) * transform.forward;
+
+        // Pass dynamic properties to shader
+        fovMaterial.SetVector("_Origin", transform.position + Vector3.up * eyeHeight);
+        fovMaterial.SetVector("_ForwardDir", tiltedForward);
+        fovMaterial.SetFloat("_CurrentAngle", currentAngle);
     }
 
-    void DrawFOV(float viewRadius, float viewAngle)
+    void DrawFOVMesh()
     {
-        float angleStep = viewAngle / rayCount;
-        float angle = -viewAngle / 2f;
+        float angleStep = fieldOfView / rayCount;
+        float startAngle = -fieldOfView / 2f;
+
+        Vector3 origin = transform.position + Vector3.up * eyeHeight;
 
         List<Vector3> viewPoints = new List<Vector3>();
-        List<bool> highlightPoints = new List<bool>();
-
-        viewPoints.Add(Vector3.zero);
-        highlightPoints.Add(false);
-
-        Vector3 origin = transform.position;
+        List<int> validIndices = new List<int>(); // track valid vertices for mesh
 
         for (int i = 0; i <= rayCount; i++)
         {
-            Vector3 dir = DirFromAngles(angle, tiltAngle, false);
+            float yawAngle = startAngle + angleStep * i;
+            Vector3 dir = DirFromAngles(yawAngle, tiltAngle);
 
             RaycastHit hit;
-            Vector3 hitPointWorld;
-            bool highlight = false;
+            Vector3 point;
 
-            if (Physics.Raycast(origin, dir, out hit, viewRadius, obstacleMask))
+            if (Physics.Raycast(origin, dir, out hit, sightRange, obstacleMask))
             {
-                hitPointWorld = hit.point;
-                highlight = true; // Collision detected — highlight vertex
+                point = hit.point;
             }
             else
             {
-                hitPointWorld = origin + dir * viewRadius;
+                point = origin + dir * sightRange;
             }
 
-            viewPoints.Add(transform.InverseTransformPoint(hitPointWorld));
-            highlightPoints.Add(highlight);
+            bool isValid = true;
 
-            angle += angleStep;
+            if (enableAirCulling)
+            {
+                RaycastHit groundHit;
+                if (Physics.Raycast(point + Vector3.up * groundCheckAbove, Vector3.down,
+                    out groundHit, groundCheckDistance, obstacleMask))
+                {
+                    point = groundHit.point;
+                }
+                else
+                {
+                    // No ground below --- mark invalid to create gap
+                    isValid = false;
+                }
+            }
+
+            if (isValid)
+            {
+                viewPoints.Add(transform.InverseTransformPoint(point));
+                validIndices.Add(viewPoints.Count - 1);
+            }
+            else
+            {
+                // Add a placeholder point to keep indexing consistent
+                viewPoints.Add(Vector3.zero);
+            }
         }
 
-        CreateMesh(viewPoints, highlightPoints);
+        CreateMeshWithGaps(viewPoints, validIndices);
     }
 
-    void CreateMesh(List<Vector3> points, List<bool> highlightPoints)
+    void CreateMeshWithGaps(List<Vector3> points, List<int> validIndices)
     {
         mesh.Clear();
 
-        Vector3[] vertices = points.ToArray();
-        int[] triangles = new int[(points.Count - 2) * 3];
-        colors = new Color[vertices.Length];
+        // Add origin vertex at index 0
+        List<Vector3> vertices = new List<Vector3> { Vector3.zero };
 
-        for (int i = 0; i < points.Count - 2; i++)
+        // We'll build triangles between origin and consecutive valid points,
+        // skipping any invalid points to create gaps.
+        List<int> triangles = new List<int>();
+
+        // Map original viewPoints indices to new vertices indices (skip invalids)
+        Dictionary<int, int> indexMap = new Dictionary<int, int>();
+
+        // Start from 1 because 0 is origin
+        int newIndex = 1;
+        foreach (int i in validIndices)
         {
-            triangles[i * 3] = 0;
-            triangles[i * 3 + 1] = i + 1;
-            triangles[i * 3 + 2] = i + 2;
+            vertices.Add(points[i]);
+            indexMap[i] = newIndex;
+            newIndex++;
         }
 
-        for (int i = 0; i < vertices.Length; i++)
+        // Create triangles between origin and pairs of consecutive valid points
+        for (int i = 0; i < validIndices.Count - 1; i++)
         {
-            if (highlightPoints[i])
+            int current = validIndices[i];
+            int next = validIndices[i + 1];
+
+            // Only connect if these indices are consecutive in the original list
+            if (next == current + 1)
             {
-                // Brightness increase for collision points
-                // Mix base color with highlightColor, full highlight at collision
-                colors[i] = highlightColor;
-            }
-            else
-            {
-                colors[i] = normalColor;
+                triangles.Add(0); // origin vertex
+                triangles.Add(indexMap[current]);
+                triangles.Add(indexMap[next]);
             }
         }
 
-        mesh.vertices = vertices;
-        mesh.triangles = triangles;
-        mesh.colors = colors;
+        mesh.vertices = vertices.ToArray();
+        mesh.triangles = triangles.ToArray();
         mesh.RecalculateNormals();
     }
 
-    // Direction vector from yaw (horizontal) and pitch (vertical) angles
-    Vector3 DirFromAngles(float yawAngleDeg, float pitchAngleDeg, bool global)
+    Vector3 DirFromAngles(float yawDegrees, float pitchDegrees)
     {
-        float yawRad = yawAngleDeg * Mathf.Deg2Rad;
-        float pitchRad = pitchAngleDeg * Mathf.Deg2Rad;
-
-        float x = Mathf.Sin(yawRad) * Mathf.Cos(pitchRad);
-        float y = Mathf.Sin(pitchRad);
-        float z = Mathf.Cos(yawRad) * Mathf.Cos(pitchRad);
-
-        Vector3 dir = new Vector3(x, y, z);
-
-        if (!global)
-            dir = Quaternion.Euler(0, transform.eulerAngles.y, 0) * dir;
-
-        return dir.normalized;
+        Quaternion rotation = Quaternion.Euler(pitchDegrees, yawDegrees + transform.eulerAngles.y, 0);
+        return rotation * Vector3.forward;
     }
 }

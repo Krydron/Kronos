@@ -600,11 +600,12 @@ MonoBehaviour:
   obstacleMask:
     serializedVersion: 2
     m_Bits: 4294967295
-  normalColor: {r: 0.6509804, g: 0, b: 0, a: 0.15}
-  highlightColor: {r: 1, g: 0, b: 0, a: 0.8}
-  tiltAngle: 0
-  autoTilt: 1
-  eyeHeight: 1.6
+  scanSpeed: 100
+  baseColor: {r: 0.6226415, g: 0.017092122, b: 0, a: 0.15}
+  scanColor: {r: 1, g: 0, b: 0, a: 0.6}
+  scanWidth: 2
+  eyeHeight: 0
+  tiltAngle: 20
 --- !u!1 &9001294352327786838
 GameObject:
   m_ObjectHideFlags: 0
