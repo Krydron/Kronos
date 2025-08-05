@@ -106,6 +106,13 @@ public class EnemyBase : MonoBehaviour
     {
         player = GameObject.FindGameObjectWithTag("Player");
         agent = GetComponent<NavMeshAgent>();
+
+        if (agent == null)
+        {
+            agent = gameObject.AddComponent<NavMeshAgent>();
+            Debug.LogWarning($"{gameObject.name} had no NavMeshAgent, one was added dynamically.");
+        }
+
         agent.enabled = true;
 
         currentHealth = maxHealth;
