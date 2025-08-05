@@ -4,10 +4,9 @@ using UnityEngine;
 public class SecurityCamera : MonoBehaviour
 {
     [Header("Camera Settings")]
-    [Range(1f, 179f)] public float fieldOfView = 45f;            // Horizontal FOV (cone half-angle in degrees)
-    [Range(1f, 179f)] public float verticalFieldOfView = 45f;    // Vertical FOV (cone half-angle in degrees)
-    public float viewDistance = 10f;                             // Cone length
-    [Range(0f, 90f)] public float downwardTiltAngle = 60f;       // Tilt cone downward (degrees)
+    [Range(1f, 179f)] public float fieldOfView = 45f;  // Horizontal fan angle
+    public float viewDistance = 10f;
+    [Range(0f, 90f)] public float downwardTiltAngle = 60f;
 
     public float detectionTime = 2f;
     public float rotationSpeed = 30f;
@@ -23,12 +22,10 @@ public class SecurityCamera : MonoBehaviour
 
     private float detectionTimer = 0f;
     private Transform player;
-
     private bool rotatingRight = true;
     private bool isWaiting = false;
     private float startRotationY;
     private bool canRotate = true;
-
     private CameraFOVCone fovCone;
 
     private void Start()
@@ -46,21 +43,16 @@ public class SecurityCamera : MonoBehaviour
 
     private void Update()
     {
-        if (canRotate && !isWaiting)
-        {
-            RotateCamera();
-        }
+        if (canRotate && !isWaiting) RotateCamera();
 
-        if (PlayerInView())
+        if (PlayerInFanView())
         {
             detectionTimer += Time.deltaTime;
             fovCone?.SetAlert(true);
 
             if (detectionTimer >= detectionTime)
             {
-                if (canTriggerLockdown)
-                    TriggerLockdown();
-
+                if (canTriggerLockdown) TriggerLockdown();
                 AlertEnemies();
             }
         }
@@ -76,22 +68,13 @@ public class SecurityCamera : MonoBehaviour
         float targetRotationY = startRotationY + (rotatingRight ? rotationAngle : -rotationAngle);
         float step = rotationSpeed * Time.deltaTime;
 
-        float currentRotationY = transform.eulerAngles.y;
-        if (currentRotationY > 180f)
-            currentRotationY -= 360f;
-
-        if (targetRotationY > 180f)
-            targetRotationY -= 360f;
-
-        float angleDifference = Mathf.DeltaAngle(currentRotationY, targetRotationY);
-
         transform.rotation = Quaternion.RotateTowards(
             transform.rotation,
-            Quaternion.Euler(0, currentRotationY + angleDifference, 0),
+            Quaternion.Euler(0, targetRotationY, 0),
             step
         );
 
-        if (Mathf.Abs(angleDifference) < 1f)
+        if (Mathf.Abs(Mathf.DeltaAngle(transform.eulerAngles.y, targetRotationY)) < 1f)
         {
             StartCoroutine(PauseBeforeSwitching());
         }
@@ -105,41 +88,37 @@ public class SecurityCamera : MonoBehaviour
         isWaiting = false;
     }
 
-    private bool PlayerInView()
+    private bool PlayerInFanView()
     {
-        if (player == null) return false;
+        if (player == null || fovCone == null) return false;
 
-        Vector3 directionToPlayer = (player.position - transform.position).normalized;
+        Vector3 origin = fovCone.transform.position;
+        int segments = fovCone.resolution;
 
-        // Horizontal angle between camera forward and player, ignoring vertical component
-        Vector3 forwardHorizontal = new Vector3(transform.forward.x, 0f, transform.forward.z).normalized;
-        Vector3 dirHorizontal = new Vector3(directionToPlayer.x, 0f, directionToPlayer.z).normalized;
-
-        float horizontalAngle = Vector3.Angle(forwardHorizontal, dirHorizontal);
-
-        // Vertical angle between camera forward and player
-        float verticalAngle = Vector3.Angle(transform.forward, directionToPlayer) - horizontalAngle;
-
-        if (horizontalAngle < fieldOfView / 2f && Mathf.Abs(verticalAngle) < verticalFieldOfView / 2f)
+        // Horizontal FOV raycasts
+        for (int i = 0; i <= segments; i++)
         {
-            if (Physics.Raycast(transform.position, directionToPlayer, out RaycastHit hit, viewDistance))
-            {
-                Debug.DrawRay(transform.position, directionToPlayer * viewDistance, Color.red);
+            float angle = -fieldOfView / 2f + (fieldOfView * i / segments);
+            Quaternion rot = Quaternion.Euler(0f, angle, 0f);
+            Quaternion tilt = Quaternion.Euler(downwardTiltAngle, 0f, 0f);
+            Vector3 dir = fovCone.transform.rotation * (tilt * (rot * Vector3.forward));
 
+            if (Physics.Raycast(origin, dir, out RaycastHit hit, viewDistance))
+            {
                 if (hit.transform.CompareTag("Player"))
-                {
                     return true;
-                }
             }
         }
 
         return false;
     }
 
+
+
+
     private void TriggerLockdown()
     {
         Debug.Log("Lockdown triggered by camera!");
-        // Your global lockdown logic here
     }
 
     private void AlertEnemies()
@@ -153,17 +132,9 @@ public class SecurityCamera : MonoBehaviour
         {
             EnemyBase enemyScript = enemy.GetComponent<EnemyBase>();
             if (enemyScript != null)
-            {
                 enemyScript.ReceiveCameraAlert(lastKnownPosition);
-            }
         }
-
-        Debug.Log("Security Camera ALERT! Enemies are now searching the area!");
     }
 
-    // Public method to enable/disable rotation
-    public void SetRotationEnabled(bool enabled)
-    {
-        canRotate = enabled;
-    }
+    public void SetRotationEnabled(bool enabled) => canRotate = enabled;
 }
