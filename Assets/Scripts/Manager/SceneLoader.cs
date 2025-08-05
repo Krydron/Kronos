@@ -112,9 +112,11 @@ public class SceneLoader : MonoBehaviour
             Vector3[][][] lineList = new Vector3[data.lineList.Length][][];
             for (int map = 0; map < data.lineList.Length; map++)
             {
+                if (data.lineList[map] == null) {  continue; }
                 lineList[map] = new Vector3[data.lineList[map].Length][];
                 for (int line = 0; line < data.lineList[map].Length; line++)
                 {
+                    if (data.lineList[map][line] == null) { continue; }
                     lineList[map][line] = new Vector3[data.lineList[map][line].Length];
                     for (int point = 0; point < data.lineList[map][line].Length; point++)
                     {

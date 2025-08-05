@@ -20,17 +20,18 @@ public static class SaveSystem
     {
         string path = Application.dataPath + "/save.save";
         if (!File.Exists(path)) { Debug.LogError("Save not found: "+path); return null; }
-        try
-        {
-            BinaryFormatter binaryFormatter = new BinaryFormatter();
-            FileStream stream = new FileStream(path, FileMode.Open);
 
-            SaveData data = binaryFormatter.Deserialize(stream) as SaveData;
-            stream.Close();
+        
+        FileStream stream = new FileStream(path, FileMode.Open);
+        if (stream == null) { Debug.LogError("Stream is empty"); return null; }
+        if (stream.Length <= 0) { return null; }
 
-            return data;
-        }
-        catch { return null; }
+        BinaryFormatter binaryFormatter = new BinaryFormatter();
+
+        SaveData data = binaryFormatter.Deserialize(stream) as SaveData;
+        stream.Close();
+
+        return data;
     }
 
     public static void SettingsSave(GameObject gameManager)
