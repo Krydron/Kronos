@@ -91,6 +91,11 @@ public class EnemyBase : MonoBehaviour
     public StudioEventEmitter damageEmitter;
     public StudioEventEmitter deathEmitter;
 
+    public StudioEventEmitter detectedPlayerEmitter;
+    public StudioEventEmitter scanningEmitter;
+    public StudioEventEmitter lostPlayerEmitter;
+    public StudioEventEmitter returnToPatrolEmitter;
+
     [Header("Rotation Speeds")]
     public float patrolRotationSpeed = 2f;
     public float spottedRotationSpeed = 5f;
@@ -153,20 +158,16 @@ public class EnemyBase : MonoBehaviour
             fovSpotlight.intensity = spotlightIntensity;
         }
 
-        // Make sure footstepEmitter is stopped at start
-        if (footstepEmitter != null)
-        {
-            footstepEmitter.Stop();
-        }
+        //Make sure all emitters are stopped at start
+        if (footstepEmitter != null) footstepEmitter.Stop();
+        if (detectedPlayerEmitter != null) detectedPlayerEmitter.Stop();
+        if (scanningEmitter != null) scanningEmitter.Stop();
+        if (lostPlayerEmitter != null) lostPlayerEmitter.Stop();
+        if (returnToPatrolEmitter != null) returnToPatrolEmitter.Stop();
 
         lastState = currentState;    // Initialize lastState to currentState
         CheckCombatMusic();          // Check combat music on start
     }
-
-
-
-
-
 
     private void Update()
     {
@@ -198,7 +199,6 @@ public class EnemyBase : MonoBehaviour
             lastState = currentState;
         }
     }
-
 
     private void UpdateMovementAudio()
     {
@@ -262,6 +262,10 @@ public class EnemyBase : MonoBehaviour
             {
                 isAlerted = true;
                 AlertNearbyGuards();
+
+                //Detected player sound
+                if (detectedPlayerEmitter != null) detectedPlayerEmitter.Play();
+
                 StartChasingPlayer();
                 return;
             }
@@ -272,6 +276,9 @@ public class EnemyBase : MonoBehaviour
 
             if (detectionTimer >= detectionTime)
             {
+                // Detected player sound
+                if (detectedPlayerEmitter != null) detectedPlayerEmitter.Play();
+
                 currentState = EnemyState.Chasing;
                 detectionTimer = 0f;
                 return;
@@ -339,11 +346,15 @@ public class EnemyBase : MonoBehaviour
 
             if (lostTimer >= 1f)
             {
+                // Lost line of sight --- scanning
+                if (scanningEmitter != null) scanningEmitter.Play();
+
                 currentState = EnemyState.Searching;
                 PrepareSearch(lastSeenPosition);
             }
         }
     }
+
 
     private void Search()
     {
@@ -361,6 +372,11 @@ public class EnemyBase : MonoBehaviour
         {
             isSearching = false;
             isWaitingAtSearchPoint = false;
+
+            //Lost player completely --- return to patrol
+            if (lostPlayerEmitter != null) lostPlayerEmitter.Play();
+            if (returnToPatrolEmitter != null) returnToPatrolEmitter.Play();
+
             currentState = EnemyState.Patrolling;
             GoToNextWaypoint();
             return;
@@ -377,6 +393,10 @@ public class EnemyBase : MonoBehaviour
             {
                 isAlerted = true;
                 AlertNearbyGuards();
+
+                //Detected player again during search
+                if (detectedPlayerEmitter != null) detectedPlayerEmitter.Play();
+
                 StartChasingPlayer();
                 return;
             }
@@ -393,6 +413,7 @@ public class EnemyBase : MonoBehaviour
                 RotateTowards(searchPoints[searchPointIndex], searchRotationSpeed);
         }
     }
+
 
     private IEnumerator WaitAtSearchPoint()
     {
