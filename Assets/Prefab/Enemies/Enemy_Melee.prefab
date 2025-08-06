@@ -114,6 +114,9 @@ GameObject:
   - component: {fileID: 6498011935943515955}
   - component: {fileID: 908641045916651545}
   - component: {fileID: 4367287299429225708}
+  - component: {fileID: 1833932966581549662}
+  - component: {fileID: 1824979870201114380}
+  - component: {fileID: 4828673681660639763}
   m_Layer: 0
   m_Name: Enemy_Melee
   m_TagString: Enemy
@@ -294,20 +297,9 @@ MonoBehaviour:
       Data3: 1343535755
       Data4: -1518592492
     Path: event:/SFX/Enemy/Footstep
-  takeDamageEvent:
-    Guid:
-      Data1: -305508811
-      Data2: 1152538134
-      Data3: 153898372
-      Data4: -1873081045
-    Path: event:/SFX/Enemy/Hurt
-  deathEvent:
-    Guid:
-      Data1: 194281188
-      Data2: 1298032442
-      Data3: -1955134558
-      Data4: 816638418
-    Path: event:/SFX/Enemy/Death
+  footstepEmitter: {fileID: 1833932966581549662}
+  damageEmitter: {fileID: 1824979870201114380}
+  deathEmitter: {fileID: 4828673681660639763}
   patrolRotationSpeed: 2
   spottedRotationSpeed: 5
   chaseRotationSpeed: 20
@@ -355,6 +347,99 @@ NavMeshAgent:
   m_BaseOffset: 1
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!114 &1833932966581549662
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5756213452282658361}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: 2012319529
+      Data2: 1245209043
+      Data3: 1343535755
+      Data4: -1518592492
+    Path: event:/SFX/Enemy/Footstep
+  Event: 
+  EventPlayTrigger: 0
+  EventStopTrigger: 0
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params: []
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20
+--- !u!114 &1824979870201114380
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5756213452282658361}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: -305508811
+      Data2: 1152538134
+      Data3: 153898372
+      Data4: -1873081045
+    Path: event:/SFX/Enemy/Hurt
+  Event: 
+  EventPlayTrigger: 0
+  EventStopTrigger: 0
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params: []
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 100
+--- !u!114 &4828673681660639763
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5756213452282658361}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: 194281188
+      Data2: 1298032442
+      Data3: -1955134558
+      Data4: 816638418
+    Path: event:/SFX/Enemy/Death
+  Event: 
+  EventPlayTrigger: 0
+  EventStopTrigger: 0
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params: []
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 100
 --- !u!1 &5819187483893586585
 GameObject:
   m_ObjectHideFlags: 0
@@ -606,6 +691,10 @@ MonoBehaviour:
   scanWidth: 2
   eyeHeight: 0
   tiltAngle: 20
+  enableAirCulling: 1
+  groundCheckAbove: 0.2
+  groundCheckDistance: 2
+  edgePullback: 0.5
 --- !u!1 &9001294352327786838
 GameObject:
   m_ObjectHideFlags: 0

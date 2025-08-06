@@ -185,6 +185,9 @@ GameObject:
   - component: {fileID: 8972679954589670439}
   - component: {fileID: 7377281485607986891}
   - component: {fileID: 8329307200442749345}
+  - component: {fileID: 6263579881973100895}
+  - component: {fileID: 7407225195963150598}
+  - component: {fileID: 3998164005837081322}
   m_Layer: 0
   m_Name: Enemy_Ranged
   m_TagString: Enemy
@@ -352,27 +355,9 @@ MonoBehaviour:
   spotlightOffsetForward: 0.5
   spotlightOffsetUp: 0
   spotlightInnerAngleFactor: 0.6
-  footstepEvent:
-    Guid:
-      Data1: 2012319529
-      Data2: 1245209043
-      Data3: 1343535755
-      Data4: -1518592492
-    Path: event:/SFX/Enemy/Footstep
-  takeDamageEvent:
-    Guid:
-      Data1: -305508811
-      Data2: 1152538134
-      Data3: 153898372
-      Data4: -1873081045
-    Path: event:/SFX/Enemy/Hurt
-  deathEvent:
-    Guid:
-      Data1: 194281188
-      Data2: 1298032442
-      Data3: -1955134558
-      Data4: 816638418
-    Path: event:/SFX/Enemy/Death
+  footstepEmitter: {fileID: 6263579881973100895}
+  damageEmitter: {fileID: 7407225195963150598}
+  deathEmitter: {fileID: 3998164005837081322}
   patrolRotationSpeed: 2
   spottedRotationSpeed: 5
   chaseRotationSpeed: 20
@@ -417,6 +402,99 @@ NavMeshAgent:
   m_BaseOffset: 1
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!114 &6263579881973100895
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6973685807047857842}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: 2012319529
+      Data2: 1245209043
+      Data3: 1343535755
+      Data4: -1518592492
+    Path: event:/SFX/Enemy/Footstep
+  Event: 
+  EventPlayTrigger: 0
+  EventStopTrigger: 0
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params: []
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20
+--- !u!114 &7407225195963150598
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6973685807047857842}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: -305508811
+      Data2: 1152538134
+      Data3: 153898372
+      Data4: -1873081045
+    Path: event:/SFX/Enemy/Hurt
+  Event: 
+  EventPlayTrigger: 0
+  EventStopTrigger: 0
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params: []
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 100
+--- !u!114 &3998164005837081322
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6973685807047857842}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: 194281188
+      Data2: 1298032442
+      Data3: -1955134558
+      Data4: 816638418
+    Path: event:/SFX/Enemy/Death
+  Event: 
+  EventPlayTrigger: 0
+  EventStopTrigger: 0
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params: []
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 100
 --- !u!1 &7173889824874842747
 GameObject:
   m_ObjectHideFlags: 0
@@ -561,6 +639,10 @@ MonoBehaviour:
   scanWidth: 2
   eyeHeight: 0
   tiltAngle: 20
+  enableAirCulling: 1
+  groundCheckAbove: 0.2
+  groundCheckDistance: 2
+  edgePullback: 0.5
 --- !u!1 &8559623155472226520
 GameObject:
   m_ObjectHideFlags: 0

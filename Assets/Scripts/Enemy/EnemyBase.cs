@@ -82,15 +82,14 @@ public class EnemyBase : MonoBehaviour
     [Range(0.1f, 1f)]
     public float spotlightInnerAngleFactor = 0.6f;
 
-    [Header("Audio / Movement Tracking")]
-    public EventReference footstepEvent;
+    [Header("Movement Tracking")]
     private bool isMoving = false;
-    private EventInstance footstepInstance;
+    
 
-    [Header("Audio")]
-    public EventReference takeDamageEvent;
-    public EventReference deathEvent;
-
+    [Header("Studio Event Emitters")]
+    public StudioEventEmitter footstepEmitter;
+    public StudioEventEmitter damageEmitter;
+    public StudioEventEmitter deathEmitter;
 
     [Header("Rotation Speeds")]
     public float patrolRotationSpeed = 2f;
@@ -120,7 +119,7 @@ public class EnemyBase : MonoBehaviour
 
         currentHealth = maxHealth;
 
-        // Filter out any null entries in patrolPoints
+        // Filter out null patrol points
         if (patrolPoints != null && patrolPoints.Length > 0)
         {
             List<Transform> validPoints = new List<Transform>();
@@ -133,7 +132,6 @@ public class EnemyBase : MonoBehaviour
             patrolPoints = validPoints.ToArray();
         }
 
-        //Only go to waypoint if there are valid patrol points
         if (patrolPoints != null && patrolPoints.Length > 0)
         {
             GoToNextWaypoint();
@@ -155,18 +153,18 @@ public class EnemyBase : MonoBehaviour
             fovSpotlight.intensity = spotlightIntensity;
         }
 
-        // Setup footstep audio
-        if (!footstepEvent.IsNull)
+        // Make sure footstepEmitter is stopped at start
+        if (footstepEmitter != null)
         {
-            footstepInstance = RuntimeManager.CreateInstance(footstepEvent);
-            footstepInstance.set3DAttributes(RuntimeUtils.To3DAttributes(gameObject));
-            footstepInstance.start();
-            footstepInstance.setPaused(true);
+            footstepEmitter.Stop();
         }
 
         lastState = currentState;    // Initialize lastState to currentState
         CheckCombatMusic();          // Check combat music on start
     }
+
+
+
 
 
 
@@ -192,41 +190,32 @@ public class EnemyBase : MonoBehaviour
         }
 
         UpdateSpotlight();
-        UpdateMovementAudio();
+        UpdateMovementAudio();  // Controls footstepEmitter Play/Stop
 
         if (currentState != lastState)
         {
             CheckCombatMusic();
             lastState = currentState;
         }
-
-        // Update footstepInstance position each frame
-        if (footstepInstance.isValid())
-        {
-            footstepInstance.set3DAttributes(RuntimeUtils.To3DAttributes(gameObject));
-        }
     }
+
 
     private void UpdateMovementAudio()
     {
-        if (footstepInstance.isValid())
-        {
-            bool currentlyMoving = (agent != null && agent.hasPath && agent.velocity.sqrMagnitude > 0.1f && !agent.isStopped);
+        bool currentlyMoving = (agent != null && agent.hasPath && agent.velocity.sqrMagnitude > 0.1f && !agent.isStopped);
 
-            if (currentlyMoving && !isMoving)
-            {
-                // Start footstep sound
-                footstepInstance.setPaused(false);
-                isMoving = true;
-            }
-            else if (!currentlyMoving && isMoving)
-            {
-                // Stop footstep sound
-                footstepInstance.setPaused(true);
-                isMoving = false;
-            }
+        if (currentlyMoving && !isMoving)
+        {
+            footstepEmitter.Play();
+            isMoving = true;
+        }
+        else if (!currentlyMoving && isMoving)
+        {
+            footstepEmitter.Stop();
+            isMoving = false;
         }
     }
+
 
     /// <summary>
     /// Returns true if the enemy is currently in the Chasing state.
@@ -517,13 +506,11 @@ public class EnemyBase : MonoBehaviour
         currentHealth -= damage;
         Debug.Log("Enemy health: " + currentHealth);
 
-        // Play damage audio
-        if (!takeDamageEvent.IsNull)
+        if (damageEmitter != null)
         {
-            RuntimeManager.PlayOneShot(takeDamageEvent, transform.position);
+            damageEmitter.Play();
         }
 
-        // Make enemy alerted immediately on damage
         BecomeAlerted();
 
         if (currentHealth <= 0)
@@ -532,12 +519,11 @@ public class EnemyBase : MonoBehaviour
         }
     }
 
-
     private void Die()
     {
-        if (!deathEvent.IsNull)
+        if (deathEmitter != null)
         {
-            RuntimeManager.PlayOneShot(deathEvent, transform.position);
+            deathEmitter.Play();
         }
 
         if (keycardPrefab != null)
@@ -548,13 +534,12 @@ public class EnemyBase : MonoBehaviour
         Destroy(gameObject);
     }
 
+
     private void OnDestroy()
     {
-        // Release footstep instance properly
-        if (footstepInstance.isValid())
+        if (footstepEmitter != null)
         {
-            footstepInstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
-            footstepInstance.release();
+            footstepEmitter.Stop();
         }
     }
 
