@@ -188,6 +188,8 @@ GameObject:
   - component: {fileID: 6263579881973100895}
   - component: {fileID: 7407225195963150598}
   - component: {fileID: 3998164005837081322}
+  - component: {fileID: 2961535121048625997}
+  - component: {fileID: 6021806425257675824}
   m_Layer: 0
   m_Name: Enemy_Ranged
   m_TagString: Enemy
@@ -366,20 +368,8 @@ MonoBehaviour:
   bulletPrefab: {fileID: 7768977386190836073, guid: 69b9abcb17d849f4c9d342446aa1d989, type: 3}
   firePoint: {fileID: 2861583945321015477}
   shootCooldown: 1.5
-  shootSoundEvent:
-    Guid:
-      Data1: -813029856
-      Data2: 1193555853
-      Data3: -1793487223
-      Data4: 2046596902
-    Path: event:/SFX/Enemy/Shoot
-  reloadSoundEvent:
-    Guid:
-      Data1: 1733355496
-      Data2: 1099360831
-      Data3: 1042624182
-      Data4: 1150080969
-    Path: event:/SFX/Enemy/Reload
+  shootEmitter: {fileID: 2961535121048625997}
+  reloadEmitter: {fileID: 6021806425257675824}
 --- !u!195 &8329307200442749345
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -495,6 +485,68 @@ MonoBehaviour:
   OverrideAttenuation: 0
   OverrideMinDistance: 1
   OverrideMaxDistance: 100
+--- !u!114 &2961535121048625997
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6973685807047857842}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: -813029856
+      Data2: 1193555853
+      Data3: -1793487223
+      Data4: 2046596902
+    Path: event:/SFX/Enemy/Shoot
+  Event: 
+  EventPlayTrigger: 0
+  EventStopTrigger: 0
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params: []
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20
+--- !u!114 &6021806425257675824
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6973685807047857842}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: 1733355496
+      Data2: 1099360831
+      Data3: 1042624182
+      Data4: 1150080969
+    Path: event:/SFX/Enemy/Reload
+  Event: 
+  EventPlayTrigger: 0
+  EventStopTrigger: 0
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params: []
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20
 --- !u!1 &7173889824874842747
 GameObject:
   m_ObjectHideFlags: 0
