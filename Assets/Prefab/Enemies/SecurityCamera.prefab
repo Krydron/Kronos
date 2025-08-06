@@ -9,7 +9,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6622408475876053602}
-  - component: {fileID: 3944448769894710366}
   m_Layer: 0
   m_Name: SecurityCamera
   m_TagString: Untagged
@@ -34,28 +33,6 @@ Transform:
   - {fileID: 3653173007138883962}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3944448769894710366
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 488995720616236782}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 53dfd60ff8e638840a5f5e95575ac103, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fieldOfView: 90
-  viewDistance: 10
-  downwardTiltAngle: 30
-  detectionTime: 2
-  rotationSpeed: 30
-  rotationAngle: 45
-  rotationDelay: 2
-  idleFOVMaterial: {fileID: 2100000, guid: 542d25d5a0cbec1418d6bdac2d5e4d6e, type: 2}
-  alertFOVMaterial: {fileID: 2100000, guid: f09b15d17a6b5cb4bb4abc0bd15e8974, type: 2}
-  canTriggerLockdown: 0
 --- !u!1 &1434382606151487677
 GameObject:
   m_ObjectHideFlags: 0
@@ -67,6 +44,7 @@ GameObject:
   - component: {fileID: 3653173007138883962}
   - component: {fileID: 6576061950454478611}
   - component: {fileID: 6049869453625886780}
+  - component: {fileID: 282352188002115772}
   m_Layer: 0
   m_Name: Head
   m_TagString: Untagged
@@ -145,6 +123,28 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &282352188002115772
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1434382606151487677}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53dfd60ff8e638840a5f5e95575ac103, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fieldOfView: 90
+  viewDistance: 10
+  downwardTiltAngle: 30
+  detectionTime: 2
+  rotationSpeed: 30
+  rotationAngle: 45
+  rotationDelay: 2
+  idleFOVMaterial: {fileID: 2100000, guid: 542d25d5a0cbec1418d6bdac2d5e4d6e, type: 2}
+  alertFOVMaterial: {fileID: 2100000, guid: f09b15d17a6b5cb4bb4abc0bd15e8974, type: 2}
+  canTriggerLockdown: 0
 --- !u!1 &4821164443979232757
 GameObject:
   m_ObjectHideFlags: 0
