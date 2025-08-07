@@ -969,7 +969,7 @@ Transform:
   m_GameObject: {fileID: 7872494567948968865}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.735, z: 0.004}
+  m_LocalPosition: {x: 0, y: 0.735, z: 0.07}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1050,7 +1050,7 @@ MonoBehaviour:
   baseColor: {r: 0.62352943, g: 0.015686275, b: 0, a: 0.15}
   scanColor: {r: 1, g: 0, b: 0, a: 0.6}
   scanWidth: 2
-  eyeHeight: 0
+  eyeHeight: 1
   tiltAngle: 20
   enableAirCulling: 1
   groundCheckAbove: 0.2
