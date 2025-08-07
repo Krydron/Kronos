@@ -712,6 +712,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 992828781a2132743be3617534503e3e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  radarFOVMaterial: {fileID: 2100000, guid: 95e9b4fc91e4a8c459160a8ea00ce87d, type: 2}
   sightRange: 10
   fieldOfView: 90
   rayCount: 50

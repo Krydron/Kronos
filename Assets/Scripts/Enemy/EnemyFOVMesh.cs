@@ -4,6 +4,9 @@ using UnityEngine;
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
 public class EnemyFOVMesh : MonoBehaviour
 {
+    [Header("Material Reference")]
+    public Material radarFOVMaterial; // Assign in Inspector
+
     [Header("FOV Settings")]
     public float sightRange = 10f;
     [Range(10, 360)] public float fieldOfView = 90f;
@@ -38,7 +41,7 @@ public class EnemyFOVMesh : MonoBehaviour
         mesh = new Mesh();
         GetComponent<MeshFilter>().mesh = mesh;
 
-        fovMaterial = new Material(Shader.Find("Custom/RadarFOV"));
+        fovMaterial = new Material(radarFOVMaterial);
         GetComponent<MeshRenderer>().material = fovMaterial;
 
         fovMaterial.SetFloat("_FOVAngle", fieldOfView);
