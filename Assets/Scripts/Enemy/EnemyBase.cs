@@ -2,10 +2,8 @@ using UnityEngine;
 using UnityEngine.AI;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine.Audio;
 using FMODUnity;
-using FMOD.Studio;
-using static UnityEditorInternal.VersionControl.ListControl;
+//using static UnityEditorInternal.VersionControl.ListControl;
 
 public class EnemyBase : MonoBehaviour
 {

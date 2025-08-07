@@ -3,7 +3,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using System.Collections;
-using FMOD.Studio;
 using FMODUnity;
 
 public class VaultUI : MonoBehaviour
