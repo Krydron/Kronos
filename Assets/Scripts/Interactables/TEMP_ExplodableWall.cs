@@ -22,7 +22,7 @@ public class TEMP_ExplodableWall : Interactable
         inventory.RemoveItem(bombItem);
         yield return new WaitForSeconds(time);
         //Destroy(gameObject);
-        GetComponent<FlashbackTrigger>().Trigger();
+        GetComponent<FlashbackTrigger>()?.Trigger();
         Instantiate(explosion,explosionLocation.position, Quaternion.identity);
         gameObject.SetActive(false);
     }

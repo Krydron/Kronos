@@ -5,6 +5,8 @@ public class Keycard : MonoBehaviour
     [SerializeField] Doors.DoorType keyType;
     Inventory inventory;
 
+    [SerializeField] FMODUnity.StudioEventEmitter interact;
+
     public Doors.DoorType GetKeyType()
     {
         return keyType;
@@ -19,6 +21,7 @@ public class Keycard : MonoBehaviour
     {
         inventory.ActivateKeyType(keyType);
         if (keyType == Doors.DoorType.Blue) { GetComponent<FlashbackTrigger>().Trigger(); }
+        interact.Play();
         Destroy(gameObject);
     }
 }

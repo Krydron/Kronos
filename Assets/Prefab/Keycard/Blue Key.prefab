@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 3048979894958121946}
   - component: {fileID: 8529322314718866168}
   - component: {fileID: 6693003652867603625}
+  - component: {fileID: 7877496718961020463}
   m_Layer: 0
   m_Name: Blue Key
   m_TagString: Untagged
@@ -68,6 +69,38 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   keyType: 2
+  interact: {fileID: 7877496718961020463}
+--- !u!114 &7877496718961020463
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7795313394176862176}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: -127063918
+      Data2: 1297942579
+      Data3: -562871143
+      Data4: -1530314195
+    Path: event:/SFX/UI/TabletOpen
+  Event: 
+  EventPlayTrigger: 0
+  EventStopTrigger: 0
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params: []
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20
 --- !u!1 &9194076076122453462
 GameObject:
   m_ObjectHideFlags: 0

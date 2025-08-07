@@ -11,6 +11,7 @@
 *
 ***************************************************************************************************************/
 
+using FMODUnity;
 using UnityEngine;
 
 public class InteractableMaps : Interactable
@@ -18,10 +19,13 @@ public class InteractableMaps : Interactable
     [SerializeField] Map map;
     [SerializeField] private int mapType;
 
+    [SerializeField] StudioEventEmitter interact;
+
     public override bool Interact()
     {
         if (map == null) { Debug.LogError("Map is null"); return false; }
         Debug.Log("Saving Map");
+        interact.Play();
         switch (mapType)
         {
             case 0:
